@@ -49,7 +49,14 @@ chantier — décision D1 — mais le défaut mérite une décision séparée.
 - **Quatre profils de densité** et le plancher tactile.
 - **Trois gardes distribuables** plus la garde de contraste, qui recalcule 40 paires à
   chaque exécution.
-- **186 tests**, types, lint et format au vert.
+- **187 tests**, types, lint et format au vert.
+
+### Corrigé après rendu réel
+
+`Logotype` figeait sa couleur sur `--encre` et obligeait le consommateur à basculer la
+variante à la main. Sur une page qui change de thème, le logotype disparaissait en mode
+sombre. Le défaut suit désormais `--texte-fort` ; `encre` et `blanc` restent disponibles
+pour un fond dont la clarté ne dépend pas du thème.
 
 ### Ce qui n'est pas livré
 

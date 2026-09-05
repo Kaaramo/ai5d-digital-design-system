@@ -32,9 +32,12 @@
 - [x] `noyau/composants/index.ts` et sa garde de complétude
 - [x] 45 tests de rendu et d'accessibilité
 - [x] `specimens/composants.html` — 4 densités, 3 thèmes
-- [ ] **Non prouvé** : les spécimens n'ont pas été regardés dans un navigateur. À ouvrir et à
-      vérifier de l'œil avant de considérer le lot 2 clos
-- [ ] **Non prouvé** : l'absence d'appel réseau n'a pas été vérifiée dans l'onglet Réseau
+- [x] Spécimens rendus et regardés, en clair et en sombre — captures dans `docs/preuves/`
+- [x] **Défaut trouvé par le rendu** : `Logotype` figeait sa couleur et disparaissait en mode
+      sombre. Il suit désormais `--texte-fort`
+- [ ] **Non prouvé** : l'absence d'appel réseau au chargement n'a pas été vérifiée dans
+      l'onglet Réseau d'un navigateur. Seul `polices.css` a été contrôlé
+- [ ] **Non prouvé** : le rendu n'a été vu que sur Chrome, à une seule largeur
 
 ## Gardes et documents
 
@@ -48,8 +51,8 @@
 - [x] `pnpm typecheck` — 0 erreur
 - [x] `pnpm lint` — 0 erreur, 0 avertissement
 - [x] `pnpm format:check` — conforme
-- [x] `pnpm test` — 186 tests, 10 fichiers, tous verts
-- [ ] Preuves consignées dans `docs/preuves/lots-1-3/`
+- [x] `pnpm test` — 187 tests, 10 fichiers, tous verts
+- [x] Preuves consignées dans `docs/preuves/lots-1-3/`, captures comprises
 
 ## Reste à faire
 

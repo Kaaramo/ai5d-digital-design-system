@@ -34,9 +34,18 @@ describe('Logotype', () => {
     expect(screen.getByText('AI').style.color).toContain('--blanc');
   });
 
-  it('passe les lettres en encre sur la variante par defaut', () => {
+  it('suit le theme par defaut, plutot que de figer une couleur', () => {
+    // Le defaut a change apres un rendu reel : fige en encre, le logotype
+    // disparaissait en mode sombre sur les pages qui basculent de theme.
     render(<Logotype />);
+    expect(screen.getByText('AI').style.color).toContain('--texte-fort');
+  });
+
+  it('permet de forcer la couleur pour un fond qui ne depend pas du theme', () => {
+    const { rerender } = render(<Logotype variante="encre" />);
     expect(screen.getByText('AI').style.color).toContain('--encre');
+    rerender(<Logotype variante="blanc" />);
+    expect(screen.getByText('AI').style.color).toContain('--blanc');
   });
 
   it('affiche le label de produit quand il est fourni', () => {

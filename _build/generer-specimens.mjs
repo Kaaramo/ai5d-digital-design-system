@@ -25,9 +25,10 @@ const TONS = [
   ['erreur', 'Trop de tentatives'],
 ];
 
-function logotype(produit, variante = 'encre') {
-  const couleur = variante === 'blanc' ? 'var(--blanc)' : 'var(--encre)';
-  return `<span class="logo" style="color:${couleur}"
+function logotype(produit) {
+  // Les lettres suivent --texte-fort, comme le composant : le logotype se retourne
+  // avec le theme sans que la page ait a le savoir.
+  return `<span class="logo"
     ><b>AI</b><b class="cinq">5</b><b>D</b>${produit ? `<i>${produit}</i>` : ''}</span>`;
 }
 
@@ -142,7 +143,7 @@ body {
   gap: 16px; padding: 14px 24px;
   background: var(--surface-2); border-bottom: 1px solid var(--bordure);
 }
-.logo { display: inline-flex; align-items: baseline; font-size: 22px; letter-spacing: var(--lettrage-marque); }
+.logo { display: inline-flex; align-items: baseline; font-size: 22px; letter-spacing: var(--lettrage-marque); color: var(--texte-fort); }
 .logo b { font-weight: var(--graisse-forte); }
 .logo .cinq { color: var(--action); display: inline-block; transform: rotate(-5deg); }
 .logo i { font-family: var(--police-titre); font-weight: var(--graisse-legere); font-style: normal; margin-left: 9px; }

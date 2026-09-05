@@ -10,12 +10,23 @@ import type { CSSProperties, HTMLAttributes } from 'react';
  * Le label de produit suit en Fraunces léger : « AI5D Compte », « AI5D Académie ».
  * C'est la doctrine de sous-marque de l'écosystème — la différenciation se fait par le
  * nom, jamais par la couleur.
+ *
+ * Par défaut, les lettres suivent `--texte-fort` : le logotype se retourne donc tout seul
+ * avec le thème. Le défaut n'était pas celui-là au départ — il fallait choisir `encre` ou
+ * `blanc` à la main — et un rendu en mode sombre l'a montré : sur une page qui bascule de
+ * thème, personne ne pense à basculer aussi la variante, et le logotype disparaît. Les
+ * deux variantes explicites restent utiles pour un fond de couleur fixe, un bandeau encre
+ * en thème clair par exemple.
  */
 
-export type VarianteLogotype = 'encre' | 'blanc';
+export type VarianteLogotype = 'auto' | 'encre' | 'blanc';
 
 export interface ProprietesLogotype extends Omit<HTMLAttributes<HTMLSpanElement>, 'children'> {
-  /** `encre` sur fond clair, `blanc` sur fond sombre. */
+  /**
+   * `auto` suit le thème par `--texte-fort`, et c'est le bon choix presque partout.
+   * `encre` et `blanc` forcent la couleur, pour un fond dont la clarté ne dépend pas
+   * du thème.
+   */
   variante?: VarianteLogotype;
   /** Le nom du produit, affiché après le logotype. « Compte », « Académie », « Lab ». */
   produit?: string;
@@ -24,14 +35,19 @@ export interface ProprietesLogotype extends Omit<HTMLAttributes<HTMLSpanElement>
 }
 
 export function Logotype({
-  variante = 'encre',
+  variante = 'auto',
   produit,
   taille = 24,
   className,
   style,
   ...reste
 }: ProprietesLogotype) {
-  const couleurLettres = variante === 'blanc' ? 'var(--blanc)' : 'var(--encre)';
+  const COULEURS: Record<VarianteLogotype, string> = {
+    auto: 'var(--texte-fort)',
+    encre: 'var(--encre)',
+    blanc: 'var(--blanc)',
+  };
+  const couleurLettres = COULEURS[variante];
 
   const styleRacine: CSSProperties = {
     display: 'inline-flex',
