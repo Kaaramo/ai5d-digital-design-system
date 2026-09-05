@@ -1,0 +1,262 @@
+/* =========================================================================
+   AI5D Digital Design System - noyau
+
+   Registre APPLICATIF. Direction « Encre & Papier ».
+   Le registre institutionnel - site, documents, slides - reste sous l'autorite
+   de AI5D_Brand_2026 : angles vifs, aucune ombre, Inter seule.
+
+   Regle du contrat de jetons : aucune specification de sprint ne cite une
+   couleur brute. Elles citent toutes les variables de ce fichier.
+   Une spec qui ecrit #2251FF est fausse. Une spec qui ecrit --action est juste.
+
+   Les six jetons de marque viennent de marque.css, genere depuis la source
+   institutionnelle. Ce fichier ne les redefinit jamais.
+   ========================================================================= */
+
+@import './marque.css';
+
+:root {
+  /* -----------------------------------------------------------------------
+     Alias des jetons de marque. Aucune valeur n'est ecrite ici : marque.css est
+     le seul fichier du depot ou une couleur de marque apparait en clair.
+     ----------------------------------------------------------------------- */
+  --encre: var(--marque-encre);
+  --navy: var(--marque-navy);
+  --blanc: var(--marque-blanc);
+  --action: var(--marque-action);
+  --action-survol: var(--marque-action-survol);
+  --action-clair: var(--marque-action-clair);
+
+  /* -----------------------------------------------------------------------
+     Surfaces. Propres au registre applicatif : la marque institutionnelle n'a
+     ni papier tiede ni mode sombre. Le blanc pur durcit ; sur les pages qui se
+     lisent vraiment, le papier tiede fait baisser la garde.
+     ----------------------------------------------------------------------- */
+  --surface-1: #faf7f2;
+  --surface-2: var(--blanc);
+  --surface-3: var(--blanc);
+  --surface-chaude: #f4efe7;
+  --bordure: #e7e0d6;
+  --bordure-forte: #d5ccbe;
+
+  /* -----------------------------------------------------------------------
+     Texte. --texte-faible vaut #616F78, et non le #6B7A85 herite de l'Academie.
+
+     Deux corrections successives, toutes deux mesurees. #6B7A85 donnait 4,14 sur
+     le papier tiede. #66747E corrigeait le papier et le blanc, mais restait a 4,20
+     sur la surface chaude, plus sombre que les deux autres. #616F78 tient les trois :
+     4,85 sur --surface-1, 5,18 sur --surface-2, 4,53 sur --surface-chaude.
+     La teinte (205 degres) et la saturation sont conservees : seule la luminosite baisse.
+     ----------------------------------------------------------------------- */
+  --texte-fort: var(--encre);
+  --texte: #2b3a45;
+  --texte-faible: #616f78;
+  --texte-sur-action: var(--blanc);
+
+  /* -----------------------------------------------------------------------
+     Semantiques. Ces valeurs divergent de la marque institutionnelle, et c'est
+     mesure : sur le papier tiede, le vert institutionnel #1E874B tombe a 4,25 et
+     l'avertissement #B7791F est deja a 3,64 sur blanc. Les valeurs ci-dessous
+     tiennent le seuil AA sur les surfaces de ce registre.
+
+     Aucune information n'est portee par la seule couleur. Reussite et erreur
+     portent toujours aussi un mot ou une icone : pres d'un homme sur douze ne
+     distingue pas correctement le rouge du vert.
+     ----------------------------------------------------------------------- */
+  --reussite: #0e7c5a;
+  --reussite-fond: #e6f4ee;
+  --attention: #b45309;
+  --attention-fond: #fdf2e3;
+  --erreur: #b42318;
+  --erreur-fond: #fdecea;
+  --info: var(--action);
+  --info-fond: #eaefff;
+
+  /* -----------------------------------------------------------------------
+     Typographie. Fraunces signe, Inter travaille, JetBrains Mono identifie.
+     Fraunces ne compose JAMAIS un paragraphe.
+     ----------------------------------------------------------------------- */
+  --police-titre: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --police-corps: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --police-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  --taille-xs: 0.75rem;
+  --taille-sm: 0.875rem;
+  --taille-md: 1rem;
+  --taille-lg: 1.125rem;
+  --taille-xl: 1.375rem;
+  --taille-2xl: 1.875rem;
+  --taille-3xl: 3rem;
+  --taille-4xl: 3.5rem;
+
+  /* Une seule graisse par bloc : la hierarchie se fait par la taille, pas par le gras. */
+  --graisse-legere: 300;
+  --graisse-normale: 400;
+  --graisse-moyenne: 500;
+  --graisse-semi: 600;
+  --graisse-forte: 700;
+
+  --interligne-serre: 1.12;
+  --interligne-titre: 1.2;
+  --interligne-large: 1.75;
+
+  /* Les capitales sont reservees aux overlines. */
+  --lettrage-titre: -0.01em;
+  --lettrage-marque: -0.02em;
+  --lettrage-overline: 0.06em;
+  --lettrage-mono: 0.16em;
+
+  /* -----------------------------------------------------------------------
+     Geometrie. La maison mere impose le rayon zero ; le registre applicatif ne
+     la suit pas. C'est l'une des cinq libertes accordees.
+     ----------------------------------------------------------------------- */
+  --rayon-sm: 4px;
+  --rayon-md: 10px;
+  --rayon-lg: 16px;
+  --rayon-plein: 999px;
+
+  /* Elevation. Interdite sur la vitrine, indispensable ici : elle pose une carte
+     au-dessus de la page et dit, sans un mot, ou se trouve la seule chose a faire. */
+  --elevation-0: none;
+  --elevation-1: 0 1px 2px rgba(5, 28, 44, 0.06);
+  --elevation-2: 0 4px 12px rgba(5, 28, 44, 0.08);
+  --elevation-3: 0 12px 32px rgba(5, 28, 44, 0.12);
+
+  /* -----------------------------------------------------------------------
+     Mouvement. La duree longue est reservee aux confirmations qui engagent la
+     securite du compte, jamais a un ornement.
+     ----------------------------------------------------------------------- */
+  --duree-courte: 150ms;
+  --duree-moyenne: 250ms;
+  --duree-longue: 800ms;
+  --courbe-entree: cubic-bezier(0.16, 1, 0.3, 1);
+  --courbe-sortie: cubic-bezier(0.4, 0, 1, 1);
+
+  /* -----------------------------------------------------------------------
+     Action sur fond sombre.
+
+     La marque declare --action-clair #5B7BFF pour « liens et accents sur fond
+     encre/navy ». Sur l'encre, il tient : 4,73. Mais le registre applicatif
+     introduit des surfaces que la marque n'a jamais eues - #11212D pour les cartes,
+     #172C3B pour les menus - et #5B7BFF y tombe a 4,47 et 3,92. Un lien sur une
+     carte, en mode sombre, echoue donc aujourd'hui.
+
+     On n'y touche pas dans la marque : --action-clair reste importe tel quel, et
+     garde son usage institutionnel. On declare ici un jeton APPLICATIF distinct,
+     qui tient sur les trois surfaces sombres et sur l'encre : 5,73 / 5,15 / 4,51 / 5,45.
+     ----------------------------------------------------------------------- */
+  --action-sur-sombre: #6b88ff;
+
+  /* Cible tactile minimale. Les variables de densite vivent dans
+     densites/profils.css : ce fichier n'en declare aucune. */
+  --cible-tactile: 44px;
+}
+
+/* =========================================================================
+   Mode sombre - preference du systeme.
+
+   Trois regles. Les ombres disparaissent : une ombre portee sur fond sombre ne
+   se voit pas, et la simuler produit du gris sale. Une surface plus claire est
+   une surface plus proche, c'est la toute la hierarchie. Le bleu s'eclaircit,
+   seul jeton herite qui change de valeur. Et aucun scintillement : le theme est
+   applique avant le premier rendu.
+   ========================================================================= */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --surface-1: #0b1620;
+    --surface-2: #11212d;
+    --surface-3: #172c3b;
+    --surface-chaude: #171f26;
+    --bordure: #22323f;
+    --bordure-forte: #2e4252;
+
+    --texte-fort: #f2f5f7;
+    --texte: #c9d4dc;
+    --texte-faible: #8d9aa5;
+
+    --reussite: #2fa37b;
+    --reussite-fond: #103029;
+    --attention: #e0a050;
+    --attention-fond: #2e2413;
+    --erreur: #f27063;
+    --erreur-fond: #331a18;
+    --info: var(--action-sur-sombre);
+    --info-fond: #14203a;
+
+    /* L'action s'eclaircit : c'est le seul jeton dont la valeur change entre les
+       deux themes. Voir la note sur --action-sur-sombre plus haut. */
+    --action: var(--action-sur-sombre);
+    --action-survol: #8ba1ff;
+
+    --elevation-1: none;
+    --elevation-2: none;
+    --elevation-3: none;
+  }
+}
+
+/* Le choix explicite du compte l'emporte sur la preference du systeme. */
+:root[data-theme='dark'] {
+  --surface-1: #0b1620;
+  --surface-2: #11212d;
+  --surface-3: #172c3b;
+  --surface-chaude: #171f26;
+  --bordure: #22323f;
+  --bordure-forte: #2e4252;
+
+  --texte-fort: #f2f5f7;
+  --texte: #c9d4dc;
+  --texte-faible: #8d9aa5;
+
+  --reussite: #2fa37b;
+  --reussite-fond: #103029;
+  --attention: #e0a050;
+  --attention-fond: #2e2413;
+  --erreur: #f27063;
+  --erreur-fond: #331a18;
+  --info: var(--action-sur-sombre);
+  --info-fond: #14203a;
+
+  --action: var(--action-sur-sombre);
+  --action-survol: #8ba1ff;
+
+  --elevation-1: none;
+  --elevation-2: none;
+  --elevation-3: none;
+}
+
+:root[data-theme='light'] {
+  --surface-1: #faf7f2;
+  --surface-2: var(--blanc);
+  --surface-3: var(--blanc);
+  --surface-chaude: #f4efe7;
+  --bordure: #e7e0d6;
+  --bordure-forte: #d5ccbe;
+
+  --texte-fort: var(--encre);
+  --texte: #2b3a45;
+  --texte-faible: #616f78;
+
+  --reussite: #0e7c5a;
+  --reussite-fond: #e6f4ee;
+  --attention: #b45309;
+  --attention-fond: #fdf2e3;
+  --erreur: #b42318;
+  --erreur-fond: #fdecea;
+  --info: var(--action);
+  --info-fond: #eaefff;
+
+  --elevation-1: 0 1px 2px rgba(5, 28, 44, 0.06);
+  --elevation-2: 0 4px 12px rgba(5, 28, 44, 0.08);
+  --elevation-3: 0 12px 32px rgba(5, 28, 44, 0.12);
+}
+
+/* prefers-reduced-motion supprime toute animation decorative. Seules subsistent
+   les transitions d'opacite sous 100 ms. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duree-courte: 100ms;
+    --duree-moyenne: 100ms;
+    --duree-longue: 0ms;
+  }
+}

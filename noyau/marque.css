@@ -1,0 +1,22 @@
+/* =========================================================================
+   AI5D Digital Design System - jetons de marque
+
+   GENERE par _build/synchroniser-marque.mjs. Ne pas modifier a la main.
+   Source    : C:/Users/ksthe/Documents/AI5D_Brand_2026/tokens.css
+   Empreinte : sha256(16) 03292c3bfad69b1b
+   Synchronise le 2026-09-05
+
+   Ces six valeurs appartiennent a la marque institutionnelle. Le prefixe
+   --marque- les rend intouchables : le noyau les aliase vers ses propres noms,
+   et aucune valeur de marque n apparait ailleurs que dans ce fichier.
+   La garde aucun-jeton-de-marque-redefini le verifie.
+   ========================================================================= */
+
+:root {
+  --marque-encre: #051C2C;                 /* --ai5d-ink */
+  --marque-navy: #042A76;                  /* --ai5d-navy */
+  --marque-action: #2251FF;                /* --ai5d-blue */
+  --marque-action-survol: #1B44DB;         /* --ai5d-blue-hover */
+  --marque-action-clair: #5B7BFF;          /* --ai5d-blue-light */
+  --marque-blanc: #FFFFFF;                 /* --ai5d-white */
+}

@@ -1,0 +1,37 @@
+/* =========================================================================
+   AI5D Digital Design System - polices
+
+   GENERE par _build/recuperer-polices.mjs. Ne pas modifier a la main.
+   Sous-ensemble latin, woff2, servi en local. Aucun appel a un CDN.
+
+   Une page d'authentification ne doit emettre aucune requete vers un tiers :
+   c'est une exigence de confidentialite autant que de robustesse.
+
+   Inter et Fraunces sont variables : un seul fichier porte toute la plage de
+   graisses, que le navigateur interpole.
+   Genere le 2026-09-05.
+   ========================================================================= */
+
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 300 500;
+  font-display: swap;
+  src: url('./fraunces-variable.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('./inter-variable.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('./jetbrains-mono-500.woff2') format('woff2');
+}

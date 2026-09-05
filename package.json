@@ -1,0 +1,41 @@
+{
+  "name": "@ai5d/design-system",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Systeme de design applicatif de l'ecosysteme AI5D",
+  "type": "module",
+  "exports": {
+    "./noyau/jetons.css": "./noyau/jetons.css",
+    "./noyau/marque.css": "./noyau/marque.css",
+    "./noyau/polices/polices.css": "./noyau/polices/polices.css",
+    "./preset": "./noyau/ai5d.preset.css",
+    "./densites/profils.css": "./densites/profils.css",
+    "./composants": "./noyau/composants/index.ts",
+    "./gardes": "./gardes/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "polices": "node _build/recuperer-polices.mjs",
+    "marque": "node _build/synchroniser-marque.mjs",
+    "specimens": "node _build/generer-specimens.mjs"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.17.0",
+    "jsdom": "^25.0.1",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.1",
+    "vitest": "^2.1.8"
+  },
+  "peerDependencies": { "react": ">=19", "react-dom": ">=19" },
+  "dependencies": { "clsx": "^2.1.1", "lucide-react": "^0.469.0", "react": "^19.0.0", "react-dom": "^19.0.0" }
+}

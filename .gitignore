@@ -25,3 +25,7 @@ desktop.ini
 # Temporaires
 *.log
 tmp/
+
+# Polices recuperees par _build/recuperer-polices.mjs — regenerables
+# (on les versionne malgre tout : un depot qui ne rend pas ses propres pages
+#  sans reseau ne serait pas un systeme de design autonome)
