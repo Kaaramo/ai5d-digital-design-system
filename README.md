@@ -213,16 +213,32 @@ variables CSS, si bien qu'un projet sans Tailwind les rend correctement.
 
 ## Installation
 
-Le dépôt est privé et n'est pas publié sur un registre. On l'installe depuis Git,
+Le dépôt est **public** et n'est pas publié sur un registre. On l'installe depuis Git,
 **épinglé à une étiquette** :
 
 ```bash
 pnpm add "@ai5d/design-system@github:Kaaramo/ai5d-digital-design-system#v0.2.0"
 ```
 
-L'épinglage n'est pas une précaution de principe. Sans lui, une correction de jeton
-arriverait dans un produit au prochain `pnpm install`, sans que personne ne l'ait décidé —
-et une correction de jeton change le rendu de tous les écrans.
+Aucun jeton, aucune configuration : l'installation anonyme fonctionne, donc les serveurs de
+construction et de déploiement l'obtiennent comme votre poste. C'est la raison d'être de
+l'ouverture du dépôt : la couche technique n'est pas un secret, et la garder fermée coûtait
+un jeton à configurer dans chaque produit.
+
+L'épinglage, lui, reste une règle. Sans lui, une correction de jeton arriverait dans un
+produit au prochain `pnpm install`, sans que personne ne l'ait décidé, et une correction de
+jeton change le rendu de tous les écrans.
+
+> **Attention à une subtilité de pnpm.** La commande ci-dessus installe bien la bonne
+> version, mais pnpm **retire l'étiquette du `package.json`** en y écrivant l'URL seule. Le
+> verrou garde le bon commit, donc la construction reste reproductible. Pour que l'étiquette
+> reste visible et intentionnelle, écrivez la dépendance à la main :
+>
+> ```json
+> "@ai5d/design-system": "github:Kaaramo/ai5d-digital-design-system#v0.2.0"
+> ```
+>
+> puis `pnpm install`. Vérifié le 5 septembre 2026 avec pnpm 10.24.
 
 Le paquet livre du TypeScript et du JSX non transpilés, pour que le consommateur applique
 sa propre cible. Sous Next.js :
