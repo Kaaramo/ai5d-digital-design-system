@@ -26,6 +26,12 @@ Tailwind v4 (CSS-first, `@theme`) · Node 24 · fontTools (Python) pour le sous-
 
 **Spec :** [`../specs/2026-09-05-ai5d-digital-design-system-design.md`](../specs/2026-09-05-ai5d-digital-design-system-design.md)
 
+> **Plan exécuté le 5 septembre 2026.** Ce document raconte ce qui était prévu ; il n'est
+> pas la référence de ce qui existe. Cinq choses ont changé en cours d'exécution, toutes
+> consignées dans [`CHANGELOG.md`](../../../CHANGELOG.md) et dans le §0 de la spec. Les
+> valeurs ci-dessous ont été rectifiées pour qu'aucun lecteur pressé n'y recopie un jeton
+> périmé ; le reste du plan est laissé tel qu'il a été écrit.
+
 ---
 
 ## Contraintes globales
@@ -53,16 +59,19 @@ surfaces clair : --surface-1 #FAF7F2 · --surface-2 #FFFFFF · --surface-3 #FFFF
                  --surface-chaude #F4EFE7 · --bordure #E7E0D6 · --bordure-forte #D5CCBE
 surfaces sombre: --surface-1 #0B1620 · --surface-2 #11212D · --surface-3 #172C3B
                  --surface-chaude #171F26 · --bordure #22323F · --bordure-forte #2E4252
-texte clair    : --texte-fort #051C2C · --texte #2B3A45 · --texte-faible #66747E
+texte clair    : --texte-fort #051C2C · --texte #2B3A45 · --texte-faible #616F78
 texte sombre   : --texte-fort #F2F5F7 · --texte #C9D4DC · --texte-faible #8D9AA5
-sémantiques    : --reussite #0E7C5A / #2FA37B · --reussite-fond #E6F4EE / #10312A
+sémantiques    : --reussite #0E7C5A / #2FA37B · --reussite-fond #E6F4EE / #103029
+action sombre  : --action-sur-sombre #6B88FF (le #5B7BFF de la marque echoue sur carte et menu)
                  --attention #B45309 / #E0A050 · --attention-fond #FDF2E3 / #2E2413
                  --erreur #B42318 / #F27063 · --erreur-fond #FDECEA / #331A18
 ```
 
-> `--texte-faible` vaut **`#66747E`**, et non `#6B7A85`. C'est la correction de la spec §2.4 :
-> l'ancienne valeur donnait 4,14 sur papier, sous le seuil. Toute tâche qui écrit `#6B7A85`
-> est en faute.
+> `--texte-faible` vaut **`#616F78`**. Deux valeurs ont été écartées avant elle : `#6B7A85`,
+> héritée de l'Académie, qui donnait 4,14 sur le papier ; et `#66747E`, retenue par la
+> première rédaction de ce plan, qui corrigeait le papier et le blanc mais restait à 4,20
+> sur la surface chaude. Seule `#616F78` tient les trois. Toute tâche qui écrit l'une des
+> deux premières est en faute.
 
 ---
 

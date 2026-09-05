@@ -6,7 +6,27 @@
 **Version :** 1.0 — cadrage validé
 **Date :** 5 septembre 2026
 **Auteur :** Karamo Sylla, avec Claude
-**Statut :** Validé en brainstorming, prêt pour le plan d'implémentation
+**Statut :** Validé en brainstorming, **puis rattrapé par son implémentation le 5 septembre 2026**
+
+---
+
+## 0. Ce que l'implémentation a changé
+
+Cette spécification a été écrite avant les lots 1 à 3. Les construire a fait apparaître des
+choses que le cadrage ne pouvait pas voir, et il vaut mieux corriger le document que le
+laisser porter des valeurs fausses — un document de référence qui se trompe finit toujours
+par être recopié.
+
+| Point | Ce que disait la spec | Ce qui est livré | Pourquoi |
+| ----- | --------------------- | ---------------- | -------- |
+| `--texte-faible` | `#66747E` | **`#616F78`** | `#66747E` corrigeait le papier et le blanc, mais restait à 4,20 sur `--surface-chaude`, plus sombre que les deux autres. La correction s'est faite en deux temps, et seul le second couvre les trois surfaces |
+| Action en mode sombre | « le bleu s'éclaircit à `#5B7BFF` » | **`--action-sur-sombre: #6B88FF`** | `#5B7BFF` donne 4,47 sur une carte et 3,92 sur un menu, deux surfaces que la marque n'a jamais eues. Le jeton de marque reste intact ; c'est un jeton applicatif distinct |
+| `--reussite-fond` sombre | `#10312A` | **`#103029`** | Le vert de réussite y donnait 4,45 |
+| Préréglage Tailwind | `ai5d.preset.ts` | **`ai5d.preset.css`** | Tailwind v4 configure en CSS. Voir `docs/decisions/002` |
+| Polices | huit fichiers woff2 | **trois** | Inter et Fraunces sont variables : un fichier porte toute leur plage de graisses. Huit faces livraient sept copies identiques, 420 Ko au lieu de 134 |
+
+Le corps du document ci-dessous a été mis à jour sur ces points. Le journal complet est
+dans [`CHANGELOG.md`](../../../CHANGELOG.md).
 
 ---
 
@@ -122,10 +142,17 @@ Le quatrième écart, en revanche, est un **défaut présent des deux côtés** 
 | Texte secondaire Académie `#6B7A85` | blanc | 4,42 — échoue |
 
 Aucun des deux n'atteint 4,5, et c'est la couleur des descriptions, des horodatages et des
-métadonnées — celle qui se lit le plus souvent en petit corps. **Correction retenue :
-`#66747E`**, obtenue en conservant la teinte (205,4°) et la saturation (0,108) de
-`#6B7A85` et en abaissant la seule luminosité. Résultat : 4,50 sur papier, 4,81 sur blanc.
-L'écart est imperceptible à l'œil ; il fait passer le seuil.
+métadonnées — celle qui se lit le plus souvent en petit corps.
+
+**Correction retenue : `#616F78`**, obtenue en conservant la teinte (205°) et la saturation
+de `#6B7A85` et en abaissant la seule luminosité. Résultat : **4,85 sur `--surface-1`, 5,18
+sur `--surface-2`, 4,53 sur `--surface-chaude`**. L'écart est imperceptible à l'œil ; il
+fait passer le seuil sur les trois surfaces.
+
+> La première version de ce document retenait `#66747E`. Cette valeur corrigeait le papier
+> et le blanc, mais restait à 4,20 sur la surface chaude, que le cadrage avait oubliée. La
+> garde de contraste, écrite au lot 1, l'a trouvée en mesurant les trois surfaces au lieu de
+> deux. C'est précisément ce qu'on attendait d'elle.
 
 Le mode sombre était déjà conforme : `#8D9AA5` donne 6,35 sur `#0B1620` et 5,70 sur
 `#11212D`.
@@ -268,15 +295,16 @@ justification chiffrée, plus la correction du texte secondaire.
 | ----- | ----- | ------ | --------------- | ---- |
 | `--texte-fort` | `#051C2C` | `#F2F5F7` | — | Titres |
 | `--texte` | `#2B3A45` | `#C9D4DC` | — | Corps |
-| `--texte-faible` | **`#66747E`** | `#8D9AA5` | 4,50 papier · 4,81 blanc | **Corrigé** — voir §2.4 |
+| `--texte-faible` | **`#616F78`** | `#8D9AA5` | 4,85 · 5,18 · 4,53 sur les trois surfaces | **Corrigé** — voir §2.4 |
 | `--texte-sur-action` | `#FFFFFF` | `#FFFFFF` | — | |
 | `--reussite` | `#0E7C5A` | `#2FA37B` | 4,85 papier | Diverge de la marque, mesuré |
-| `--reussite-fond` | `#E6F4EE` | `#10312A` | — | |
+| `--reussite-fond` | `#E6F4EE` | `#103029` | 4,50 en sombre | Corrigé après mesure |
 | `--attention` | `#B45309` | `#E0A050` | 4,70 papier | Diverge de la marque, mesuré |
 | `--attention-fond` | `#FDF2E3` | `#2E2413` | — | |
 | `--erreur` | `#B42318` | `#F27063` | 6,15 papier | Diverge de la marque, mesuré |
 | `--erreur-fond` | `#FDECEA` | `#331A18` | — | |
-| `--info` | `var(--action)` | `var(--action-clair)` | 5,33 papier | |
+| `--info` | `var(--action)` | `var(--action-sur-sombre)` | 5,33 papier | |
+| `--action-sur-sombre` | — | `#6B88FF` | 5,73 · 5,15 · 4,51 en sombre | **Nouveau.** Le `#5B7BFF` de la marque échoue sur les cartes et les menus |
 
 **Règle de sens.** Aucune information n'est portée par la seule couleur. Réussite et erreur
 portent toujours aussi un mot ou une icône. La justification n'est pas décorative : près
@@ -356,9 +384,14 @@ produit y puise plutôt que de réinventer sa formulation.
 ### 5.6 Le mode sombre
 
 Traité dès le premier écran, jamais ajouté après. Trois règles : les ombres disparaissent
-et la hiérarchie passe par la clarté des surfaces ; le bleu s'éclaircit à `#5B7BFF`, seul
-jeton hérité qui change de valeur ; **aucun scintillement** — le thème est appliqué avant le
-premier rendu.
+et la hiérarchie passe par la clarté des surfaces ; le bleu s'éclaircit à
+**`--action-sur-sombre: #6B88FF`**, seul jeton dont la valeur change entre les deux thèmes ;
+**aucun scintillement** — le thème est appliqué avant le premier rendu.
+
+Le `#5B7BFF` de la marque n'est pas retenu ici : il tient sur l'encre (4,73), son usage
+déclaré, mais tombe à 4,47 sur une carte et 3,92 sur un menu — deux surfaces que le registre
+applicatif introduit et que la marque n'a jamais eues. Le jeton de marque reste importé et
+intact ; le noyau en déclare un distinct.
 
 Trois états à supporter : préférence système, choix explicite clair, choix explicite sombre.
 Le choix du compte l'emporte sur la préférence du système.
@@ -512,8 +545,8 @@ ai5d-digital-design-system/
 ├── noyau/
 │   ├── NOYAU.md               le document — jetons, typo, composants, icônes, voix, sombre
 │   ├── jetons.css             importe la marque, définit surfaces et sémantiques
-│   ├── ai5d.preset.ts         préréglage Tailwind v4, jetons aplatis
-│   ├── polices/               Fraunces 300/400/500, Inter 400/500/600/700, JetBrains 500
+│   ├── ai5d.preset.css        préréglage Tailwind v4, bloc @theme
+│   ├── polices/               3 woff2 : Fraunces et Inter variables, JetBrains 500
 │   ├── composants/            8 composants — .tsx + .d.ts + spécimen HTML
 │   └── formulations.md        le répertoire des formulations de référence
 ├── densites/
@@ -608,7 +641,7 @@ Ce chantier change le statut de choses qui existent. Autant le nommer.
 
 | Projet | Ce qui change | Quand |
 | ------ | ------------- | ----- |
-| `ai5d-academie` | Devient consommateur. Son `docs/charte` perd son statut de source et devient un document historique. Ses jetons sont remplacés par ceux du système — les valeurs sont identiques **sauf `--texte-faible`**, qui passe à `#66747E` | Après livraison du noyau |
+| `ai5d-academie` | Devient consommateur. Son `docs/charte` perd son statut de source et devient un document historique. Ses jetons sont remplacés par ceux du système — les valeurs sont identiques **sauf trois** : `--texte-faible` passe à `#616F78`, l'action en mode sombre à `#6B88FF`, et `--reussite-fond` sombre à `#103029` | Après livraison du noyau |
 | `AI5D Platform` | Son `packages/ui` change de nature : il **consomme** au lieu de recopier. La spec du sprint 00 est à corriger sur ce point | Avant le sprint 00 |
 | `AI5D Platform` | La charte adaptée le 5 septembre 2026 devient largement redondante avec le noyau. Elle garde sa valeur documentaire — ses arguments sont écrits pour un portail d'identité — mais cesse d'être la source des valeurs | Après livraison du noyau |
 | `AI5D_Brand_2026` | Ne change pas. Éventuellement : correction de l'avertissement `#B7791F`, qui échoue au contraste à 3,64 même sur blanc. **Hors périmètre de ce chantier**, signalé pour décision séparée | — |
@@ -636,7 +669,7 @@ dont les trois premiers forment un tout cohérent et débloquent tous les autres
 
 | Lot | Contenu | Débloque | Estimation |
 | --- | ------- | -------- | ---------- |
-| **L1 — Polices et jetons** | Les sept woff2 manquants, `jetons.css`, le script de synchronisation depuis la marque, `ai5d.preset.ts`, la garde de contraste | Tout le reste | ~8 h |
+| **L1 — Polices et jetons** | Les polices manquantes, `jetons.css`, le script de synchronisation depuis la marque, `ai5d.preset.css`, la garde de contraste | Tout le reste | ~8 h |
 | **L2 — Composants de base** | Les 8 composants, tous leurs états, leurs spécimens, `NOYAU.md` et son PDF | L5, L6 | ~16 h |
 | **L3 — Densités** | `profils.css`, `DENSITES.md`, le plancher tactile, la garde de cible tactile | Adoption par un produit | ~4 h |
 | **L4 — Remédiation des logos** | Traçage des 36 SVG, retrait des imports réseau, lockups `compte` et `cercle`, jeux complets par produit, `DOCTRINES.md` | L6, favicons des produits | ~12 h |
