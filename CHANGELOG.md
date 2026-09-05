@@ -7,6 +7,50 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 0.1.1 — 5 septembre 2026
+
+### `CarteAuth` remplacé par `GabaritAuth`
+
+La carte centrée de 420 px était une invention de ce système. L'Académie, elle, a en
+production un gabarit en **deux colonnes** dont chaque valeur est mesurée — et c'est
+celui-là que le commanditaire a validé.
+
+|              | Avant                | Après                                                                         |
+| ------------ | -------------------- | ----------------------------------------------------------------------------- |
+| Sous 1024 px | Carte centrée 420 px | Colonne unique, formulaire à 440 px, logotype centré au-dessus                |
+| Au-delà      | Carte centrée 420 px | Deux colonnes : formulaire à gauche, panneau d'encre à 45 % plafonné à 560 px |
+| Panneau      | —                    | Logotype et une phrase. Ni photo, ni illustration, ni filet, ni forme animée  |
+
+**Trois mesures reprises telles quelles**, parce qu'elles valent plus que le code :
+
+- La bascule est à **1024 px et non 768**. À 768 px, le panneau prend 345 px et laisse
+  423 px pour un formulaire annoncé à 440 px : l'écran de réinitialisation débordait de
+  14 px.
+- `min-width: 0` sur la colonne du formulaire n'est pas décoratif. Sans lui, une colonne
+  flexible refuse de descendre sous la largeur intrinsèque de son contenu et pousse le
+  panneau hors de l'écran — c'est la cause exacte du débordement.
+- Le logotype mobile est à 20 px et non 18. À 18 px, le verrouillage complet mesurait 19 px
+  de haut, sous le plancher de 28 px de la charte. Pas plus haut non plus : à 30 px la
+  signature réclame 250 px et se casse en deux lignes à 320 px.
+
+Le panneau a porté trois preuves. Elles ont été retirées : elles promettaient un contenu
+qu'un écran de connexion n'a pas à vendre. On y arrive déjà décidé.
+
+### Corrigé
+
+- Le panneau écrivait `color: #fff`. La garde `aucune-couleur-en-dur` l'a relevé avant le
+  premier commit ; c'est `var(--blanc)`.
+
+### Empaquetage
+
+- Ajout du champ `files` au `package.json`. Le paquet livrait ses tests, ses spécifications,
+  ses spécimens et sa tuyauterie de build à chaque consommateur. Il ne livre plus que
+  `noyau`, `densites`, `gardes`, `outils`, le journal et le README.
+
+192 tests.
+
+---
+
 ## 0.1.0 — 5 septembre 2026
 
 Première livraison. Noyau, densités et gardes — lots 1 à 3.

@@ -19,8 +19,14 @@ export type { ProprietesBouton, TailleBouton, VarianteBouton } from './Bouton';
 export { Carte } from './Carte';
 export type { ProprietesCarte } from './Carte';
 
-export { CarteAuth, LARGEUR_CARTE_AUTH } from './CarteAuth';
-export type { ProprietesCarteAuth } from './CarteAuth';
+export {
+  BASCULE_DEUX_COLONNES,
+  GabaritAuth,
+  LARGEUR_FORMULAIRE,
+  LARGEUR_MAX_PANNEAU,
+  PART_PANNEAU,
+} from './GabaritAuth';
+export type { ProprietesGabaritAuth } from './GabaritAuth';
 
 export { Champ } from './Champ';
 export type { ProprietesChamp } from './Champ';

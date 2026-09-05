@@ -117,8 +117,16 @@ overlines.
 | `Icone`     | Lucide, contour, épaisseur **1,75**. Décorative par défaut, accessible seulement si on lui donne un titre                                  |
 | `CarteAuth` | Le gabarit d'authentification. Largeur bloquée à **420 px à toutes les tailles**                                                           |
 
-`CarteAuth` est dans le noyau et non dans l'écosystème parce que tout produit peut avoir à
+`GabaritAuth` est dans le noyau et non dans l'écosystème parce que tout produit peut avoir à
 afficher un écran de session expirée, même si le portail Compte porte l'essentiel des flux.
+
+**Sa disposition n'est pas une proposition.** Elle vient de l'Académie, où elle est en
+production, et ses valeurs sont mesurées. La bascule est à **1024 px et non 768** : à
+768 px le panneau prend 345 px et laisse 423 px pour un formulaire annoncé à 440 px —
+l'écran de réinitialisation débordait de 14 px. Le panneau ne porte que le logotype et une
+phrase : ni photo, ni illustration, ni filet, ni forme animée. Il a porté trois preuves,
+retirées depuis — elles promettaient un contenu qu'un écran de connexion n'a pas à vendre.
+On y arrive déjà décidé.
 
 Les composants ne dépendent d'aucun framework de style : leurs styles passent par les
 variables CSS, de sorte qu'un projet sans Tailwind les rend correctement.

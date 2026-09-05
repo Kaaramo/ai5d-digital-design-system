@@ -1,6 +1,6 @@
 {
   "name": "@ai5d/design-system",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Systeme de design applicatif de l'ecosysteme AI5D",
   "type": "module",
@@ -46,5 +46,13 @@
     "lucide-react": "^0.469.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
-  }
+  },
+  "files": [
+    "noyau",
+    "densites",
+    "gardes",
+    "outils",
+    "CHANGELOG.md",
+    "README.md"
+  ]
 }

@@ -12,8 +12,8 @@
 ![Vitest](https://img.shields.io/badge/Vitest-051C2C?style=for-the-badge&logo=vitest&logoColor=white)
 ![pnpm](https://img.shields.io/badge/pnpm-051C2C?style=for-the-badge&logo=pnpm&logoColor=white)
 
-![Version](https://img.shields.io/badge/version-0.1.0-2251FF?style=flat-square&labelColor=051C2C)
-![Tests](https://img.shields.io/badge/tests-187%20passent-0E7C5A?style=flat-square&labelColor=051C2C)
+![Version](https://img.shields.io/badge/version-0.1.1-2251FF?style=flat-square&labelColor=051C2C)
+![Tests](https://img.shields.io/badge/tests-192%20passent-0E7C5A?style=flat-square&labelColor=051C2C)
 ![Contraste](https://img.shields.io/badge/contraste-44%20paires%20v%C3%A9rifi%C3%A9es-0E7C5A?style=flat-square&labelColor=051C2C)
 ![Polices](https://img.shields.io/badge/polices-134%20Ko%20en%20local-2251FF?style=flat-square&labelColor=051C2C)
 
@@ -181,7 +181,7 @@ test qui aurait attrapé les quatre défauts des années plus tôt.
 ## Les huit composants
 
 ```tsx
-import { CarteAuth, Logotype, Bouton, Champ } from '@ai5d/design-system/composants';
+import { GabaritAuth, Logotype, Bouton, Champ } from '@ai5d/design-system/composants';
 ```
 
 <details>
@@ -211,7 +211,7 @@ Le dépôt est privé et n'est pas publié sur un registre. On l'installe depuis
 **épinglé à une étiquette** :
 
 ```bash
-pnpm add "@ai5d/design-system@github:Kaaramo/ai5d-digital-design-system#v0.1.0"
+pnpm add "@ai5d/design-system@github:Kaaramo/ai5d-digital-design-system#v0.1.1"
 ```
 
 L'épinglage n'est pas une précaution de principe. Sans lui, une correction de jeton
@@ -229,7 +229,7 @@ transpilePackages: ['@ai5d/design-system'],
 ## Commandes du dépôt
 
 ```bash
-pnpm test          # 187 tests, dont 44 mesures de contraste
+pnpm test          # 192 tests, dont 44 mesures de contraste
 pnpm typecheck     # TypeScript strict, zéro any
 pnpm lint          # zéro erreur, zéro avertissement
 pnpm format:check  # Prettier

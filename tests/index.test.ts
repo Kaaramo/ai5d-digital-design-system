@@ -9,8 +9,8 @@ const ATTENDUS = [
   'Bandeau',
   'Bouton',
   'Carte',
-  'CarteAuth',
   'Champ',
+  'GabaritAuth',
   'Icone',
   'Logotype',
   'Pastille',
@@ -38,7 +38,9 @@ describe('index des composants', () => {
 
   it('exporte aussi les constantes que les consommateurs doivent pouvoir citer', () => {
     expect(composants.EPAISSEUR_TRAIT).toBe(1.75);
-    expect(composants.LARGEUR_CARTE_AUTH).toBe('min(420px, 100% - 32px)');
+    expect(composants.LARGEUR_FORMULAIRE).toBe(440);
+    expect(composants.BASCULE_DEUX_COLONNES).toBe(1024);
+    expect(composants.LARGEUR_MAX_PANNEAU).toBe(560);
   });
 
   it("n'exporte aucun composant inter-produits - ils appartiennent a l'ecosysteme", () => {

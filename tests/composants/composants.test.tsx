@@ -4,13 +4,15 @@ import userEvent from '@testing-library/user-event';
 import { Shield } from 'lucide-react';
 import {
   Bandeau,
+  BASCULE_DEUX_COLONNES,
   Bouton,
   Carte,
-  CarteAuth,
   Champ,
   EPAISSEUR_TRAIT,
+  GabaritAuth,
   Icone,
-  LARGEUR_CARTE_AUTH,
+  LARGEUR_FORMULAIRE,
+  LARGEUR_MAX_PANNEAU,
   Logotype,
   Pastille,
 } from '../../noyau/composants';
@@ -312,46 +314,89 @@ describe('Icone', () => {
   });
 });
 
-describe('CarteAuth', () => {
-  it('bloque la largeur de la carte a 420 px, a toutes les tailles', () => {
-    const { container } = render(<CarteAuth titre="Content de vous revoir" />);
-    const carte = container.querySelector('[data-gabarit="carte-auth"] > div') as HTMLElement;
-    // On lit l'attribut brut et non la valeur reparsee : jsdom deforme les fonctions
-    // de calcul CSS en les relisant par le CSSOM, et rendrait ce test faussement rouge.
-    const style = carte.getAttribute('style') ?? '';
-    expect(style).toContain(`width: ${LARGEUR_CARTE_AUTH}`);
-    expect(style).toContain(`max-width: ${LARGEUR_CARTE_AUTH}`);
-    expect(LARGEUR_CARTE_AUTH).toBe('min(420px, 100% - 32px)');
+describe('GabaritAuth', () => {
+  it('rend deux colonnes : le formulaire et le panneau', () => {
+    const { container } = render(
+      <GabaritAuth produit="Compte" phrase="Un compte. Tout AI5D.">
+        <Champ libelle="Adresse professionnelle" />
+      </GabaritAuth>,
+    );
+    expect(container.querySelector('main.ai5d-auth__principal')).not.toBeNull();
+    expect(container.querySelector('aside.ai5d-auth__panneau')).not.toBeNull();
   });
 
-  it('rend son titre en h1 - c est le titre de la page', () => {
-    render(<CarteAuth titre="Content de vous revoir" />);
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Content de vous revoir');
+  it('rend le contenu de la colonne de gauche', () => {
+    render(
+      <GabaritAuth produit="Compte">
+        <Champ libelle="Adresse professionnelle" />
+      </GabaritAuth>,
+    );
+    expect(screen.getByLabelText('Adresse professionnelle')).toBeInTheDocument();
   });
 
-  it('porte le logotype avec le nom du produit', () => {
-    render(<CarteAuth titre="Connexion" produit="Compte" />);
-    expect(screen.getByRole('img', { name: 'AI5D Compte' })).toBeInTheDocument();
+  it('masque le panneau aux lecteurs d ecran : il ne porte rien de neuf', () => {
+    const { container } = render(<GabaritAuth phrase="Une phrase.">contenu</GabaritAuth>);
+    expect(container.querySelector('aside')).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  it('porte la phrase dans le panneau, et seulement si on la donne', () => {
+    const { container, rerender } = render(
+      <GabaritAuth phrase="Un compte. Tout AI5D.">contenu</GabaritAuth>,
+    );
+    expect(container.querySelector('aside')?.textContent).toContain('Un compte. Tout AI5D.');
+
+    rerender(<GabaritAuth>contenu</GabaritAuth>);
+    expect(container.querySelector('aside p')).toBeNull();
+  });
+
+  it('affiche le logotype des deux cotes, en blanc sur le panneau d encre', () => {
+    const { container } = render(<GabaritAuth produit="Compte">contenu</GabaritAuth>);
+    const logotypes = container.querySelectorAll('[role="img"][aria-label="AI5D Compte"]');
+    expect(logotypes.length).toBe(2);
+  });
+
+  it('bascule a 1024 px, et non a 768 - la mesure est dans l en-tete du composant', () => {
+    expect(BASCULE_DEUX_COLONNES).toBe(1024);
+    const { container } = render(<GabaritAuth>contenu</GabaritAuth>);
+    const style = container.querySelector('style')?.textContent ?? '';
+    expect(style).toContain(`@media (min-width: ${BASCULE_DEUX_COLONNES}px)`);
+    // A 768 px le panneau prenait 345 px et laissait 423 px pour un formulaire
+    // annonce a 440 px : l'ecran de reinitialisation debordait de 14 px.
+    const debut = style.indexOf('@media (min-width: 768px)');
+    const suite = style.indexOf('@media', debut + 1);
+    const blocIntermediaire = style.slice(debut, suite === -1 ? undefined : suite);
+    expect(blocIntermediaire, 'le panneau ne doit pas apparaitre a 768 px').not.toContain(
+      'ai5d-auth__panneau',
+    );
+  });
+
+  it('borne le formulaire a 440 px et le panneau a 45 % plafonne a 560 px', () => {
+    const { container } = render(<GabaritAuth>contenu</GabaritAuth>);
+    const style = container.querySelector('style')?.textContent ?? '';
+    expect(style).toContain(`max-width: ${LARGEUR_FORMULAIRE}px`);
+    expect(style).toContain('width: 45%');
+    expect(style).toContain(`max-width: ${LARGEUR_MAX_PANNEAU}px`);
+  });
+
+  it('pose min-width 0 sur la colonne, sans quoi le panneau sort de l ecran', () => {
+    const { container } = render(<GabaritAuth>contenu</GabaritAuth>);
+    const style = container.querySelector('style')?.textContent ?? '';
+    expect(style).toContain('min-width: 0');
   });
 
   it('pose le fond de page sur la surface 1', () => {
-    const { container } = render(<CarteAuth titre="Connexion" />);
-    const page = container.querySelector('[data-gabarit="carte-auth"]') as HTMLElement;
-    expect(page.style.background).toContain('--surface-1');
+    const { container } = render(<GabaritAuth>contenu</GabaritAuth>);
+    const style = container.querySelector('style')?.textContent ?? '';
+    expect(style).toContain('background: var(--surface-1)');
   });
 
-  it('rend son introduction, ses enfants et son pied', () => {
-    render(
-      <CarteAuth
-        titre="Connexion"
-        introduction="Un seul compte pour tout AI5D."
-        pied={<span>Retour a ai5d.technology</span>}
-      >
-        <Champ libelle="Adresse professionnelle" />
-      </CarteAuth>,
-    );
-    expect(screen.getByText('Un seul compte pour tout AI5D.')).toBeInTheDocument();
-    expect(screen.getByLabelText('Adresse professionnelle')).toBeInTheDocument();
-    expect(screen.getByText('Retour a ai5d.technology')).toBeInTheDocument();
+  it("n'utilise aucune couleur en dur - la garde du systeme l'a attrape", () => {
+    // Ce test existe parce que la premiere version du panneau ecrivait color: #fff.
+    // La garde aucune-couleur-en-dur l'a releve avant le premier commit.
+    const { container } = render(<GabaritAuth phrase="Une phrase.">contenu</GabaritAuth>);
+    const style = container.querySelector('style')?.textContent ?? '';
+    expect(style).not.toMatch(/#[0-9a-fA-F]{3,8}/);
+    expect(style).toContain('var(--blanc)');
+    expect(style).toContain('var(--encre)');
   });
 });
