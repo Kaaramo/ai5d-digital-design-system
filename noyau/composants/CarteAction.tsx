@@ -35,16 +35,16 @@ export interface ProprietesCarteAction {
   /** Une icône Lucide. Décorative : le titre porte l'information. */
   icone: LucideIcon;
   titre: string;
-  description?: string;
+  description?: string | undefined;
   /** Le libellé du bouton. Il nomme la destination. */
   action: string;
   /** Fourni, le bouton devient un lien. Absent, il appelle `onAction`. */
-  href?: string;
-  onAction?: () => void;
+  href?: string | undefined;
+  onAction?: (() => void) | undefined;
   /** Un seul `primaire` par vue. Voir l'en-tête de ce fichier. */
-  variante?: VarianteBouton;
-  className?: string;
-  style?: CSSProperties;
+  variante?: VarianteBouton | undefined;
+  className?: string | undefined;
+  style?: CSSProperties | undefined;
 }
 
 /** Le diamètre de la pastille d'icône. Sous le plancher de 320 px : largeur fixe permise. */

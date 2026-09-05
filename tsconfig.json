@@ -7,6 +7,11 @@
     "jsx": "react-jsx",
     "strict": true,
     "noUncheckedIndexedAccess": true,
+    // Le paquet livre du TypeScript brut : il doit compiler sous les reglages de ses
+    // consommateurs, pas seulement sous les siens. Le portail AI5D active ce drapeau ;
+    // sans lui ici, le defaut ne se voit qu au moment de consommer le paquet.
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
     "noEmit": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

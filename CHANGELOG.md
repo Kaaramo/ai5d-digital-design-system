@@ -7,6 +7,42 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 0.2.1 — 5 septembre 2026
+
+### Le paquet ne compilait pas chez un consommateur strict
+
+Trouvé en consommant le système pour de vrai, dans le portail Compte. Le paquet livre du
+TypeScript brut : il doit donc compiler sous les réglages de ses **consommateurs**, pas
+seulement sous les siens.
+
+Le portail active `exactOptionalPropertyTypes`. Sous ce drapeau, `produit?: string`
+signifie « absent OU une chaîne », jamais « chaîne ou `undefined` ». Passer une valeur
+potentiellement absente devient une erreur de type, et **quatre composants refusaient de
+compiler** : `GabaritApp`, `GabaritAuth`, et par ricochet `Logotype` et `BarreOnglets`.
+
+```
+error TS2375: Type '{ produit: string | undefined; taille: number; }' is not
+assignable to type 'ProprietesLogotype' with 'exactOptionalPropertyTypes: true'.
+```
+
+**Correction.** Les 43 propriétés optionnelles des onze composants acceptent désormais
+`undefined` explicitement. Cela ne change rien pour un consommateur qui n'active pas le
+drapeau, et cela débloque celui qui l'active.
+
+**Et le drapeau est activé dans le dépôt lui-même**, avec `noImplicitOverride`. Sans cela,
+le défaut ne se serait revu qu'au prochain consommateur strict, six mois plus tard.
+
+**La leçon.** Un paquet qui livre des sources doit se compiler sous les réglages les plus
+stricts qu'il accepte de servir. Le tester sous les siens ne prouve rien, et c'est
+exactement ce que la 0.2.0 faisait.
+
+### Preuves
+
+`pnpm typecheck`, `pnpm lint`, `pnpm format:check` et **248 tests** : tous verts après
+correction.
+
+---
+
 ## 0.2.0 — 5 septembre 2026
 
 ### Mobile d'abord

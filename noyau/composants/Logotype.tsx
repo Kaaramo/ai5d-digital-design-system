@@ -27,11 +27,11 @@ export interface ProprietesLogotype extends Omit<HTMLAttributes<HTMLSpanElement>
    * `encre` et `blanc` forcent la couleur, pour un fond dont la clarté ne dépend pas
    * du thème.
    */
-  variante?: VarianteLogotype;
+  variante?: VarianteLogotype | undefined;
   /** Le nom du produit, affiché après le logotype. « Compte », « Académie », « Lab ». */
-  produit?: string;
+  produit?: string | undefined;
   /** Taille du logotype en pixels. Le label suit proportionnellement. */
-  taille?: number;
+  taille?: number | undefined;
 }
 
 export function Logotype({

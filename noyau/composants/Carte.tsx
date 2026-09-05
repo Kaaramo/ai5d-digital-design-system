@@ -15,11 +15,11 @@ import type { ButtonHTMLAttributes, CSSProperties, HTMLAttributes, ReactNode } f
  */
 
 interface ProprietesCommunes {
-  children?: ReactNode;
+  children?: ReactNode | undefined;
   /** Rend un bouton plutôt qu'une division, et ajoute un état de survol. */
-  cliquable?: boolean;
+  cliquable?: boolean | undefined;
   /** Retire l'élévation. Pour une carte posée dans une liste, où l'ombre ferait du bruit. */
-  plate?: boolean;
+  plate?: boolean | undefined;
 }
 
 export type ProprietesCarte = ProprietesCommunes &

@@ -32,17 +32,17 @@ import { BUREAU, TABLETTE } from '../paliers';
 
 export interface ProprietesGabaritApp {
   /** Le nom du produit, à côté du logotype. « Compte », « Académie », « Lab ». */
-  produit?: string;
+  produit?: string | undefined;
   /** Le contenu de droite de l'en-tête : avatar, menu, sélecteur. Fourni par le produit. */
-  actions?: ReactNode;
+  actions?: ReactNode | undefined;
   /** Trois à cinq onglets. Absents, aucune barre n'est rendue et rien n'est réservé. */
-  onglets?: Onglet[];
+  onglets?: Onglet[] | undefined;
   /** L'`id` de l'onglet courant. Requis dès qu'il y a des onglets. */
-  actif?: string;
-  onChoisir?: (id: string) => void;
+  actif?: string | undefined;
+  onChoisir?: ((id: string) => void) | undefined;
   children: ReactNode;
-  className?: string;
-  style?: CSSProperties;
+  className?: string | undefined;
+  style?: CSSProperties | undefined;
 }
 
 /** La hauteur de l'en-tête collant. */

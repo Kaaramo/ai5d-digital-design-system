@@ -14,12 +14,12 @@ import type { TonSemantique } from './Pastille';
  */
 
 export interface ProprietesBandeau extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
-  ton?: TonSemantique;
+  ton?: TonSemantique | undefined;
   /** Le titre du bandeau. Court, et il nomme la conséquence. */
-  titre?: string;
+  titre?: string | undefined;
   children: ReactNode;
   /** Une action unique, à droite. Un bandeau qui propose deux sorties n'en propose aucune. */
-  action?: ReactNode;
+  action?: ReactNode | undefined;
 }
 
 const ICONES: Record<TonSemantique, LucideIcon> = {

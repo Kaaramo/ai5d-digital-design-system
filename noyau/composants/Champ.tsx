@@ -18,9 +18,9 @@ export interface ProprietesChamp extends Omit<InputHTMLAttributes<HTMLInputEleme
   /** Le libellé visible. Obligatoire : un champ sans libellé n'est pas accessible. */
   libelle: string;
   /** Texte d'aide, affiché sous le champ tant qu'il n'y a pas d'erreur. */
-  aide?: ReactNode;
+  aide?: ReactNode | undefined;
   /** Message d'erreur. Sa présence bascule le champ en état d'erreur. */
-  erreur?: ReactNode;
+  erreur?: ReactNode | undefined;
 }
 
 export function Champ({ libelle, aide, erreur, id, className, style, ...reste }: ProprietesChamp) {

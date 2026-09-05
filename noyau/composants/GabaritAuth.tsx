@@ -37,16 +37,16 @@ import { Logotype } from './Logotype';
 
 export interface ProprietesGabaritAuth {
   /** Le nom du produit, à côté du logotype. « Compte », « Académie », « Lab ». */
-  produit?: string;
+  produit?: string | undefined;
   /**
    * La phrase du panneau d'encre. Une seule, courte, en Fraunces léger.
    * Absente, le panneau ne porte que le logotype — c'est acceptable.
    */
-  phrase?: string;
+  phrase?: string | undefined;
   /** Le formulaire, ou tout autre contenu de la colonne de gauche. */
   children: ReactNode;
-  className?: string;
-  style?: CSSProperties;
+  className?: string | undefined;
+  style?: CSSProperties | undefined;
 }
 
 /** La largeur maximale de la colonne de formulaire. Mesurée, pas choisie. */

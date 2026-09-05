@@ -217,7 +217,7 @@ Le dépôt est **public** et n'est pas publié sur un registre. On l'installe de
 **épinglé à une étiquette** :
 
 ```bash
-pnpm add "@ai5d/design-system@github:Kaaramo/ai5d-digital-design-system#v0.2.0"
+pnpm add "@ai5d/design-system@github:Kaaramo/ai5d-digital-design-system#v0.2.1"
 ```
 
 Aucun jeton, aucune configuration : l'installation anonyme fonctionne, donc les serveurs de
@@ -235,7 +235,7 @@ jeton change le rendu de tous les écrans.
 > reste visible et intentionnelle, écrivez la dépendance à la main :
 >
 > ```json
-> "@ai5d/design-system": "github:Kaaramo/ai5d-digital-design-system#v0.2.0"
+> "@ai5d/design-system": "github:Kaaramo/ai5d-digital-design-system#v0.2.1"
 > ```
 >
 > puis `pnpm install`. Vérifié le 5 septembre 2026 avec pnpm 10.24.

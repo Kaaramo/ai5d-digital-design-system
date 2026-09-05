@@ -23,13 +23,13 @@ export type TailleIcone = 16 | 20 | 24 | 32 | 72;
 export interface ProprietesIcone {
   /** Un composant d'icône Lucide, importé par le consommateur. */
   nom: LucideIcon;
-  taille?: TailleIcone;
+  taille?: TailleIcone | undefined;
   /** Rend l'icône accessible et lui donne ce nom. Sans lui, elle est décorative. */
-  titre?: string;
+  titre?: string | undefined;
   /** Par défaut, l'icône prend la couleur du texte qui l'entoure. */
-  couleur?: string;
-  className?: string;
-  style?: CSSProperties;
+  couleur?: string | undefined;
+  className?: string | undefined;
+  style?: CSSProperties | undefined;
 }
 
 /** L'épaisseur de trait du registre applicatif. Voir l'en-tête de ce fichier. */

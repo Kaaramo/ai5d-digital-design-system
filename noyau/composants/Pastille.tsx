@@ -10,7 +10,7 @@ import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
 export type TonSemantique = 'information' | 'reussite' | 'attention' | 'erreur';
 
 export interface ProprietesPastille extends HTMLAttributes<HTMLSpanElement> {
-  ton?: TonSemantique;
+  ton?: TonSemantique | undefined;
   children: ReactNode;
 }
 

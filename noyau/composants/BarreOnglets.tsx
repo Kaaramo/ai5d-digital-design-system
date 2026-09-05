@@ -43,7 +43,7 @@ export interface Onglet {
   /** Une icône Lucide, importée par le consommateur. */
   icone: LucideIcon;
   /** Fourni, l'onglet devient un lien. Absent, il devient un bouton. */
-  href?: string;
+  href?: string | undefined;
 }
 
 export interface ProprietesBarreOnglets {
@@ -52,11 +52,11 @@ export interface ProprietesBarreOnglets {
   /** L'`id` de l'onglet courant. */
   actif: string;
   /** Appelé au choix d'un onglet sans `href`. */
-  onChoisir?: (id: string) => void;
+  onChoisir?: ((id: string) => void) | undefined;
   /** Le nom de la navigation pour les lecteurs d'écran. */
-  etiquette?: string;
-  className?: string;
-  style?: CSSProperties;
+  etiquette?: string | undefined;
+  className?: string | undefined;
+  style?: CSSProperties | undefined;
 }
 
 /** La hauteur de la barre, hors zone sûre. Le contenu doit la réserver sous lui. */

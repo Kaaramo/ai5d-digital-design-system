@@ -15,12 +15,12 @@ export type VarianteBouton = 'primaire' | 'secondaire' | 'discret';
 export type TailleBouton = 'sm' | 'md' | 'lg';
 
 export interface ProprietesBouton extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variante?: VarianteBouton;
-  taille?: TailleBouton;
+  variante?: VarianteBouton | undefined;
+  taille?: TailleBouton | undefined;
   /** Le bouton reste lisible et garde son libellé : la mise en page ne saute pas. */
-  chargement?: boolean;
+  chargement?: boolean | undefined;
   /** Occupe toute la largeur disponible. Le registre `CarteAuth` s'en sert. */
-  pleineLargeur?: boolean;
+  pleineLargeur?: boolean | undefined;
 }
 
 const HAUTEURS: Record<TailleBouton, string> = {
