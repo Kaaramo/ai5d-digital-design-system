@@ -47,7 +47,7 @@ chantier — décision D1 — mais le défaut mérite une décision séparée.
 - **Préréglage Tailwind v4** en bloc `@theme`, qui ne fait que pointer vers les jetons.
 - **Huit composants** : Logotype, Bouton, Champ, Carte, Bandeau, Pastille, Icone, CarteAuth.
 - **Quatre profils de densité** et le plancher tactile.
-- **Trois gardes distribuables** plus la garde de contraste, qui recalcule 40 paires à
+- **Trois gardes distribuables** plus la garde de contraste, qui recalcule 44 paires à
   chaque exécution.
 - **187 tests**, types, lint et format au vert.
 

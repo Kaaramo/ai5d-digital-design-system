@@ -75,7 +75,7 @@ ne distingue pas correctement le rouge du vert.
 
 ### 1.4 La garde de contraste
 
-`tests/jetons.test.ts` recalcule **40 paires** de contraste à chaque exécution, en clair et
+`tests/jetons.test.ts` recalcule **44 paires** de contraste à chaque exécution, en clair et
 en sombre, et échoue sous 4,5. C'est ce test qui aurait attrapé, dès le premier jour, les
 quatre défauts trouvés le 5 septembre 2026.
 
