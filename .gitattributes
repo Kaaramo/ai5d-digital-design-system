@@ -1,0 +1,14 @@
+# Les fins de ligne sont normalisees en LF, partout et pour tout le monde.
+#
+# Sans ce fichier, git convertit en CRLF a la sortie sur Windows, et Prettier
+# refuse alors 48 fichiers qu'il avait lui-meme ecrits. L'integration continue,
+# elle, tourne sur Linux et ne voit rien : le defaut n'apparait que sur le poste
+# du developpeur, ce qui est le pire endroit pour le decouvrir.
+* text=auto eol=lf
+
+# Les binaires ne se normalisent jamais.
+*.woff2 binary
+*.png   binary
+*.pdf   binary
+*.docx  binary
+*.ico   binary
