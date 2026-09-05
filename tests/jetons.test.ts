@@ -9,10 +9,7 @@ const brut = readFileSync(CHEMIN, 'utf8');
 const marque = lireJetons('noyau/marque.css', ':root');
 const clair = new Map([...marque, ...lireJetons(CHEMIN, ':root')]);
 const sombre = new Map([...clair, ...lireJetons(CHEMIN, ":root[data-theme='dark']")]);
-const themeClairExplicite = new Map([
-  ...clair,
-  ...lireJetons(CHEMIN, ":root[data-theme='light']"),
-]);
+const themeClairExplicite = new Map([...clair, ...lireJetons(CHEMIN, ":root[data-theme='light']")]);
 
 /** Les valeurs sont ecrites en minuscules dans le CSS ; les mesures en majuscules. */
 function couleur(jetons: Map<string, string>, nom: string): string {
@@ -24,7 +21,7 @@ describe('jetons - structure', () => {
     expect(brut).toContain("@import './marque.css'");
   });
 
-  it("ne contient aucune valeur de marque en dur - contrainte C1", () => {
+  it('ne contient aucune valeur de marque en dur - contrainte C1', () => {
     const declarations = brut.match(/^\s*--[a-z0-9-]+:\s*#[0-9a-fA-F]{6};/gm) ?? [];
     const valeursDeMarque = ['#051c2c', '#2251ff', '#042a76', '#1b44db', '#5b7bff', '#ffffff'];
     for (const declaration of declarations) {
@@ -93,7 +90,7 @@ describe('jetons - mode sombre', () => {
     expect(couleur(clair, '--action')).toBe('#2251FF');
   });
 
-  it("laisse le jeton de marque --action-clair intact dans les deux themes", () => {
+  it('laisse le jeton de marque --action-clair intact dans les deux themes', () => {
     expect(couleur(clair, '--action-clair')).toBe('#5B7BFF');
     expect(couleur(sombre, '--action-clair')).toBe('#5B7BFF');
   });
@@ -124,9 +121,10 @@ describe('jetons - contraste en clair (garde C3)', () => {
     for (const fond of fonds) {
       it(`${jeton} sur ${fond}`, () => {
         const ratio = ratioContraste(couleur(clair, jeton), couleur(clair, fond));
-        expect(ratio, `${ratio.toFixed(2)} contre ${SEUIL_TEXTE_COURANT} attendu`).toBeGreaterThanOrEqual(
-          SEUIL_TEXTE_COURANT,
-        );
+        expect(
+          ratio,
+          `${ratio.toFixed(2)} contre ${SEUIL_TEXTE_COURANT} attendu`,
+        ).toBeGreaterThanOrEqual(SEUIL_TEXTE_COURANT);
       });
     }
   }
@@ -152,9 +150,10 @@ describe('jetons - contraste en sombre (garde C3)', () => {
     for (const fond of fonds) {
       it(`${jeton} sur ${fond}`, () => {
         const ratio = ratioContraste(couleur(sombre, jeton), couleur(sombre, fond));
-        expect(ratio, `${ratio.toFixed(2)} contre ${SEUIL_TEXTE_COURANT} attendu`).toBeGreaterThanOrEqual(
-          SEUIL_TEXTE_COURANT,
-        );
+        expect(
+          ratio,
+          `${ratio.toFixed(2)} contre ${SEUIL_TEXTE_COURANT} attendu`,
+        ).toBeGreaterThanOrEqual(SEUIL_TEXTE_COURANT);
       });
     }
   }
@@ -178,7 +177,7 @@ describe('jetons - typographie', () => {
 });
 
 describe('jetons - geometrie et mouvement', () => {
-  it("accorde les rayons, que le registre institutionnel interdit", () => {
+  it('accorde les rayons, que le registre institutionnel interdit', () => {
     expect(clair.get('--rayon-sm')).toBe('4px');
     expect(clair.get('--rayon-md')).toBe('10px');
     expect(clair.get('--rayon-lg')).toBe('16px');

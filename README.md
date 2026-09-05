@@ -18,14 +18,14 @@ le profil de densité qu'il adopte.
 
 ## Les deux registres
 
-| | Institutionnel | Applicatif |
-| --- | --- | --- |
-| Où | Site, documents, slides, communication | Tous les produits |
-| Autorité | `AI5D_Brand_2026` | **Ce dépôt** |
-| Angles | 0 px partout | 4 / 10 / 16 px |
-| Ombres | Aucune, jamais | Trois niveaux, neutralisés en sombre |
-| Typographie | Inter seule | Fraunces + Inter + JetBrains Mono |
-| Surfaces | Blanc pur | Papier tiède, et mode sombre complet |
+|             | Institutionnel                         | Applicatif                           |
+| ----------- | -------------------------------------- | ------------------------------------ |
+| Où          | Site, documents, slides, communication | Tous les produits                    |
+| Autorité    | `AI5D_Brand_2026`                      | **Ce dépôt**                         |
+| Angles      | 0 px partout                           | 4 / 10 / 16 px                       |
+| Ombres      | Aucune, jamais                         | Trois niveaux, neutralisés en sombre |
+| Typographie | Inter seule                            | Fraunces + Inter + JetBrains Mono    |
+| Surfaces    | Blanc pur                              | Papier tiède, et mode sombre complet |
 
 Ce ne sont pas deux marques. C'est une marque et deux problèmes de design : on **visite**
 un site trois minutes en position de jugement, on **habite** une application quarante
@@ -36,23 +36,23 @@ minutes d'affilée.
 Même ADN partout — palette, typographies, composants, iconographie, langage graphique.
 Seule varie la densité fonctionnelle.
 
-| Produit | Profil | Pourquoi |
-| ------- | ------ | -------- |
-| Académie | `aere` | Lecture, apprentissage, respiration |
-| Compte | `equilibre` | Gestion, sécurité, paramètres |
-| Cercle | `modere` | Communauté, interactions, flux |
-| Lab | `compact` | Données, workflows, outils |
+| Produit  | Profil      | Pourquoi                            |
+| -------- | ----------- | ----------------------------------- |
+| Académie | `aere`      | Lecture, apprentissage, respiration |
+| Compte   | `equilibre` | Gestion, sécurité, paramètres       |
+| Cercle   | `modere`    | Communauté, interactions, flux      |
+| Lab      | `compact`   | Données, workflows, outils          |
 
 **La densité change l'espace entre les choses, jamais la taille du texte.** Et le plancher
 tactile de 44 px prime sur les quatre profils, sur tout appareil tactile.
 
 ## Les trois couches
 
-| Couche | Contenu | Change |
-| ------ | ------- | ------ |
-| `noyau/` | Jetons, typographie, composants de base, iconographie, voix, mode sombre | Presque jamais |
-| `densites/` | Quatre profils, un tableau, aucune prose | Si un produit s'ajoute |
-| `ecosysteme/` | Lockups produit, composants inter-produits, courriels, écrans système | Au rythme des produits |
+| Couche        | Contenu                                                                  | Change                 |
+| ------------- | ------------------------------------------------------------------------ | ---------------------- |
+| `noyau/`      | Jetons, typographie, composants de base, iconographie, voix, mode sombre | Presque jamais         |
+| `densites/`   | Quatre profils, un tableau, aucune prose                                 | Si un produit s'ajoute |
+| `ecosysteme/` | Lockups produit, composants inter-produits, courriels, écrans système    | Au rythme des produits |
 
 Ce découpage n'est pas cosmétique. Les écarts constatés entre les chartes existantes
 viennent de ce que le noyau et les libertés étaient mélangés dans un même document :
@@ -67,7 +67,7 @@ import { ai5dPreset } from '@ai5d/design-system/preset';
 ```
 
 ```html
-<html lang="fr" data-densite="equilibre">
+<html lang="fr" data-densite="equilibre"></html>
 ```
 
 ## Les gardes
@@ -86,10 +86,10 @@ recalculé à chaque build** contre ses surfaces déclarées, et le build échou
 
 **Cadrage validé, implémentation non commencée.**
 
-| Document | Chemin |
-| -------- | ------ |
-| Spécification | [`docs/superpowers/specs/2026-09-05-ai5d-digital-design-system-design.md`](docs/superpowers/specs/2026-09-05-ai5d-digital-design-system-design.md) |
-| Plan d'implémentation | à produire |
+| Document              | Chemin                                                                                                                                             |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Spécification         | [`docs/superpowers/specs/2026-09-05-ai5d-digital-design-system-design.md`](docs/superpowers/specs/2026-09-05-ai5d-digital-design-system-design.md) |
+| Plan d'implémentation | à produire                                                                                                                                         |
 
 Le chantier est découpé en sept lots. Les trois premiers — polices et jetons, composants de
 base, densités — forment un tout et débloquent les autres. Les quatre suivants attendent
@@ -110,4 +110,5 @@ Académie   Compte     Cercle     Lab
 ```
 
 ---
+
 © AI5D · ai5d.technology · 2026

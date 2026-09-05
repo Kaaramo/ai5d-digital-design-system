@@ -2,13 +2,7 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: [
-      'node_modules/**',
-      'noyau/polices/**',
-      'specimens/**',
-      '_build/**',
-      'docs/**',
-    ],
+    ignores: ['node_modules/**', 'noyau/polices/**', 'specimens/**', '_build/**', 'docs/**'],
   },
   ...tseslint.configs.recommended,
   {

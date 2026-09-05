@@ -1,0 +1,110 @@
+/* =========================================================================
+   AI5D Digital Design System - prereglage Tailwind v4
+
+   C'est le seul fichier qu'un projet consommateur importe. Il tire derriere lui
+   les polices, les jetons de marque, les jetons du noyau et les profils de densite.
+
+   Ecart assume par rapport a la spec section 8, qui nommait ce fichier
+   ai5d.preset.ts : Tailwind v4 abandonne la configuration JavaScript au profit
+   d'un bloc @theme en CSS. Un prereglage TypeScript serait une couche de
+   traduction sans usage. L'export "./preset" du package.json pointe ici, si bien
+   qu'un projet consommateur n'est pas affecte par l'ecart.
+   Voir docs/decisions/002.
+
+   Regle de ce fichier : il ne fait que POINTER vers des jetons. Aucune valeur
+   n'y est ecrite. Le test tests/preset.test.ts le verifie declaration par
+   declaration.
+   ========================================================================= */
+
+@import './polices/polices.css';
+@import './jetons.css';
+@import '../densites/profils.css';
+
+@theme {
+  /* --- Marque -------------------------------------------------------- */
+  --color-encre: var(--encre);
+  --color-navy: var(--navy);
+  --color-blanc: var(--blanc);
+  --color-action: var(--action);
+  --color-action-survol: var(--action-survol);
+
+  /* --- Surfaces ------------------------------------------------------ */
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-surface-chaude: var(--surface-chaude);
+  --color-bordure: var(--bordure);
+  --color-bordure-forte: var(--bordure-forte);
+
+  /* --- Texte --------------------------------------------------------- */
+  --color-texte-fort: var(--texte-fort);
+  --color-texte: var(--texte);
+  --color-texte-faible: var(--texte-faible);
+  --color-texte-sur-action: var(--texte-sur-action);
+
+  /* --- Semantiques --------------------------------------------------- */
+  --color-reussite: var(--reussite);
+  --color-reussite-fond: var(--reussite-fond);
+  --color-attention: var(--attention);
+  --color-attention-fond: var(--attention-fond);
+  --color-erreur: var(--erreur);
+  --color-erreur-fond: var(--erreur-fond);
+  --color-info: var(--info);
+  --color-info-fond: var(--info-fond);
+
+  /* --- Typographie --------------------------------------------------- */
+  --font-titre: var(--police-titre);
+  --font-corps: var(--police-corps);
+  --font-mono: var(--police-mono);
+
+  --text-xs: var(--taille-xs);
+  --text-sm: var(--taille-sm);
+  --text-md: var(--taille-md);
+  --text-lg: var(--taille-lg);
+  --text-xl: var(--taille-xl);
+  --text-2xl: var(--taille-2xl);
+  --text-3xl: var(--taille-3xl);
+  --text-4xl: var(--taille-4xl);
+
+  --font-weight-legere: var(--graisse-legere);
+  --font-weight-normale: var(--graisse-normale);
+  --font-weight-moyenne: var(--graisse-moyenne);
+  --font-weight-semi: var(--graisse-semi);
+  --font-weight-forte: var(--graisse-forte);
+
+  --leading-serre: var(--interligne-serre);
+  --leading-titre: var(--interligne-titre);
+  --leading-corps: var(--interligne-corps);
+  --leading-large: var(--interligne-large);
+
+  --tracking-titre: var(--lettrage-titre);
+  --tracking-marque: var(--lettrage-marque);
+  --tracking-overline: var(--lettrage-overline);
+  --tracking-mono: var(--lettrage-mono);
+
+  /* --- Geometrie ----------------------------------------------------- */
+  --radius-sm: var(--rayon-sm);
+  --radius-md: var(--rayon-md);
+  --radius-lg: var(--rayon-lg);
+  --radius-plein: var(--rayon-plein);
+
+  --shadow-0: var(--elevation-0);
+  --shadow-1: var(--elevation-1);
+  --shadow-2: var(--elevation-2);
+  --shadow-3: var(--elevation-3);
+
+  /* --- Mouvement ----------------------------------------------------- */
+  --ease-entree: var(--courbe-entree);
+  --ease-sortie: var(--courbe-sortie);
+
+  /* --- Densite -------------------------------------------------------
+     Ces quatre-la changent avec data-densite. Les exposer a Tailwind permet
+     d'ecrire p-carte ou h-controle sans jamais coder une valeur en dur. */
+  --spacing-section: var(--rythme-section);
+  --spacing-carte: var(--padding-carte);
+  --spacing-controle: var(--hauteur-controle);
+  --spacing-ligne: var(--ligne-liste);
+  --spacing-tactile: var(--cible-tactile);
+
+  --container-contenu: var(--contenu-max);
+}

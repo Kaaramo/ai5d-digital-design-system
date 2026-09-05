@@ -25,6 +25,7 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.6.7",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
@@ -36,6 +37,14 @@
     "typescript-eslint": "^8.18.1",
     "vitest": "^2.1.8"
   },
-  "peerDependencies": { "react": ">=19", "react-dom": ">=19" },
-  "dependencies": { "clsx": "^2.1.1", "lucide-react": "^0.469.0", "react": "^19.0.0", "react-dom": "^19.0.0" }
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.469.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
 }

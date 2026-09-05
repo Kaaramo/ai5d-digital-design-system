@@ -35,7 +35,9 @@ describe('polices - fichiers', () => {
 
   it("ne contient aucun doublon - c'est la regression que le script a corrigee", () => {
     const empreintes = fichiers.map((f) =>
-      createHash('sha256').update(readFileSync(join(DOSSIER, f))).digest('hex'),
+      createHash('sha256')
+        .update(readFileSync(join(DOSSIER, f)))
+        .digest('hex'),
     );
     expect(new Set(empreintes).size, 'deux fichiers de police sont identiques').toBe(
       fichiers.length,

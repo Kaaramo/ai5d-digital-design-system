@@ -1,0 +1,82 @@
+/* =========================================================================
+   AI5D Digital Design System - profils de densite
+
+   Meme ADN partout : palette, typographies, composants, iconographie, bordures,
+   langage graphique. Seule varie la densite fonctionnelle.
+
+     Academie  AERE       lecture, apprentissage, respiration
+     Compte    EQUILIBRE  gestion, securite, parametres
+     Cercle    MODERE     communaute, interactions, flux
+     Lab       COMPACT    donnees, workflows, outils, experimentation
+
+   Deux regles, et elles ne se negocient pas.
+
+   1. La densite change l'espace entre les choses, JAMAIS la taille du texte.
+      Ce fichier ne contient donc ni couleur, ni famille, ni taille de police.
+      Sans cette regle, le profil compact devient illisible en six mois : c'est
+      la pente naturelle de tout profil dense.
+
+   2. Le plancher tactile de 44 px prime sur les quatre profils. Il est exprime
+      une fois, en bas de ce fichier, sous forme de requete media - il n'est donc
+      pas negociable ecran par ecran.
+
+   Un produit pose data-densite sur son element racine, une fois. C'est toute
+   son adoption.
+   ========================================================================= */
+
+:root,
+[data-densite='aere'] {
+  --rythme-section: 64px;
+  --padding-carte: 32px;
+  --hauteur-controle: 48px;
+  --ligne-liste: 64px;
+  --interligne-corps: 1.6;
+  --contenu-max: 1120px;
+}
+
+[data-densite='equilibre'] {
+  --rythme-section: 48px;
+  --padding-carte: 24px;
+  --hauteur-controle: 48px;
+  --ligne-liste: 56px;
+  --interligne-corps: 1.55;
+  --contenu-max: 1120px;
+}
+
+[data-densite='modere'] {
+  --rythme-section: 40px;
+  --padding-carte: 20px;
+  --hauteur-controle: 44px;
+  --ligne-liste: 48px;
+  --interligne-corps: 1.5;
+  --contenu-max: 1280px;
+}
+
+[data-densite='compact'] {
+  --rythme-section: 32px;
+  --padding-carte: 16px;
+  --hauteur-controle: 40px;
+  --ligne-liste: 40px;
+  --interligne-corps: 1.45;
+  --contenu-max: 100%;
+}
+
+/* =========================================================================
+   Le plancher tactile.
+
+   Le profil compact descend a 40 px sur un ecran de bureau avec une souris.
+   Jamais sur un telephone : une cible de 40 px y produit des erreurs de saisie
+   que l'utilisateur attribue a l'application, jamais a son doigt.
+
+   La regle vaut pour les quatre profils, y compris ceux qui sont deja au-dessus
+   du plancher : ecrite ainsi, elle survit a l'ajout d'un cinquieme profil que
+   personne n'aura pense a verifier.
+   ========================================================================= */
+
+@media (pointer: coarse) {
+  :root,
+  [data-densite] {
+    --hauteur-controle: max(var(--hauteur-controle), 44px);
+    --ligne-liste: max(var(--ligne-liste), 44px);
+  }
+}
