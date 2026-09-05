@@ -1,0 +1,27 @@
+# Dépendances
+node_modules/
+.pnpm-store/
+
+# Sorties de build régénérables
+_build/sortie/
+_build/html/
+*.tsbuildinfo
+
+# Secrets — aucun n'a de raison d'exister ici, la règle est préventive
+.env
+.env.*
+!.env.example
+
+# Système
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Éditeurs
+.vscode/
+.idea/
+*.swp
+
+# Temporaires
+*.log
+tmp/
