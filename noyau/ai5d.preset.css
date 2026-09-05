@@ -18,6 +18,7 @@
 
 @import './polices/polices.css';
 @import './jetons.css';
+@import './paliers.css';
 @import '../densites/profils.css';
 
 @theme {

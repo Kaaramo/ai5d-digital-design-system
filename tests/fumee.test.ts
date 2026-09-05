@@ -8,6 +8,12 @@ describe('socle du depot', () => {
     }
   });
 
+  it('documente la doctrine mobile', () => {
+    for (const f of ['noyau/PALIERS.md', 'noyau/paliers.css', 'noyau/paliers.ts']) {
+      expect(existsSync(f), `${f} manquant`).toBe(true);
+    }
+  });
+
   it('declare les trois couches du systeme', () => {
     for (const d of ['noyau', 'densites', 'gardes', 'outils']) {
       expect(existsSync(d), `${d} manquant`).toBe(true);

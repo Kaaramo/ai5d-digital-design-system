@@ -112,7 +112,7 @@ flowchart TD
 
     subgraph Systeme["ai5d-digital-design-system"]
         direction TB
-        Noyau["<b>noyau/</b><br/>jetons · polices · 8 composants<br/>iconographie · voix"]
+        Noyau["<b>noyau/</b><br/>jetons · polices · paliers<br/>11 composants<br/>iconographie · voix"]
         Densites["<b>densites/</b><br/>4 profils · plancher tactile"]
         Eco["<b>ecosysteme/</b><br/>lockups · courriels · écrans système"]
         Noyau --- Densites --- Eco
@@ -146,11 +146,11 @@ document. **Quand tout se discute, tout dérive.**
 
 <br/>
 
-| Couche        | Contenu                                                                | Change                                      |
-| :------------ | :--------------------------------------------------------------------- | :------------------------------------------ |
-| `noyau/`      | Jetons, polices, 8 composants de base, iconographie, voix, mode sombre | Presque jamais. Le toucher est un événement |
-| `densites/`   | Quatre profils, un tableau, aucune prose                               | Seulement si un produit s'ajoute            |
-| `ecosysteme/` | Lockups produit, composants inter-produits, courriels, écrans système  | Au rythme des produits                      |
+| Couche        | Contenu                                                                  | Change                                      |
+| :------------ | :----------------------------------------------------------------------- | :------------------------------------------ |
+| `noyau/`      | Jetons, polices, paliers, 11 composants, iconographie, voix, mode sombre | Presque jamais. Le toucher est un événement |
+| `densites/`   | Quatre profils, un tableau, aucune prose                                 | Seulement si un produit s'ajoute            |
+| `ecosysteme/` | Lockups produit, composants inter-produits, courriels, écrans système    | Au rythme des produits                      |
 
 Une brique d'écosystème ne se construit **que quand un deuxième produit la demande**. C'est
 la règle de gouvernance du dépôt, et elle explique pourquoi cette couche est encore vide.
@@ -159,7 +159,7 @@ la règle de gouvernance du dépôt, et elle explique pourquoi cette couche est 
 
 ## Les gardes
 
-Trois vérifications livrées par le système, exécutées par **chaque projet consommateur**
+Cinq vérifications livrées par le système, exécutées par **chaque projet consommateur**
 dans son intégration continue. Elles remplacent la discipline humaine — celle qui a produit
 les quatre écarts du tableau plus haut.
 
@@ -167,20 +167,23 @@ les quatre écarts du tableau plus haut.
 import { decrire, verifierAucuneCouleurEnDur } from '@ai5d/design-system/gardes';
 ```
 
-| Garde                                | Ce qu'elle empêche                                          |
-| :----------------------------------- | :---------------------------------------------------------- |
-| `verifierAucuneCouleurEnDur`         | Qu'un écran décide une couleur dans son coin                |
-| `verifierAucunJetonDeMarqueRedefini` | Qu'un produit dérive la marque en surchargeant `--marque-*` |
-| `verifierPlancherTactile`            | Qu'un profil dense casse l'accessibilité tactile            |
+| Garde                                | Ce qu'elle empêche                                                  |
+| :----------------------------------- | :------------------------------------------------------------------ |
+| `verifierAucuneCouleurEnDur`         | Qu'un écran décide une couleur dans son coin                        |
+| `verifierAucunJetonDeMarqueRedefini` | Qu'un produit dérive la marque en surchargeant `--marque-*`         |
+| `verifierPlancherTactile`            | Qu'un profil dense casse l'accessibilité tactile                    |
+| `verifierAucuneLargeurFixe`          | Qu'une largeur figée empêche une page de descendre sur un téléphone |
+| `verifierHauteurDeVueDynamique`      | Qu'un `100vh` se fasse couper par la barre d'URL mobile             |
 
-Plus une quatrième, propre au système : **le contraste de chaque jeton sémantique est
+Plus une sixième, propre au système : **le contraste de chaque jeton sémantique est
 recalculé à chaque exécution des tests**, contre toutes les surfaces où il a le droit
 d'apparaître, et le build échoue sous 4,5. Quarante-quatre paires, en clair et en sombre. C'est ce
 test qui aurait attrapé les quatre défauts des années plus tôt.
 
-## Les huit composants
+## Les onze composants
 
 ```tsx
+import { GabaritApp, BarreOnglets, CarteAction } from '@ai5d/design-system/composants';
 import { GabaritAuth, Logotype, Bouton, Champ } from '@ai5d/design-system/composants';
 ```
 
@@ -189,16 +192,19 @@ import { GabaritAuth, Logotype, Bouton, Champ } from '@ai5d/design-system/compos
 
 <br/>
 
-| Composant   | Garantie                                                                                                                                                             |
-| :---------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Logotype`  | Le « 5 » incliné à -5° et bleu, **dans toutes les variantes**. Interdit de la charte mère : ne jamais le redresser, ne jamais le recolorer. Suit le thème par défaut |
-| `Bouton`    | Trois variantes, trois tailles, hauteur pilotée par la densité, plancher tactile respecté, `aria-busy` en chargement                                                 |
-| `Champ`     | Libellé **toujours** lié par `htmlFor`, aide et erreur reliées par `aria-describedby`, erreur jamais portée par la seule couleur                                     |
-| `Carte`     | Padding piloté par la densité. Rend un `<button>` quand elle est cliquable, jamais une `<div>` avec un gestionnaire de clic                                          |
-| `Bandeau`   | Une icône **et** un texte. `role="alert"` pour attention et erreur, `role="status"` pour le reste                                                                    |
-| `Pastille`  | Un état compact, qui contient toujours du texte                                                                                                                      |
-| `Icone`     | Lucide, contour, épaisseur **1,75**. Décorative par défaut, accessible seulement si on lui donne un titre                                                            |
-| `CarteAuth` | Le gabarit d'authentification. Largeur bloquée à **420 px à toutes les tailles**                                                                                     |
+| Composant      | Garantie                                                                                                                                                             |
+| :------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Logotype`     | Le « 5 » incliné à -5° et bleu, **dans toutes les variantes**. Interdit de la charte mère : ne jamais le redresser, ne jamais le recolorer. Suit le thème par défaut |
+| `Bouton`       | Trois variantes, trois tailles, hauteur pilotée par la densité, plancher tactile respecté, `aria-busy` en chargement                                                 |
+| `Champ`        | Libellé **toujours** lié par `htmlFor`, aide et erreur reliées par `aria-describedby`, erreur jamais portée par la seule couleur                                     |
+| `Carte`        | Padding piloté par la densité. Rend un `<button>` quand elle est cliquable, jamais une `<div>` avec un gestionnaire de clic                                          |
+| `Bandeau`      | Une icône **et** un texte. `role="alert"` pour attention et erreur, `role="status"` pour le reste                                                                    |
+| `Pastille`     | Un état compact, qui contient toujours du texte                                                                                                                      |
+| `Icone`        | Lucide, contour, épaisseur **1,75**. Décorative par défaut, accessible seulement si on lui donne un titre                                                            |
+| `GabaritAuth`  | Le gabarit d'authentification. Colonne unique sous 1024 px, deux colonnes au-delà. Chaque valeur est mesurée                                                         |
+| `GabaritApp`   | La coquille d'application : en-tête collant, contenu défilant, barre d'onglets. Il **réserve la hauteur de la barre sous le contenu**                                |
+| `BarreOnglets` | La navigation basse. Trois à cinq onglets, icône **et** mot, zone sûre réservée, disparaît à partir de 768 px                                                        |
+| `CarteAction`  | Le motif « une carte, une action ». Pastille d'icône, titre, description, bouton qui **nomme sa destination**                                                        |
 
 Les composants ne dépendent d'aucun framework de style : leurs styles passent par les
 variables CSS, si bien qu'un projet sans Tailwind les rend correctement.
@@ -211,7 +217,7 @@ Le dépôt est privé et n'est pas publié sur un registre. On l'installe depuis
 **épinglé à une étiquette** :
 
 ```bash
-pnpm add "@ai5d/design-system@github:Kaaramo/ai5d-digital-design-system#v0.1.1"
+pnpm add "@ai5d/design-system@github:Kaaramo/ai5d-digital-design-system#v0.2.0"
 ```
 
 L'épinglage n'est pas une précaution de principe. Sans lui, une correction de jeton
@@ -250,16 +256,19 @@ ai5d-digital-design-system/
 │   ├── NOYAU.md              le document du noyau
 │   ├── marque.css            généré — les 6 jetons de marque, préfixés
 │   ├── jetons.css            surfaces, texte, sémantiques, typo, géométrie
+│   ├── paliers.css           marges, zones sûres, règles universelles du mobile
+│   ├── paliers.ts            les 6 constantes de largeur, auDela et enDeca
+│   ├── PALIERS.md            la doctrine mobile et ses 7 règles
 │   ├── ai5d.preset.css       bloc @theme Tailwind v4
 │   ├── formulations.md       le répertoire des formulations de référence
 │   ├── polices/              3 woff2 — Fraunces et Inter variables
-│   └── composants/           les 8 composants + index
+│   └── composants/           les 11 composants + index
 ├── densites/
 │   ├── DENSITES.md
 │   └── profils.css           4 sélecteurs, 6 variables, plancher tactile
-├── gardes/                   les 3 vérifications distribuées
+├── gardes/                   les 5 vérifications distribuées
 ├── outils/                   contraste WCAG · analyseur de jetons
-├── tests/                    187 tests
+├── tests/                    248 tests
 ├── specimens/                la preuve visuelle, 4 densités × 3 thèmes
 ├── docs/
 │   ├── superpowers/specs/    la spécification
@@ -327,6 +336,7 @@ Une liste honnête de ce qui reste à prouver vaut mieux qu'une conclusion trop 
 | Document                                         | Ce qu'il porte                                                                    |
 | :----------------------------------------------- | :-------------------------------------------------------------------------------- |
 | [`noyau/NOYAU.md`](noyau/NOYAU.md)               | Les jetons avec leurs contrastes mesurés, la typographie, les composants, la voix |
+| [`noyau/PALIERS.md`](noyau/PALIERS.md)           | Mobile d'abord : les paliers, les 7 règles, la coquille d'application             |
 | [`densites/DENSITES.md`](densites/DENSITES.md)   | Le tableau et ses deux règles                                                     |
 | [`noyau/formulations.md`](noyau/formulations.md) | Les formulations de référence — anti-énumération, verrouillage, accès refusé      |
 | [`CHANGELOG.md`](CHANGELOG.md)                   | Une entrée par changement de jeton, avec sa raison                                |

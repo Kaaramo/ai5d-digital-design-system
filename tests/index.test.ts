@@ -7,9 +7,12 @@ const index = readFileSync(`${DOSSIER}/index.ts`, 'utf8');
 
 const ATTENDUS = [
   'Bandeau',
+  'BarreOnglets',
   'Bouton',
   'Carte',
+  'CarteAction',
   'Champ',
+  'GabaritApp',
   'GabaritAuth',
   'Icone',
   'Logotype',
@@ -17,7 +20,7 @@ const ATTENDUS = [
 ] as const;
 
 describe('index des composants', () => {
-  it('exporte les huit composants du noyau', () => {
+  it('exporte les onze composants du noyau', () => {
     for (const nom of ATTENDUS) {
       expect(composants, `${nom} n'est pas exporte`).toHaveProperty(nom);
       expect(typeof composants[nom], `${nom} n'est pas un composant`).toBe('function');
@@ -41,6 +44,11 @@ describe('index des composants', () => {
     expect(composants.LARGEUR_FORMULAIRE).toBe(440);
     expect(composants.BASCULE_DEUX_COLONNES).toBe(1024);
     expect(composants.LARGEUR_MAX_PANNEAU).toBe(560);
+    expect(composants.HAUTEUR_BARRE_ONGLETS).toBe(56);
+    expect(composants.HAUTEUR_ENTETE).toBe(56);
+    expect(composants.TAILLE_PASTILLE_ICONE).toBe(48);
+    expect(composants.ONGLETS_MIN).toBe(3);
+    expect(composants.ONGLETS_MAX).toBe(5);
   });
 
   it("n'exporte aucun composant inter-produits - ils appartiennent a l'ecosysteme", () => {

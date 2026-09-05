@@ -17,7 +17,7 @@
 - [x] `_build/synchroniser-marque.mjs` + garde d'intégrité contre la source
 - [x] `noyau/jetons.css` — trois états de thème, `prefers-reduced-motion`
 - [x] `outils/jetons.ts` — analyseur CSS à suivi de profondeur
-- [x] Garde de contraste : 40 paires recalculées à chaque exécution
+- [x] Garde de contraste : 44 paires recalculées à chaque exécution
 - [x] `noyau/ai5d.preset.css` — bloc `@theme` Tailwind v4
 
 ## Lot 3 — Densités
@@ -76,3 +76,26 @@
       sombre de `#5B7BFF` à `#6B88FF`. Changements visibles nulle part, mais réels
 - [ ] `AI5D Platform` : le `packages/ui` du sprint 00 doit **consommer** le système au lieu
       de recopier ses jetons. La spec du sprint 00 est à corriger sur ce point
+
+## Lot mobile — 5 septembre 2026
+
+Le sujet manquait. Relevé par le commanditaire à partir d'un portail concurrent.
+
+- [x] Plan d'implémentation — `docs/superpowers/plans/2026-09-05-mobile-dabord.md`
+- [x] `noyau/paliers.ts` — six constantes, `auDela`, `enDeca`
+- [x] `noyau/paliers.css` — marges, zones sûres, deux règles universelles
+- [x] `noyau/PALIERS.md` — la doctrine, les sept règles, la coquille
+- [x] `BarreOnglets` — trois à cinq onglets, icône et mot, zone sûre
+- [x] `GabaritApp` — en-tête collant, réserve basse, plafond au palier bureau
+- [x] `CarteAction` — pastille, titre, description, action nommée
+- [x] Deux gardes : largeur fixe et hauteur de vue dynamique
+- [x] `NOYAU.md` — section paliers, et ligne `CarteAuth` périmée corrigée
+- [x] Vérification d'un bloc : typecheck, lint, format, 248 tests
+- [x] Charte de référence — chapitre 12, PDF et DOCX regénérés
+
+### Ce qui reste à prouver
+
+- [ ] Rendu sur un téléphone réel. jsdom n'évalue pas les requêtes média : les tests
+      prouvent que la règle est écrite, pas qu'elle s'applique.
+- [ ] Zone sûre sur un iPhone sans bouton d'accueil. `env(safe-area-inset-bottom)` ne vaut
+      jamais autre chose que zéro dans un navigateur de bureau.

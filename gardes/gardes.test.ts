@@ -5,9 +5,12 @@ import { join } from 'node:path';
 import {
   decrire,
   JETONS_DE_MARQUE,
+  PLANCHER_LARGEUR,
   PLANCHER_TACTILE,
   verifierAucuneCouleurEnDur,
+  verifierAucuneLargeurFixe,
   verifierAucunJetonDeMarqueRedefini,
+  verifierHauteurDeVueDynamique,
   verifierPlancherTactile,
 } from './index';
 
@@ -134,6 +137,97 @@ describe('garde 3 - plancher tactile', () => {
 
   it('fixe le plancher a 44 px, valeur non negociable', () => {
     expect(PLANCHER_TACTILE).toBe(44);
+  });
+});
+
+describe('garde 4 - aucune largeur fixe', () => {
+  it('ne releve aucune infraction dans le depot lui-meme', () => {
+    const infractions = verifierAucuneLargeurFixe('.', { exceptions: EXCEPTIONS_DU_DEPOT });
+    expect(infractions.length, `\n${decrire(infractions)}`).toBe(0);
+  });
+
+  it('accepte max-width et min-width, qui sont la solution et non le probleme', () => {
+    const racine = depotTemporaire();
+    writeFileSync(
+      join(racine, 'ecran.css'),
+      '.a { max-width: 440px; }\n.b { min-width: 600px; }\n.c { maxWidth: 900px; }\n',
+    );
+    expect(verifierAucuneLargeurFixe(racine)).toHaveLength(0);
+  });
+
+  it('refuse une largeur figee au-dela du plancher', () => {
+    const racine = depotTemporaire();
+    writeFileSync(join(racine, 'ecran.css'), '.panneau { width: 440px; }\n');
+    const infractions = verifierAucuneLargeurFixe(racine);
+    expect(infractions).toHaveLength(1);
+    expect(infractions[0]?.regle).toBe('aucune-largeur-fixe');
+  });
+
+  it('tolere une largeur figee sous le plancher : une pastille, une icone, un avatar', () => {
+    const racine = depotTemporaire();
+    writeFileSync(join(racine, 'ecran.css'), '.pastille { width: 48px; }\n');
+    expect(verifierAucuneLargeurFixe(racine)).toHaveLength(0);
+  });
+
+  it('voit la meme faute ecrite en style en ligne', () => {
+    const racine = depotTemporaire();
+    writeFileSync(join(racine, 'Ecran.tsx'), "const s = { width: '600px' };\n");
+    expect(verifierAucuneLargeurFixe(racine)).toHaveLength(1);
+  });
+
+  it('laisse passer les pourcentages et les unites souples', () => {
+    const racine = depotTemporaire();
+    writeFileSync(
+      join(racine, 'ecran.css'),
+      '.a { width: 100%; }\n.b { width: 45vw; }\n.c { width: auto; }\n',
+    );
+    expect(verifierAucuneLargeurFixe(racine)).toHaveLength(0);
+  });
+
+  it('laisse passer les commentaires, qui ont le droit de citer la faute', () => {
+    const racine = depotTemporaire();
+    writeFileSync(join(racine, 'ecran.css'), '/* jamais width: 900px ici */\n.a { color: red; }\n');
+    expect(verifierAucuneLargeurFixe(racine)).toHaveLength(0);
+  });
+
+  it('fixe le plancher a 320 px', () => {
+    expect(PLANCHER_LARGEUR).toBe(320);
+  });
+});
+
+describe('garde 5 - hauteur de vue dynamique', () => {
+  it('ne releve aucune infraction dans le depot lui-meme', () => {
+    const infractions = verifierHauteurDeVueDynamique('.', { exceptions: EXCEPTIONS_DU_DEPOT });
+    expect(infractions.length, `\n${decrire(infractions)}`).toBe(0);
+  });
+
+  it('refuse 100vh', () => {
+    const racine = depotTemporaire();
+    writeFileSync(join(racine, 'ecran.css'), '.page { min-height: 100vh; }\n');
+    const infractions = verifierHauteurDeVueDynamique(racine);
+    expect(infractions).toHaveLength(1);
+    expect(infractions[0]?.regle).toBe('hauteur-de-vue-dynamique');
+  });
+
+  it('accepte dvh, svh et lvh', () => {
+    const racine = depotTemporaire();
+    writeFileSync(
+      join(racine, 'ecran.css'),
+      '.a { height: 100dvh; }\n.b { height: 50svh; }\n.c { height: 80lvh; }\n',
+    );
+    expect(verifierHauteurDeVueDynamique(racine)).toHaveLength(0);
+  });
+
+  it('voit vh a l interieur d un calc', () => {
+    const racine = depotTemporaire();
+    writeFileSync(join(racine, 'ecran.css'), '.a { height: calc(100vh - 56px); }\n');
+    expect(verifierHauteurDeVueDynamique(racine)).toHaveLength(1);
+  });
+
+  it('ne confond pas vh avec vw ou vmin', () => {
+    const racine = depotTemporaire();
+    writeFileSync(join(racine, 'ecran.css'), '.a { width: 50vw; }\n.b { font-size: 4vmin; }\n');
+    expect(verifierHauteurDeVueDynamique(racine)).toHaveLength(0);
   });
 });
 

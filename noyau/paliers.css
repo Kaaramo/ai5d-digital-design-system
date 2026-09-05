@@ -1,0 +1,114 @@
+/* =========================================================================
+   AI5D Digital Design System - paliers
+
+   Le mobile n'est pas un palier d'adaptation. C'est le point de depart.
+
+   Ce fichier porte trois choses, et rien d'autre : les variables qui dependent
+   de la largeur d'ecran, la reservation des zones sures, et les deux regles
+   universelles sans lesquelles un rendu mobile est faux quoi qu'on fasse.
+
+   Il ne contient AUCUNE couleur, AUCUNE famille et AUCUNE taille de police.
+   Comme les densites, les paliers changent l'espace, jamais le texte.
+   tests/paliers.test.ts le verifie.
+
+   Les valeurs en clair ci-dessous sont celles de paliers.ts. Une requete media
+   ne peut pas consommer une variable CSS - @media (min-width: var(--x)) n'est
+   pas valide - donc les deux fichiers portent les memes nombres, et le test
+   croise les deux.
+   ========================================================================= */
+
+:root {
+  /* -----------------------------------------------------------------------
+     La marge de page. Elle ne fait pas partie des densites : un profil de
+     densite decrit l'espace ENTRE les choses, la marge de page decrit la
+     distance au bord de l'ecran. Les deux varient pour des raisons
+     differentes, et les melanger produirait un Lab colle au bord sur mobile.
+     ----------------------------------------------------------------------- */
+  --marge-page: 16px;
+
+  /* -----------------------------------------------------------------------
+     Les zones sures. Sur un telephone sans bouton d'accueil, une barre de
+     gestes occupe le bas de l'ecran et le systeme ne la deplace pas pour nous.
+     Un element fixe en bas sans cette reserve passe DESSOUS : il reste
+     visible, et il devient inatteignable. C'est le defaut le plus courant des
+     barres d'onglets, et il ne se voit pas sur un emulateur de bureau.
+
+     La valeur de repli 0px est indispensable : env() sans repli rend une
+     valeur vide, et la declaration entiere est alors ignoree.
+     ----------------------------------------------------------------------- */
+  --zone-sure-basse: env(safe-area-inset-bottom, 0px);
+  --zone-sure-haute: env(safe-area-inset-top, 0px);
+  --zone-sure-gauche: env(safe-area-inset-left, 0px);
+  --zone-sure-droite: env(safe-area-inset-right, 0px);
+
+  /* La coquille d'application. Voir noyau/composants/GabaritApp.tsx. */
+  --hauteur-entete: 56px;
+  --hauteur-barre-onglets: 56px;
+
+  /* -----------------------------------------------------------------------
+     La reserve basse : ce que le contenu doit laisser sous lui pour que son
+     dernier element ne se glisse pas sous la barre d'onglets. Elle vaut zero
+     quand il n'y a pas de barre ; GabaritApp la pose sur son element racine.
+     ----------------------------------------------------------------------- */
+  --reserve-barre: 0px;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --marge-page: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --marge-page: 32px;
+  }
+}
+
+/* =========================================================================
+   Les deux regles universelles.
+
+   Elles ne sont pas negociables ecran par ecran, et c'est pour cela qu'elles
+   vivent ici plutot que dans un composant.
+   ========================================================================= */
+
+/* iOS agrandit le texte de lui-meme quand un telephone passe en paysage. Le
+   resultat est une echelle typographique differente selon l'orientation, ce
+   qui contredit la regle « la densite ne change jamais la taille du texte ».
+   Cette declaration le desactive sans empecher le zoom manuel, qui reste un
+   droit de l'utilisateur. */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Un media plus large que son conteneur pousse la page entiere et fait
+   apparaitre un defilement horizontal que personne ne cherche. On ne corrige
+   PAS cela par overflow-x: hidden sur le corps : ce serait masquer le
+   debordement au lieu de le supprimer, et le prochain debordement passerait
+   inapercu. */
+img,
+svg,
+video,
+canvas,
+iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* =========================================================================
+   Le doigt.
+
+   :hover existe au doigt, mais il se declenche APRES la pression et reste
+   colle jusqu'au geste suivant. Un effet de survol y devient un etat fantome.
+   Les composants du noyau n'utilisent donc le survol que comme confort, jamais
+   comme seul moyen d'apprendre quelque chose - la regle est ecrite dans
+   PALIERS.md, ce bloc ne fait que supprimer la transition qui la rendrait
+   visible.
+   ========================================================================= */
+
+@media (pointer: coarse) {
+  :root {
+    --duree-survol: 0ms;
+  }
+}

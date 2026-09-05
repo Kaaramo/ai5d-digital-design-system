@@ -1,17 +1,19 @@
 {
   "name": "@ai5d/design-system",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": true,
   "description": "Systeme de design applicatif de l'ecosysteme AI5D",
   "type": "module",
   "exports": {
     "./noyau/jetons.css": "./noyau/jetons.css",
+    "./noyau/paliers.css": "./noyau/paliers.css",
     "./noyau/marque.css": "./noyau/marque.css",
     "./noyau/polices/polices.css": "./noyau/polices/polices.css",
     "./preset": "./noyau/ai5d.preset.css",
     "./densites/profils.css": "./densites/profils.css",
     "./composants": "./noyau/composants/index.ts",
-    "./gardes": "./gardes/index.ts"
+    "./gardes": "./gardes/index.ts",
+    "./paliers": "./noyau/paliers.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

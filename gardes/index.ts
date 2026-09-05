@@ -186,6 +186,61 @@ export function verifierPlancherTactile(cheminProfils: string): Infraction[] {
   return infractions;
 }
 
+/**
+ * Le plancher de largeur, en pixels. Aucune mise en page ne casse en dessous, et aucune
+ * largeur figee n'a le droit de le depasser. Voir `noyau/paliers.ts`.
+ */
+export const PLANCHER_LARGEUR = 320;
+
+/**
+ * Garde 4 - aucune largeur fixe au-dela du plancher.
+ *
+ * `max-width` et `min-width` sont la solution, pas le probleme : ce sont eux qui rendent
+ * une mise en page souple, et ils ne sont donc pas examines. C'est `width: 440px` qui
+ * casse, parce qu'il ne descend pas quand l'ecran descend.
+ *
+ * Sous 320 px, une largeur figee est legitime : une pastille, une icone, un avatar ont une
+ * taille et pas une proportion.
+ */
+export function verifierAucuneLargeurFixe(
+  racine: string,
+  options: OptionsGarde = {},
+): Infraction[] {
+  // On retire d'abord les formes bornees, puis on cherche ce qui reste.
+  const bornees = /\b(?:max|min)-?[Ww]idth\s*:\s*[^;,}]*/g;
+  const largeur = /(?:^|[^-\w])width\s*:\s*['"]?(\d+)px/;
+
+  return examinerLignes(racine, options, 'aucune-largeur-fixe', (ligne) => {
+    const utile = sansCommentaire(ligne).replace(bornees, '');
+    const trouve = largeur.exec(utile);
+    if (trouve === null) return false;
+    return Number(trouve[1]) > PLANCHER_LARGEUR;
+  });
+}
+
+/**
+ * Garde 5 - la hauteur de vue doit etre dynamique.
+ *
+ * Sur un telephone, la barre d'URL du navigateur entre et sort du cadre pendant le
+ * defilement. `100vh` vaut la hauteur SANS elle : un ecran cale dessus se fait couper au
+ * chargement, puis se reajuste au premier geste. `100dvh` suit la hauteur reellement
+ * disponible.
+ *
+ * `dvh`, `svh` et `lvh` sont acceptes. Seul `vh` est refuse.
+ */
+export function verifierHauteurDeVueDynamique(
+  racine: string,
+  options: OptionsGarde = {},
+): Infraction[] {
+  // `dvh`, `svh` et `lvh` ne peuvent pas correspondre : le motif exige un chiffre
+  // immediatement avant `vh`, et ces trois unites ont une lettre a cette place.
+  const statique = /\d+(?:\.\d+)?vh\b/;
+
+  return examinerLignes(racine, options, 'hauteur-de-vue-dynamique', (ligne) =>
+    statique.test(sansCommentaire(ligne)),
+  );
+}
+
 /** Met en forme une liste d'infractions pour un message d'erreur lisible. */
 export function decrire(infractions: Infraction[]): string {
   if (infractions.length === 0) return 'Aucune infraction.';

@@ -14,6 +14,7 @@ const declarations = [...bloc.matchAll(/(--[a-z0-9-]+)\s*:\s*([^;]+);/g)].map(
 const disponibles = new Set([
   ...lireJetons('noyau/marque.css', ':root').keys(),
   ...lireJetons('noyau/jetons.css', ':root').keys(),
+  ...lireJetons('noyau/paliers.css', ':root').keys(),
   ...lireJetons('densites/profils.css', ':root').keys(),
 ]);
 
@@ -21,6 +22,7 @@ describe('prereglage - chaine d import', () => {
   it('tire les polices, les jetons et les densites', () => {
     expect(preset).toContain("@import './polices/polices.css'");
     expect(preset).toContain("@import './jetons.css'");
+    expect(preset).toContain("@import './paliers.css'");
     expect(preset).toContain("@import '../densites/profils.css'");
   });
 

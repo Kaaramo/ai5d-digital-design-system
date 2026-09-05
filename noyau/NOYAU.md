@@ -4,7 +4,8 @@ Ce que le registre applicatif AI5D tient pour acquis. Le noyau bouge presque jam
 le toucher est un événement, pas une correction.
 
 **Fichiers exécutables :** [`jetons.css`](jetons.css) · [`marque.css`](marque.css) (généré) ·
-[`ai5d.preset.css`](ai5d.preset.css) · [`polices/`](polices/) · [`composants/`](composants/)
+[`paliers.css`](paliers.css) · [`paliers.ts`](paliers.ts) · [`ai5d.preset.css`](ai5d.preset.css) ·
+[`polices/`](polices/) · [`composants/`](composants/)
 
 ---
 
@@ -104,18 +105,21 @@ overlines.
 
 ---
 
-## 3. Les huit composants
+## 3. Les onze composants
 
-| Composant   | Ce qu'il garantit                                                                                                                          |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `Logotype`  | Le « 5 » incliné à -5° et bleu, **dans toutes les variantes**. Interdit de la charte mère : ne jamais le redresser, ne jamais le recolorer |
-| `Bouton`    | Trois variantes, trois tailles, hauteur pilotée par la densité, plancher tactile respecté, `aria-busy` en chargement                       |
-| `Champ`     | Libellé **toujours** lié par `htmlFor`, aide et erreur reliées par `aria-describedby`, erreur jamais portée par la seule couleur           |
-| `Carte`     | Padding piloté par la densité. Rend un `<button>` quand elle est cliquable, jamais une `<div>` avec un gestionnaire de clic                |
-| `Bandeau`   | Une icône **et** un texte. `role="alert"` pour attention et erreur, `role="status"` pour le reste                                          |
-| `Pastille`  | Un état compact, qui contient toujours du texte                                                                                            |
-| `Icone`     | Lucide, contour, épaisseur **1,75**. Décorative par défaut, accessible seulement si on lui donne un titre                                  |
-| `CarteAuth` | Le gabarit d'authentification. Largeur bloquée à **420 px à toutes les tailles**                                                           |
+| Composant      | Ce qu'il garantit                                                                                                                          |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Logotype`     | Le « 5 » incliné à -5° et bleu, **dans toutes les variantes**. Interdit de la charte mère : ne jamais le redresser, ne jamais le recolorer |
+| `Bouton`       | Trois variantes, trois tailles, hauteur pilotée par la densité, plancher tactile respecté, `aria-busy` en chargement                       |
+| `Champ`        | Libellé **toujours** lié par `htmlFor`, aide et erreur reliées par `aria-describedby`, erreur jamais portée par la seule couleur           |
+| `Carte`        | Padding piloté par la densité. Rend un `<button>` quand elle est cliquable, jamais une `<div>` avec un gestionnaire de clic                |
+| `Bandeau`      | Une icône **et** un texte. `role="alert"` pour attention et erreur, `role="status"` pour le reste                                          |
+| `Pastille`     | Un état compact, qui contient toujours du texte                                                                                            |
+| `Icone`        | Lucide, contour, épaisseur **1,75**. Décorative par défaut, accessible seulement si on lui donne un titre                                  |
+| `GabaritAuth`  | Le gabarit d'authentification. Colonne unique sous 1024 px, deux colonnes au-delà. Chaque valeur est mesurée                               |
+| `GabaritApp`   | La coquille d'application : en-tête collant, contenu défilant, barre d'onglets. Il réserve la hauteur de la barre sous le contenu          |
+| `BarreOnglets` | La navigation basse. Trois à cinq onglets, icône **et** mot, zone sûre réservée, disparaît à partir de 768 px                              |
+| `CarteAction`  | Le motif « une carte, une action ». Pastille d'icône, titre, description, bouton qui **nomme sa destination**                              |
 
 `GabaritAuth` est dans le noyau et non dans l'écosystème parce que tout produit peut avoir à
 afficher un écran de session expirée, même si le portail Compte porte l'essentiel des flux.
@@ -130,6 +134,32 @@ On y arrive déjà décidé.
 
 Les composants ne dépendent d'aucun framework de style : leurs styles passent par les
 variables CSS, de sorte qu'un projet sans Tailwind les rend correctement.
+
+---
+
+## 3 bis. Les paliers
+
+**Tout ce qui est servi à un utilisateur se conçoit d'abord pour un téléphone.** Les espaces
+d'administration sont hors de cette règle, et c'est la seule exception.
+
+Les paliers appartiennent au noyau et non à une couche à part : contrairement aux densités,
+ils ne varient pas d'un produit à l'autre. Un téléphone de 390 px est un téléphone de 390 px
+dans les quatre produits.
+
+| Constante          | Valeur  | Nature     | Ce qui s'y passe                                    |
+| ------------------ | ------- | ---------- | --------------------------------------------------- |
+| `PLANCHER`         | 320 px  | contrainte | Rien. Aucune mise en page n'a le droit d'y casser   |
+| `REFERENCE_MOBILE` | 390 px  | contrainte | Rien. C'est la largeur sur laquelle on dessine      |
+| `COMPACT`          | 640 px  | palier     | La marge de page passe de 16 à 24 px                |
+| `TABLETTE`         | 768 px  | palier     | La barre d'onglets disparaît, la navigation remonte |
+| `BUREAU`           | 1024 px | palier     | Deux colonnes deviennent possibles                  |
+| `LARGE`            | 1280 px | palier     | Le contenu est plafonné et centré                   |
+
+**Deux des six ne sont pas des paliers.** Rien ne s'y déclenche. Les distinguer évite qu'on
+écrive un jour `@media (min-width: 320px)`, qui ne voudrait rien dire.
+
+Les sept règles, la justification chiffrée de chaque valeur et le détail de la coquille
+d'application sont dans [`PALIERS.md`](PALIERS.md).
 
 ---
 

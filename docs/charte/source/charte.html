@@ -1,0 +1,1535 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>AI5D Digital Design System — Charte de référence</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+/* ===========================================================================
+   AI5D Digital Design System — charte de référence, édition 2026.
+   Le document est composé avec les jetons qu'il prescrit et avec les vraies
+   polices du système : les spécimens ne sont pas des substituts.
+   =========================================================================== */
+:root{
+  --encre:#051C2C;
+  --navy:#042A76;
+  --action:#2251FF;
+  --action-survol:#1B44DB;
+  --action-clair:#5B7BFF;
+  --action-sombre:#6B88FF;
+  --papier:#FAF7F2;
+  --papier-chaud:#F4EFE7;
+  --blanc:#FFFFFF;
+  --bordure:#E7E0D6;
+  --bordure-forte:#D5CCBE;
+  --texte:#2B3A45;
+  --texte-faible:#616F78;
+  --reussite:#0E7C5A;
+  --reussite-fond:#E6F4EE;
+  --attention:#B45309;
+  --attention-fond:#FDF2E3;
+  --erreur:#B42318;
+  --erreur-fond:#FDECEA;
+  --s1:#0B1620; --s2:#11212D; --s3:#172C3B; --sc:#171F26;
+  --bordure-sombre:#22323F; --bordure-forte-sombre:#2E4252;
+  --texte-fort-sombre:#F2F5F7; --texte-sombre:#C9D4DC;
+  --texte-faible-sombre:#8D9AA5; --reussite-sombre:#2FA37B;
+  --attention-sombre:#E0A050; --erreur-sombre:#F27063;
+  --serif:'Fraunces',Georgia,'Times New Roman',serif;
+  --sans:'Inter',ui-sans-serif,system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+
+@page{size:A4;margin:0;}
+html,body{background:#8a8a8a;font-family:var(--sans);color:var(--texte);}
+
+.page{width:210mm;height:297mm;position:relative;background:var(--papier);
+  padding:17mm 21mm 13mm;display:flex;flex-direction:column;
+  page-break-after:always;}
+.page:last-child{page-break-after:auto;}
+.page.pleine{background:var(--encre);color:var(--blanc);padding:0;
+  justify-content:center;}
+.page.pleine .inner{padding:26mm 21mm;width:100%;}
+
+.hd{display:flex;justify-content:space-between;font-family:var(--mono);
+  font-size:6pt;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--texte-faible);margin-bottom:10mm;font-weight:500;}
+.body{flex:1;min-height:0;}
+.ft{margin-top:auto;padding-top:3.6mm;border-top:.4pt solid var(--bordure);
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--mono);font-size:5.8pt;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--texte-faible);font-weight:500;}
+.ft b{font-family:var(--serif);font-size:12pt;letter-spacing:0;
+  color:var(--action);font-weight:500;}
+
+.op{display:flex;gap:5mm;align-items:flex-start;margin-bottom:5mm;}
+.num{flex:0 0 auto;width:11mm;height:11mm;background:var(--action);
+  color:var(--blanc);border-radius:4px;display:flex;align-items:center;
+  justify-content:center;font-family:var(--mono);font-size:10.5pt;
+  font-weight:500;margin-top:1mm;}
+.eyebrow{font-family:var(--mono);font-size:6.2pt;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--action);margin-bottom:2.4mm;
+  font-weight:500;}
+h1{font-family:var(--serif);font-size:24pt;line-height:1.14;font-weight:400;
+  color:var(--encre);letter-spacing:-.012em;}
+h1 em{font-style:normal;color:var(--action);}
+.lede{font-size:9.4pt;line-height:1.62;max-width:152mm;color:var(--texte);}
+.lede + .lede{margin-top:2.4mm;}
+
+.lab{font-family:var(--mono);font-size:6pt;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--texte-faible);padding-top:2.4mm;
+  border-top:.4pt solid var(--bordure);margin:6.5mm 0 3.2mm;font-weight:500;}
+
+p{font-size:8.8pt;line-height:1.6;}
+.small{font-size:7.8pt;line-height:1.55;color:var(--texte-faible);}
+strong{font-weight:600;color:var(--encre);}
+code{font-family:var(--mono);font-size:.88em;color:var(--encre);font-weight:500;}
+
+.note{background:var(--papier-chaud);border-left:2.4pt solid var(--action);
+  border-radius:0 4px 4px 0;padding:2.8mm 5mm;font-size:8.2pt;line-height:1.6;}
+
+table{width:100%;border-collapse:collapse;}
+th{font-family:var(--mono);font-size:6pt;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--texte-faible);text-align:left;
+  padding:0 5mm 2mm 0;border-bottom:.8pt solid var(--encre);font-weight:500;}
+td{font-size:8.2pt;line-height:1.5;padding:2.3mm 5mm 2.3mm 0;
+  border-bottom:.4pt solid var(--bordure);vertical-align:top;}
+td:last-child,th:last-child{padding-right:0;}
+td.k{color:var(--encre);font-weight:600;}
+td.m{font-family:var(--mono);font-size:7.4pt;color:var(--encre);
+  white-space:nowrap;font-weight:500;}
+td.c{text-align:right;font-family:var(--mono);font-size:7.4pt;font-weight:500;
+  color:var(--encre);white-space:nowrap;}
+td.g{color:var(--texte-faible);}
+tr.fin td{border-bottom:none;}
+table.serre td{padding-top:1.75mm;padding-bottom:1.75mm;}
+/* Rythme resserre : reserve aux pages qui portent beaucoup de regles courtes. */
+.body.dense .lab{margin:4.6mm 0 2.6mm;}
+.body.dense table td{padding-top:1.6mm;padding-bottom:1.6mm;}
+
+.sw{width:26mm;height:5.4mm;border-radius:3px;display:inline-block;}
+.sw.claire{border:.4pt solid var(--bordure-forte);}
+.cols{display:flex;gap:8mm;}
+.cols > *{flex:1;min-width:0;}
+pre{font-family:var(--mono);font-size:6.6pt;line-height:1.6;color:var(--encre);
+  background:var(--papier-chaud);border:.4pt solid var(--bordure);
+  border-radius:4px;padding:3.6mm 4.6mm;white-space:pre;font-weight:500;}
+
+.bar{display:flex;height:9mm;border-radius:4px;overflow:hidden;
+  font-family:var(--mono);font-size:6pt;letter-spacing:.14em;font-weight:500;}
+.bar div{display:flex;align-items:center;justify-content:center;}
+
+.planche{border-radius:10px;padding:6mm;border:.4pt solid var(--bordure);}
+.planche.clair{background:var(--blanc);box-shadow:0 4px 12px rgba(5,28,44,.08);}
+.planche.sombre{background:var(--s2);border-color:var(--bordure-sombre);
+  box-shadow:none;color:var(--texte-sombre);}
+.planche .t{font-family:var(--serif);font-size:12pt;font-weight:400;
+  color:var(--encre);margin-bottom:1.4mm;letter-spacing:-.01em;}
+.planche.sombre .t{color:var(--texte-fort-sombre);}
+.planche .d{font-size:7.4pt;color:var(--texte-faible);line-height:1.5;}
+.planche.sombre .d{color:var(--texte-faible-sombre);}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;
+  border-radius:4px;font-family:var(--sans);font-size:8pt;font-weight:500;
+  padding:0 4mm;height:9mm;white-space:nowrap;flex:0 0 auto;}
+.btn.pri{background:var(--action);color:var(--blanc);}
+.btn.sec{background:transparent;color:var(--encre);
+  border:.6pt solid var(--bordure-forte);}
+.btn.dis{background:transparent;color:var(--action);}
+.sombre .btn.pri{background:var(--action-sombre);color:var(--encre);}
+.sombre .btn.sec{color:var(--texte-fort-sombre);
+  border-color:var(--bordure-forte-sombre);}
+.sombre .btn.dis{color:var(--action-sombre);}
+
+.champ .lb{font-size:7.4pt;font-weight:500;color:var(--encre);
+  margin-bottom:1.4mm;display:block;}
+.sombre .champ .lb{color:var(--texte-fort-sombre);}
+.champ .in{height:9mm;border-radius:4px;border:.6pt solid var(--bordure-forte);
+  background:var(--blanc);display:flex;align-items:center;padding:0 3.4mm;
+  font-size:8pt;color:var(--texte-faible);}
+.sombre .champ .in{background:var(--s1);border-color:var(--bordure-forte-sombre);
+  color:var(--texte-faible-sombre);}
+.champ .in.err{border-color:var(--erreur);border-width:1pt;}
+.sombre .champ .in.err{border-color:var(--erreur-sombre);}
+.champ .msg{font-size:7pt;color:var(--erreur);margin-top:1.2mm;}
+.sombre .champ .msg{color:var(--erreur-sombre);}
+
+.past{display:inline-flex;align-items:center;border-radius:999px;
+  padding:.9mm 2.6mm;font-size:7pt;font-weight:500;white-space:nowrap;}
+.band{display:flex;gap:3mm;align-items:flex-start;border-radius:4px;
+  padding:3mm 4mm;font-size:7.8pt;line-height:1.5;}
+.pt{width:2.6mm;height:2.6mm;border-radius:999px;flex:0 0 auto;margin-top:1.2mm;}
+</style>
+</head>
+<body>
+
+<!-- ======================= COUVERTURE ======================= -->
+<section class="page pleine" style="justify-content:flex-end">
+  <div class="inner">
+    <div style="font-family:var(--mono);font-size:7pt;letter-spacing:.34em;
+                color:var(--action-clair);text-transform:uppercase;
+                margin-bottom:50mm;font-weight:500;">Charte de référence</div>
+    <div style="font-family:var(--serif);font-size:52pt;line-height:1.04;
+                color:var(--blanc);font-weight:300;letter-spacing:-.02em;">AI5D</div>
+    <div style="font-family:var(--serif);font-size:52pt;line-height:1.04;
+                color:var(--action-clair);font-weight:300;letter-spacing:-.02em;
+                margin-bottom:9mm;">Digital Design System</div>
+    <div style="font-family:var(--serif);font-size:15pt;color:var(--blanc);
+                font-weight:300;margin-bottom:3.4mm;letter-spacing:-.01em;">
+      Un seul ADN. Quatre densités.</div>
+    <p style="color:#8FA3B2;font-size:8.8pt;max-width:118mm;line-height:1.62;">
+      Le registre applicatif de l’écosystème AI5D. Ce que tout produit hérite. Les cinq
+      libertés qu’il obtient. Et les trois règles qu’aucune machine ne le laissera
+      enfreindre.</p>
+    <div style="margin-top:28mm;display:flex;justify-content:space-between;
+                border-top:.4pt solid rgba(255,255,255,.16);padding-top:5mm;
+                font-family:var(--mono);font-size:6.2pt;letter-spacing:.2em;
+                text-transform:uppercase;color:#7C8FA0;font-weight:500;">
+      <span>@ai5d/design-system · v0.1.1</span>
+      <span>Édition 2026</span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= SOMMAIRE ======================= -->
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>Sommaire</span></div>
+  <div class="body">
+    <div class="eyebrow">Le document</div>
+    <h1>Seize chapitres. Une seule<br>question : <em>qu’est-ce qui se copie.</em></h1>
+    <p class="lede" style="margin-top:5mm;">
+      Deux chartes dérivées en six mois. Quatre jetons qui ont divergé sans que personne
+      ne l’ait décidé. Ce document existe pour qu’il n’y ait pas de troisième dérivation :
+      il décrit ce qu’un produit AI5D reçoit le jour où il est créé.</p>
+
+    <div style="margin-top:7mm;">
+      <table>
+        <tbody>
+          <tr><td class="m" style="color:var(--action);width:12mm;">01</td><td class="k" style="width:62mm;">Deux registres, une famille</td><td class="g">Ce que la marque garde, ce qu’elle accorde</td></tr>
+          <tr><td class="m" style="color:var(--action);">02</td><td class="k">Les trois couches</td><td class="g">Noyau, densités, écosystème</td></tr>
+          <tr><td class="m" style="color:var(--action);">03</td><td class="k">Les jetons de marque</td><td class="g">Six valeurs importées, jamais définies</td></tr>
+          <tr><td class="m" style="color:var(--action);">04</td><td class="k">Palette claire</td><td class="g">Papier tiède, encre, sémantiques</td></tr>
+          <tr><td class="m" style="color:var(--action);">05</td><td class="k">Palette sombre</td><td class="g">La profondeur vient de la lumière</td></tr>
+          <tr><td class="m" style="color:var(--action);">06</td><td class="k">Les écarts mesurés</td><td class="g">Quatre divergences, trois bonnes décisions</td></tr>
+          <tr><td class="m" style="color:var(--action);">07</td><td class="k">Typographie</td><td class="g">Fraunces signe, Inter travaille</td></tr>
+          <tr><td class="m" style="color:var(--action);">08</td><td class="k">Les densités</td><td class="g">Quatre profils, deux règles</td></tr>
+          <tr><td class="m" style="color:var(--action);">09</td><td class="k">Les huit composants</td><td class="g">Ce que chacun garantit</td></tr>
+          <tr><td class="m" style="color:var(--action);">10</td><td class="k">Planches</td><td class="g">Les composants, clair et sombre</td></tr>
+          <tr><td class="m" style="color:var(--action);">11</td><td class="k">Le gabarit d’authentification</td><td class="g">Une disposition mesurée, pas proposée</td></tr>
+          <tr><td class="m" style="color:var(--action);">12</td><td class="k">Mobile d’abord</td><td class="g">Le téléphone est le point de départ</td></tr>
+          <tr><td class="m" style="color:var(--action);">13</td><td class="k">Iconographie et mouvement</td><td class="g">Épaisseur 1,75 et trois durées</td></tr>
+          <tr><td class="m" style="color:var(--action);">14</td><td class="k">La voix</td><td class="g">Formulations de référence</td></tr>
+          <tr><td class="m" style="color:var(--action);">15</td><td class="k">Les gardes</td><td class="g">Ce qu’une machine vérifie à notre place</td></tr>
+          <tr class="fin"><td class="m" style="color:var(--action);">16</td><td class="k">Adoption</td><td class="g">Une ligne, et un versionnement sévère</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note" style="margin-top:8mm;">
+      <strong>Statut.</strong> Source de vérité du registre applicatif AI5D. En cas de
+      contradiction avec la charte d’un produit, c’est ce document qui juge. Les valeurs
+      exécutables vivent dans <code>noyau/jetons.css</code> et
+      <code>densites/profils.css</code> ; ce document les explique, il ne les remplace pas.
+    </div>
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>02</b></div>
+</section>
+
+<!-- ======================= 01 · DEUX REGISTRES ======================= -->
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>01 · Deux registres</span></div>
+  <div class="body">
+    <div class="op">
+      <div class="num">01</div>
+      <div>
+        <div class="eyebrow">Deux registres, une famille</div>
+        <h1>La marque ne bouge pas.<br>Ce sont <em>les produits qui vivent.</em></h1>
+      </div>
+    </div>
+    <p class="lede">
+      Une page de présentation se parcourt en dix secondes. Un produit s’habite pendant
+      vingt minutes. Les deux ne peuvent pas obéir aux mêmes règles.</p>
+    <p class="lede">
+      Le registre institutionnel garde les angles vifs, l’absence totale d’ombre et Inter
+      pour seule police. Il reste sous l’autorité de la charte mère. Ce document définit
+      l’autre moitié, une fois, pour tous les produits.</p>
+
+    <div class="lab">Les cinq libertés accordées</div>
+    <table>
+      <thead><tr><th style="width:44mm;">Liberté</th><th style="width:36mm;">Doctrine institutionnelle</th><th>Pourquoi le registre applicatif s’en écarte</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Coins arrondis 4 · 10 · 16 px</td><td class="g">Rayon 0 partout</td><td>Une carte à angles vifs sur un fond de page se lit comme un défaut de rendu, pas comme une intention</td></tr>
+        <tr><td class="k">Trois niveaux d’élévation</td><td class="g">Aucune ombre, jamais</td><td>Une élévation pose une carte au-dessus de la page et dit, sans un mot, où se trouve la seule chose à faire</td></tr>
+        <tr><td class="k">Fraunces en serif d’affichage</td><td class="g">Aucune police serif</td><td>Toutes les interfaces concurrentes composent en sans géométrique. La serif rend le produit reconnaissable en une demi-seconde</td></tr>
+        <tr><td class="k">Surfaces tièdes <span style="font-family:var(--mono);font-size:7.4pt;">#FAF7F2</span></td><td class="g">Blanc pur</td><td>Le blanc pur fatigue au-delà de vingt minutes de lecture, et le produit se lit plus longtemps que la vitrine</td></tr>
+        <tr class="fin"><td class="k">Mode sombre complet</td><td class="g">Absent de la charte mère</td><td>Une partie des sessions se fait la nuit, sur téléphone, dans une pièce peu éclairée</td></tr>
+      </tbody>
+    </table>
+
+    <div class="lab">Ce qui reste non négociable</div>
+    <div class="cols">
+      <div>
+        <p><strong>Les six jetons de marque.</strong> Encre, navy, bleu signal et ses deux
+        états, blanc. Ils sont importés depuis la source institutionnelle, et un test
+        relit cette source à chaque exécution.</p>
+      </div>
+      <div>
+        <p><strong>Le « 5 » incliné.</strong> À moins cinq degrés, en bleu, dans toutes les
+        variantes et sur tous les fonds. Ne jamais le redresser, ne jamais le recolorer.</p>
+      </div>
+      <div>
+        <p><strong>La différenciation par le nom.</strong> Les branches partagent une seule
+        identité visuelle. Un produit ne prend jamais sa propre couleur.</p>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:7mm;">
+      Ces cinq libertés ne sont pas des tolérances laissées à l’appréciation de chacun :
+      elles forment une <strong>liste fermée</strong>. Un produit qui a besoin d’une
+      sixième liberté a un problème de conception que le design ne résout pas.
+    </div>
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>03</b></div>
+</section>
+
+<!-- ======================= 02 · LES TROIS COUCHES ======================= -->
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>02 · Les trois couches</span></div>
+  <div class="body">
+    <div class="op">
+      <div class="num">02</div>
+      <div>
+        <div class="eyebrow">Les trois couches</div>
+        <h1>Quand tout se discute,<br><em>tout dérive.</em></h1>
+      </div>
+    </div>
+    <p class="lede">
+      Le noyau ne bouge presque jamais. Les densités bougent à l’arrivée d’un produit.
+      L’écosystème bouge au fil des besoins. Trois rythmes dans un seul document, et c’est
+      toujours le plus lent qui se fait emporter.</p>
+
+    <div class="lab">La répartition</div>
+    <table>
+      <thead><tr><th style="width:30mm;">Couche</th><th style="width:34mm;">Rythme</th><th>Ce qu’elle contient</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="k">Noyau</td>
+          <td class="g">Presque jamais. Le toucher est un événement, pas une correction</td>
+          <td>Jetons de marque et jetons dérivés, typographie, huit composants, iconographie, voix, mode sombre</td>
+        </tr>
+        <tr>
+          <td class="k">Densités</td>
+          <td class="g">À l’ajout d’un produit, et seulement là</td>
+          <td>Quatre profils d’espacement. Aucune couleur, aucune police, aucune taille de texte</td>
+        </tr>
+        <tr class="fin">
+          <td class="k">Écosystème</td>
+          <td class="g">Au fil des besoins inter-produits</td>
+          <td>Menu de compte, sélecteur d’organisation, écran d’accès refusé, bandeau d’environnement</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="lab">Ce que le système ne fera jamais</div>
+    <div class="cols">
+      <div class="planche clair">
+        <div class="t">Modifier la marque</div>
+        <div class="d">Les six jetons institutionnels sont recopiés et vérifiés, jamais
+        amendés. Un produit qui redéfinit <code>--marque-action</code> dérive la marque
+        sans que personne ne l’ait décidé.</div>
+      </div>
+      <div class="planche clair">
+        <div class="t">Régenter la vitrine</div>
+        <div class="d">Le site, les présentations et les documents commerciaux restent
+        sous l’autorité de la charte mère. Ce système ne parle que des produits.</div>
+      </div>
+    </div>
+
+    <div class="lab">Le contrat de jetons</div>
+    <p>
+      Aucune spécification de sprint ne cite une couleur brute. Elles citent toutes une
+      variable. Une spécification qui écrit <code>#2251FF</code> est fausse ; une
+      spécification qui écrit <code>--action</code> est juste. La différence n’est pas
+      cosmétique : la première fige une valeur dans un document que personne ne relira,
+      la seconde suit le système quand il corrige un contraste.</p>
+
+    <div class="note" style="margin-top:6mm;">
+      <strong>La couche écosystème est délibérément vide aujourd’hui.</strong> Un composant
+      inter-produits ne s’écrit qu’au moment où un deuxième produit le réclame. Écrit plus
+      tôt, il fige une hypothèse au lieu d’un besoin.
+    </div>
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>04</b></div>
+</section>
+
+<!-- ======================= 03 · JETONS DE MARQUE ======================= -->
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>03 · Jetons de marque</span></div>
+  <div class="body">
+    <div class="op">
+      <div class="num">03</div>
+      <div>
+        <div class="eyebrow">Les jetons de marque</div>
+        <h1>Six valeurs importées.<br><em>Jamais redéfinies.</em></h1>
+      </div>
+    </div>
+    <p class="lede">
+      Un seul fichier du dépôt écrit une couleur de marque en clair, et il est généré.
+      Tout le reste pointe vers lui. C’est la seule façon connue d’empêcher une marque de
+      dériver : lui retirer les endroits où elle le pourrait.</p>
+
+    <div class="lab">Les six jetons</div>
+    <table>
+      <thead><tr><th style="width:30mm;">Aperçu</th><th style="width:24mm;">Valeur</th><th style="width:44mm;">Jeton</th><th>Source amont</th></tr></thead>
+      <tbody>
+        <tr><td><span class="sw" style="background:#051C2C;"></span></td><td class="m">#051C2C</td><td class="k">--marque-encre</td><td class="g">--ai5d-ink</td></tr>
+        <tr><td><span class="sw" style="background:#042A76;"></span></td><td class="m">#042A76</td><td class="k">--marque-navy</td><td class="g">--ai5d-navy</td></tr>
+        <tr><td><span class="sw" style="background:#2251FF;"></span></td><td class="m">#2251FF</td><td class="k">--marque-action</td><td class="g">--ai5d-blue</td></tr>
+        <tr><td><span class="sw" style="background:#1B44DB;"></span></td><td class="m">#1B44DB</td><td class="k">--marque-action-survol</td><td class="g">--ai5d-blue-hover</td></tr>
+        <tr><td><span class="sw" style="background:#5B7BFF;"></span></td><td class="m">#5B7BFF</td><td class="k">--marque-action-clair</td><td class="g">--ai5d-blue-light</td></tr>
+        <tr class="fin"><td><span class="sw claire" style="background:#FFFFFF;"></span></td><td class="m">#FFFFFF</td><td class="k">--marque-blanc</td><td class="g">--ai5d-white</td></tr>
+      </tbody>
+    </table>
+
+    <div class="lab">La copie est vérifiée, pas supposée</div>
+    <p>
+      <code>marque.css</code> est produit par un générateur qui recopie ces six valeurs
+      depuis la source institutionnelle et inscrit dans l’en-tête l’empreinte du fichier
+      d’origine. Un test relit cette source à chaque exécution et échoue si la copie a
+      divergé. Recopier sans vérifier revient à créer une seconde source de vérité qui se
+      désynchronise en silence.</p>
+
+    <pre>/* Généré par _build/synchroniser-marque.mjs. Ne pas modifier à la main.
+   Source    : AI5D_Brand_2026/tokens.css
+   Empreinte : sha256(16) 03292c3bfad69b1b
+   Synchronisé le 2026-09-05 */</pre>
+
+    <div class="lab">La répartition de la couleur</div>
+    <div class="bar" style="margin-bottom:3mm;">
+      <div style="flex:65;background:var(--papier-chaud);color:var(--texte-faible);">65 % surfaces</div>
+      <div style="flex:25;background:var(--encre);color:var(--blanc);">25 % encre</div>
+      <div style="flex:7;background:var(--action);color:var(--blanc);">7</div>
+      <div style="flex:3;background:var(--reussite);color:var(--blanc);">3</div>
+    </div>
+    <p class="small">
+      Le bleu et le vert réunis ne dépassent jamais un dixième de la surface. Un bleu
+      partout n’est plus un signal : il devient un décor, et l’action disparaît dedans.</p>
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>05</b></div>
+</section>
+
+<!-- ======================= 04 · PALETTE CLAIRE ======================= -->
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>04 · Palette claire</span></div>
+  <div class="body">
+    <div class="op">
+      <div class="num">04</div>
+      <div>
+        <div class="eyebrow">Palette claire</div>
+        <h1>Le blanc pur durcit.<br><em>Le papier tiède accueille.</em></h1>
+      </div>
+    </div>
+    <p class="lede">
+      Vingt minutes de lecture sur du blanc pur, et l’œil se ferme. La marque
+      institutionnelle n’a pas ce problème : on ne lit pas une page de présentation, on la
+      parcourt. Ces jetons n’ont donc aucun équivalent en amont.</p>
+
+    <div class="lab">Surfaces</div>
+    <table class="serre">
+      <thead><tr><th style="width:30mm;">Aperçu</th><th style="width:24mm;">Valeur</th><th style="width:38mm;">Jeton</th><th>Rôle</th></tr></thead>
+      <tbody>
+        <tr><td><span class="sw claire" style="background:#FAF7F2;"></span></td><td class="m">#FAF7F2</td><td class="k">--surface-1</td><td class="g">Fond de page. Tiède, jamais blanc pur</td></tr>
+        <tr><td><span class="sw claire" style="background:#FFFFFF;"></span></td><td class="m">#FFFFFF</td><td class="k">--surface-2</td><td class="g">Cartes, panneaux, champs</td></tr>
+        <tr><td><span class="sw claire" style="background:#FFFFFF;"></span></td><td class="m">#FFFFFF</td><td class="k">--surface-3</td><td class="g">Menus, dialogues, éléments flottants</td></tr>
+        <tr><td><span class="sw claire" style="background:#F4EFE7;"></span></td><td class="m">#F4EFE7</td><td class="k">--surface-chaude</td><td class="g">Lectures longues, encadrés</td></tr>
+        <tr><td><span class="sw claire" style="background:#E7E0D6;"></span></td><td class="m">#E7E0D6</td><td class="k">--bordure</td><td class="g">Filets courants</td></tr>
+        <tr class="fin"><td><span class="sw claire" style="background:#D5CCBE;"></span></td><td class="m">#D5CCBE</td><td class="k">--bordure-forte</td><td class="g">Filets appuyés, contours de contrôle</td></tr>
+      </tbody>
+    </table>
+
+    <div class="lab">Texte et sémantiques, avec leur contraste le plus faible</div>
+    <table class="serre">
+      <thead><tr><th style="width:30mm;">Aperçu</th><th style="width:24mm;">Valeur</th><th style="width:38mm;">Jeton</th><th>Usage</th><th style="width:14mm;text-align:right;">Ratio</th></tr></thead>
+      <tbody>
+        <tr><td><span class="sw" style="background:#051C2C;"></span></td><td class="m">#051C2C</td><td class="k">--texte-fort</td><td class="g">Titres, chiffres, libellés</td><td class="c">15,18</td></tr>
+        <tr><td><span class="sw" style="background:#2B3A45;"></span></td><td class="m">#2B3A45</td><td class="k">--texte</td><td class="g">Corps, texte courant</td><td class="c">10,23</td></tr>
+        <tr><td><span class="sw" style="background:#616F78;"></span></td><td class="m">#616F78</td><td class="k">--texte-faible</td><td class="g">Aides, métadonnées, descriptions</td><td class="c">4,53</td></tr>
+        <tr><td><span class="sw" style="background:#0E7C5A;"></span></td><td class="m">#0E7C5A</td><td class="k">--reussite</td><td class="g">Acquis, terminé, validé</td><td class="c">4,58</td></tr>
+        <tr><td><span class="sw" style="background:#B45309;"></span></td><td class="m">#B45309</td><td class="k">--attention</td><td class="g">Adresse non confirmée, quota proche</td><td class="c">4,54</td></tr>
+        <tr><td><span class="sw" style="background:#B42318;"></span></td><td class="m">#B42318</td><td class="k">--erreur</td><td class="g">Échec, validation refusée</td><td class="c">5,75</td></tr>
+        <tr class="fin"><td><span class="sw" style="background:#2251FF;"></span></td><td class="m">#2251FF</td><td class="k">--action</td><td class="g">Boutons, liens, repères</td><td class="c">4,96</td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin-top:2.5mm;">
+      Ratio le plus faible des trois surfaces claires. Le seuil du texte courant est 4,5.</p>
+
+    <div class="note" style="margin-top:2mm;">
+      <strong>Aucune information n’est portée par la seule couleur.</strong> Réussite et erreur
+      portent aussi un mot ou une icône : près d’un homme sur douze ne distingue pas le rouge
+      du vert.
+    </div>
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>06</b></div>
+</section>
+
+<!-- ======================= 05 · PALETTE SOMBRE ======================= -->
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>05 · Palette sombre</span></div>
+  <div class="body">
+    <div class="op">
+      <div class="num">05</div>
+      <div>
+        <div class="eyebrow">Palette sombre</div>
+        <h1>Ici, la profondeur vient de<br>la lumière. <em>Pas de l’ombre.</em></h1>
+      </div>
+    </div>
+    <p class="lede">
+      Une partie des sessions se fait la nuit, sur téléphone, dans une pièce peu éclairée.
+      Le mode sombre n’est donc pas une préférence : c’est le mode de référence d’une
+      partie des écrans. Il se traite au premier écran, jamais au dernier.</p>
+
+    <div class="lab">Surfaces et texte</div>
+    <table>
+      <thead><tr><th style="width:30mm;">Aperçu</th><th style="width:24mm;">Valeur</th><th style="width:38mm;">Jeton</th><th>Rôle</th></tr></thead>
+      <tbody>
+        <tr><td><span class="sw" style="background:#0B1620;"></span></td><td class="m">#0B1620</td><td class="k">--surface-1</td><td class="g">Fond de page. Encre profonde, jamais noir pur</td></tr>
+        <tr><td><span class="sw" style="background:#11212D;"></span></td><td class="m">#11212D</td><td class="k">--surface-2</td><td class="g">Cartes et panneaux</td></tr>
+        <tr><td><span class="sw" style="background:#172C3B;"></span></td><td class="m">#172C3B</td><td class="k">--surface-3</td><td class="g">Menus, dialogues, éléments flottants</td></tr>
+        <tr><td><span class="sw" style="background:#171F26;"></span></td><td class="m">#171F26</td><td class="k">--surface-chaude</td><td class="g">Lectures longues</td></tr>
+        <tr><td><span class="sw" style="background:#6B88FF;"></span></td><td class="m">#6B88FF</td><td class="k">--action</td><td class="g">Le bleu s’éclaircit pour rester lisible</td></tr>
+        <tr><td><span class="sw" style="background:#2FA37B;"></span></td><td class="m">#2FA37B</td><td class="k">--reussite</td><td class="g">Acquis, terminé</td></tr>
+        <tr class="fin"><td><span class="sw" style="background:#C9D4DC;"></span></td><td class="m">#C9D4DC</td><td class="k">--texte</td><td class="g">Titres à #F2F5F7, secondaire à #8D9AA5</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>07</b></div>
+</section>
+
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>05 · Palette sombre</span></div>
+  <div class="body">
+    <div class="eyebrow">Palette sombre · suite</div>
+    <h1>Trois mécanismes changent<br>de nature. <em>Un seul se voit.</em></h1>
+    <p class="lede" style="margin-top:5mm;">Le mode sombre n’est pas la palette claire
+      inversée. L’ombre y disparaît, le bleu y change de valeur, et le troisième mécanisme
+      ne se remarque que le jour où il manque.</p>
+
+    <div class="lab">Trois règles</div>
+    <table>
+      <tbody>
+        <tr><td class="k" style="width:44mm;">Les ombres disparaissent</td><td>Une ombre portée sur fond sombre ne se voit pas, et la simuler produit du gris sale. Les trois niveaux d’élévation valent <code>none</code>. Une surface plus claire est une surface plus proche : c’est là toute la hiérarchie.</td></tr>
+        <tr><td class="k">Le bleu s’éclaircit</td><td>C’est le seul jeton hérité dont la valeur change entre les deux thèmes. Le chapitre suivant explique pourquoi <code>#5B7BFF</code> ne suffisait pas.</td></tr>
+        <tr class="fin"><td class="k">Aucun scintillement</td><td>Le thème est appliqué avant le premier rendu. Un flash blanc au chargement trahit une interface mal faite, et se remarque précisément la nuit.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="lab">La même carte, dans les deux thèmes</div>
+    <div class="cols">
+      <div class="planche clair">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3mm;">
+          <span class="past" style="background:var(--reussite-fond);color:var(--reussite);">Vérifiée</span>
+          <span style="font-family:var(--mono);font-size:6pt;letter-spacing:.16em;color:var(--texte-faible);font-weight:500;">IL Y A 2 MIN</span>
+        </div>
+        <div class="t">Session sur Chrome, Dakar</div>
+        <div class="d">Dernière activité le 5 septembre à 14 h 40</div>
+        <div style="margin-top:4mm;"><span class="btn dis" style="padding:0;height:auto;">Fermer cette session</span></div>
+      </div>
+      <div class="planche sombre">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3mm;">
+          <span class="past" style="background:#103029;color:var(--reussite-sombre);">Vérifiée</span>
+          <span style="font-family:var(--mono);font-size:6pt;letter-spacing:.16em;color:var(--texte-faible-sombre);font-weight:500;">IL Y A 2 MIN</span>
+        </div>
+        <div class="t">Session sur Chrome, Dakar</div>
+        <div class="d">Dernière activité le 5 septembre à 14 h 40</div>
+        <div style="margin-top:4mm;"><span class="btn dis" style="padding:0;height:auto;">Fermer cette session</span></div>
+      </div>
+    </div>
+    <p class="small" style="margin-top:3mm;">
+      À gauche, la carte porte une élévation légère et se détache du papier. À droite, elle
+      n’a plus d’ombre du tout : c’est sa surface, plus claire que le fond de page, qui la
+      fait avancer.</p>
+
+    <div class="lab">Les trois états du thème</div>
+    <table class="serre">
+      <thead><tr><th style="width:44mm;">État</th><th style="width:52mm;">Ce qui le déclenche</th><th>Ce qui l’emporte</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Préférence du système</td><td class="g">Aucun choix enregistré sur le compte</td><td class="g">La requête média du navigateur décide</td></tr>
+        <tr><td class="k">Choix explicite clair</td><td class="g"><code>data-theme="light"</code> sur la racine</td><td class="g">Le compte, même si le système est en sombre</td></tr>
+        <tr class="fin"><td class="k">Choix explicite sombre</td><td class="g"><code>data-theme="dark"</code> sur la racine</td><td class="g">Le compte, même si le système est en clair</td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin-top:2.6mm;">
+      L’ordre compte : la règle du choix explicite est écrite après celle de la préférence
+      système, sinon elle ne gagnerait jamais.</p>
+
+    <div class="note" style="margin-top:2mm;">
+      <strong>Le mode sombre se traite au premier écran, pas au dernier.</strong> Ajouté après
+      coup, il oblige à reprendre chaque couleur déjà posée, et c’est à ce moment-là qu’on
+      découvre qu’un écran quelque part avait choisi sa couleur dans son coin.
+    </div>
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>08</b></div>
+</section>
+
+<!-- ======================= 06 · LES ÉCARTS MESURÉS ======================= -->
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>06 · Les écarts mesurés</span></div>
+  <div class="body">
+    <div class="op">
+      <div class="num">06</div>
+      <div>
+        <div class="eyebrow">Les écarts mesurés</div>
+        <h1>Quatre divergences.<br><em>Trois bonnes décisions.</em></h1>
+      </div>
+    </div>
+    <p class="lede">
+      Quatre jetons sémantiques avaient divergé sans que personne ne l’ait décidé. Cela
+      avait toutes les apparences d’une faute. Le calcul des contrastes a dit l’inverse.</p>
+
+    <div class="lab">Ce qui avait divergé</div>
+    <table>
+      <thead><tr><th style="width:44mm;">Jeton</th><th style="width:34mm;">Marque mère</th><th>Chartes dérivées</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Réussite</td><td class="m">#1E874B</td><td class="m">#0E7C5A</td></tr>
+        <tr><td class="k">Erreur</td><td class="m">#D02B2B</td><td class="m">#B42318</td></tr>
+        <tr><td class="k">Avertissement</td><td class="m">#B7791F</td><td class="m">#B45309</td></tr>
+        <tr class="fin"><td class="k">Texte secondaire</td><td class="m">#757575</td><td class="m">#6B7A85</td></tr>
+      </tbody>
+    </table>
+
+    <div class="lab">Ce que la mesure a répondu</div>
+    <table>
+      <thead><tr><th style="width:52mm;">Valeur sur son fond</th><th style="width:22mm;text-align:right;">Ratio</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td>Réussite institutionnelle <span class="m">#1E874B</span> sur blanc</td><td class="c">4,54</td><td class="g">Tient</td></tr>
+        <tr><td>Réussite institutionnelle <span class="m">#1E874B</span> sur papier tiède</td><td class="c" style="color:var(--erreur);">4,25</td><td style="color:var(--erreur);font-weight:600;">Échoue</td></tr>
+        <tr><td>Réussite applicative <span class="m">#0E7C5A</span> sur papier tiède</td><td class="c">4,85</td><td class="g">Tient</td></tr>
+        <tr><td>Avertissement institutionnel <span class="m">#B7791F</span> sur blanc</td><td class="c" style="color:var(--erreur);">3,64</td><td style="color:var(--erreur);font-weight:600;">Échoue</td></tr>
+        <tr><td>Avertissement applicatif <span class="m">#B45309</span> sur papier tiède</td><td class="c">4,70</td><td class="g">Tient</td></tr>
+        <tr class="fin"><td>Erreur applicative <span class="m">#B42318</span> sur papier tiède</td><td class="c">6,15</td><td class="g">Tient</td></tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top:5mm;">
+      <strong>Trois des quatre écarts étaient de bonnes décisions prises sans avoir été
+      écrites.</strong> Sur la surface tiède du registre applicatif, les valeurs
+      institutionnelles lâchent. Le système les entérine donc, avec leur justification
+      chiffrée, plutôt que de les corriger vers une valeur qui échoue.</p>
+
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>09</b></div>
+</section>
+
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>06 · Les écarts mesurés</span></div>
+  <div class="body">
+    <div class="eyebrow">Les écarts mesurés · suite</div>
+    <h1>Le quatrième écart, lui,<br>était <em>un vrai défaut.</em></h1>
+    <p class="lede" style="margin-top:5mm;">Les trois premiers étaient de bonnes décisions
+      non écrites. Le quatrième échouait des deux côtés à la fois. Personne ne l’avait vu,
+      parce que personne ne mesurait.</p>
+
+    <div class="lab">Le texte secondaire</div>
+    <p>
+      Le texte secondaire hérité, <code>#6B7A85</code>, donnait 4,14 sur le papier tiède et
+      4,42 sur le blanc : il échouait partout. Une première correction à
+      <code>#66747E</code> réglait le papier et le blanc mais restait à 4,20 sur la surface
+      chaude, plus sombre que les deux autres. La valeur retenue, <strong>#616F78</strong>,
+      tient les trois : 4,85 sur le fond de page, 5,18 sur le blanc, 4,53 sur la surface
+      chaude. La teinte et la saturation sont conservées ; seule la luminosité baisse.</p>
+
+    <div class="lab">Et un défaut que seul le registre applicatif pouvait produire</div>
+    <p>
+      La marque déclare <code>--ai5d-blue-light #5B7BFF</code> pour les liens sur fond encre
+      ou navy. Sur l’encre, il tient : 4,73. Mais le registre applicatif introduit des
+      surfaces que la marque n’a jamais eues, <code>#11212D</code> pour les cartes et
+      <code>#172C3B</code> pour les menus, où il tombe à <strong>4,47</strong> et
+      <strong>3,92</strong>. Un lien posé sur une carte, en mode sombre, échouait donc.</p>
+    <p style="margin-top:2.5mm;">
+      Le jeton de marque n’a pas été touché : il reste importé tel quel et garde son usage
+      institutionnel. Le noyau déclare à côté un jeton applicatif distinct,
+      <code>--action-sur-sombre</code> à <strong>#6B88FF</strong>, qui tient sur les trois
+      surfaces sombres et sur l’encre.</p>
+
+    <div class="note" style="margin-top:6mm;">
+      Ces quatre défauts n’ont pas été trouvés par relecture, mais par un test qui recalcule
+      <strong>quarante-quatre paires de contraste</strong> à chaque exécution, en clair et en
+      sombre, et échoue sous 4,5.
+    </div>
+
+    <div class="lab">Les quatre défauts trouvés le jour où la garde a été écrite</div>
+    <table>
+      <thead><tr><th style="width:42mm;">Jeton</th><th style="width:34mm;">Sur quelle surface</th><th style="width:16mm;text-align:right;">Avant</th><th style="width:16mm;text-align:right;">Après</th><th>Nature</th></tr></thead>
+      <tbody>
+        <tr><td class="k">--texte-faible</td><td class="g">Les trois surfaces claires</td><td class="c" style="color:var(--erreur);">4,14</td><td class="c">4,53</td><td class="g">Défaut hérité de la charte</td></tr>
+        <tr><td class="k">--action, mode sombre</td><td class="g">Carte <span class="m">#11212D</span></td><td class="c" style="color:var(--erreur);">4,47</td><td class="c">5,15</td><td class="g">Surface inconnue de la marque</td></tr>
+        <tr><td class="k">--action, mode sombre</td><td class="g">Menu <span class="m">#172C3B</span></td><td class="c" style="color:var(--erreur);">3,92</td><td class="c">4,51</td><td class="g">Surface inconnue de la marque</td></tr>
+        <tr class="fin"><td class="k">--reussite-fond, sombre</td><td class="g">Fond de pastille</td><td class="c" style="color:var(--erreur);">4,45</td><td class="c">4,63</td><td class="g">Valeur saisie sans mesure</td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin-top:2.6mm;">
+      Aucun de ces quatre écarts n’était visible à l’œil. Trois d’entre eux étaient en
+      production.</p>
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>10</b></div>
+</section>
+
+<!-- ======================= 07 · TYPOGRAPHIE ======================= -->
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>07 · Typographie</span></div>
+  <div class="body">
+    <div class="op">
+      <div class="num">07</div>
+      <div>
+        <div class="eyebrow">Typographie</div>
+        <h1>Une serif pour signer.<br>Une sans <em>pour travailler.</em></h1>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8mm;align-items:flex-start;margin-top:3.6mm;">
+      <div style="font-family:var(--serif);font-size:38pt;font-weight:400;color:var(--encre);line-height:1;width:34mm;">Aa</div>
+      <div style="flex:1;">
+        <div style="font-family:var(--serif);font-size:13pt;color:var(--encre);margin-bottom:1.6mm;">Fraunces · 300 à 500</div>
+        <p class="small" style="color:var(--texte);">Affichage et signature : titres d’écran, noms propres, en-têtes de courriel. Toutes les interfaces voisines composent en sans géométrique, et c’est elle qui rend un produit AI5D reconnaissable en une demi-seconde. Elle signe, elle ne raconte pas.</p>
+      </div>
+    </div>
+    <div style="display:flex;gap:8mm;align-items:flex-start;margin-top:4.4mm;padding-top:4.4mm;border-top:.4pt solid var(--bordure);">
+      <div style="font-family:var(--sans);font-size:38pt;font-weight:500;color:var(--encre);line-height:1;width:34mm;letter-spacing:-.02em;">Aa</div>
+      <div style="flex:1;">
+        <div style="font-family:var(--sans);font-size:12.5pt;font-weight:600;color:var(--encre);margin-bottom:1.6mm;">Inter · 400 à 700</div>
+        <p class="small" style="color:var(--texte);">Interface et lecture : formulaires, navigation, journaux, mentions légales. Héritée de la maison mère, elle assure la continuité entre la vitrine et le produit, et supporte les sessions longues sans fatiguer.</p>
+      </div>
+    </div>
+    <div style="display:flex;gap:8mm;align-items:flex-start;margin-top:4.4mm;padding-top:4.4mm;border-top:.4pt solid var(--bordure);">
+      <div style="font-family:var(--mono);font-size:32pt;font-weight:500;color:var(--encre);line-height:1;width:34mm;">Aa</div>
+      <div style="flex:1;">
+        <div style="font-family:var(--mono);font-size:11pt;font-weight:500;color:var(--encre);margin-bottom:1.6mm;">JetBrains Mono · 500</div>
+        <p class="small" style="color:var(--texte);">Identification : codes à deux facteurs, empreintes de session, identifiants. Une chaîne qu’on recopie caractère par caractère se compose en chasse fixe, sinon le zéro et la lettre O se confondent au mauvais moment.</p>
+      </div>
+    </div>
+
+    <div class="lab">Hiérarchie</div>
+    <table>
+      <thead><tr><th style="width:26mm;">Niveau</th><th style="width:44mm;">Police</th><th style="width:22mm;">Taille</th><th>Usage</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Display</td><td class="g">Fraunces 300 · 400</td><td class="m">48 · 56 px</td><td class="g">Titre de page, écran d’accueil</td></tr>
+        <tr><td class="k">H1</td><td class="g">Fraunces 500</td><td class="m">30 px</td><td class="g">Titre d’écran</td></tr>
+        <tr><td class="k">H2</td><td class="g">Inter 600</td><td class="m">22 px</td><td class="g">Section</td></tr>
+        <tr><td class="k">H3</td><td class="g">Inter 600</td><td class="m">18 px</td><td class="g">Intitulé de carte</td></tr>
+        <tr><td class="k">Corps</td><td class="g">Inter 400</td><td class="m">16 px</td><td class="g">Texte courant</td></tr>
+        <tr><td class="k">Petit</td><td class="g">Inter 400</td><td class="m">14 px</td><td class="g">Aides, descriptions</td></tr>
+        <tr><td class="k">Légende</td><td class="g">Inter 500</td><td class="m">12 px</td><td class="g">Métadonnées, horodatage</td></tr>
+        <tr><td class="k">Overline</td><td class="g">Inter 600 · +0,06 em</td><td class="m">12 px</td><td class="g">Capitales uniquement ici</td></tr>
+        <tr class="fin"><td class="k">Mono</td><td class="g">JetBrains Mono 500</td><td class="m">14 px</td><td class="g">Codes, empreintes, identifiants</td></tr>
+      </tbody>
+    </table>
+
+    <div class="cols" style="margin-top:6mm;">
+      <div class="note" style="flex:1.4;">
+        <strong>Trois règles.</strong> Une seule graisse par bloc : la hiérarchie se fait par
+        la taille, jamais par le gras. <strong>Fraunces ne compose jamais un
+        paragraphe.</strong> Les capitales sont réservées aux overlines.
+      </div>
+      <div>
+        <p class="small"><strong>134 Ko, en local.</strong> Trois fichiers pour huit
+        graisses : Inter et Fraunces sont variables, un seul fichier porte toute leur plage.
+        Sous-ensemble latin. <strong>Aucun appel à un service de polices tiers</strong>, et un
+        test le vérifie.</p>
+      </div>
+    </div>
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>11</b></div>
+</section>
+
+<!-- ======================= 08 · LES DENSITÉS ======================= -->
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>08 · Les densités</span></div>
+  <div class="body">
+    <div class="op">
+      <div class="num">08</div>
+      <div>
+        <div class="eyebrow">Les densités</div>
+        <h1>Même ADN partout.<br><em>Quatre respirations.</em></h1>
+      </div>
+    </div>
+    <p class="lede">
+      Une plateforme d’apprentissage et un atelier de données ne demandent pas le même air
+      entre les éléments. C’est la seule chose qui change d’un produit AI5D à l’autre.
+      Six variables d’espacement, et rien d’autre.</p>
+
+    <div class="lab">Les quatre profils</div>
+    <table>
+      <thead><tr><th style="width:42mm;">Variable</th><th style="text-align:right;">Aéré · Académie</th><th style="text-align:right;">Équilibré · Compte</th><th style="text-align:right;">Modéré · Cercle</th><th style="text-align:right;">Compact · Lab</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Rythme de section</td><td class="c">64 px</td><td class="c">48 px</td><td class="c">40 px</td><td class="c">32 px</td></tr>
+        <tr><td class="k">Padding de carte</td><td class="c">32 px</td><td class="c">24 px</td><td class="c">20 px</td><td class="c">16 px</td></tr>
+        <tr><td class="k">Hauteur de contrôle</td><td class="c">48 px</td><td class="c">48 px</td><td class="c">44 px</td><td class="c">40 px</td></tr>
+        <tr><td class="k">Ligne de liste</td><td class="c">64 px</td><td class="c">56 px</td><td class="c">48 px</td><td class="c">40 px</td></tr>
+        <tr><td class="k">Interligne du corps</td><td class="c">1,6</td><td class="c">1,55</td><td class="c">1,5</td><td class="c">1,45</td></tr>
+        <tr class="fin"><td class="k">Largeur de contenu</td><td class="c">1120 px</td><td class="c">1120 px</td><td class="c">1280 px</td><td class="c">pleine</td></tr>
+      </tbody>
+    </table>
+
+    <div class="lab">La même liste, dans les quatre profils</div>
+    <div style="display:flex;gap:4mm;">
+      <div style="flex:1;background:var(--blanc);border:.4pt solid var(--bordure);border-radius:10px;padding:5.6mm;">
+        <div style="font-family:var(--mono);font-size:5.6pt;letter-spacing:.18em;color:var(--action);font-weight:500;margin-bottom:2.6mm;">AÉRÉ</div>
+        <div style="height:11.3mm;border-bottom:.4pt solid var(--bordure);display:flex;align-items:center;font-size:7.4pt;">Sessions actives</div>
+        <div style="height:11.3mm;border-bottom:.4pt solid var(--bordure);display:flex;align-items:center;font-size:7.4pt;">Mot de passe</div>
+        <div style="height:11.3mm;display:flex;align-items:center;font-size:7.4pt;">Organisations</div>
+      </div>
+      <div style="flex:1;background:var(--blanc);border:.4pt solid var(--bordure);border-radius:10px;padding:4.2mm;">
+        <div style="font-family:var(--mono);font-size:5.6pt;letter-spacing:.18em;color:var(--action);font-weight:500;margin-bottom:2.6mm;">ÉQUILIBRÉ</div>
+        <div style="height:9.9mm;border-bottom:.4pt solid var(--bordure);display:flex;align-items:center;font-size:7.4pt;">Sessions actives</div>
+        <div style="height:9.9mm;border-bottom:.4pt solid var(--bordure);display:flex;align-items:center;font-size:7.4pt;">Mot de passe</div>
+        <div style="height:9.9mm;display:flex;align-items:center;font-size:7.4pt;">Organisations</div>
+      </div>
+      <div style="flex:1;background:var(--blanc);border:.4pt solid var(--bordure);border-radius:10px;padding:3.5mm;">
+        <div style="font-family:var(--mono);font-size:5.6pt;letter-spacing:.18em;color:var(--action);font-weight:500;margin-bottom:2.6mm;">MODÉRÉ</div>
+        <div style="height:8.5mm;border-bottom:.4pt solid var(--bordure);display:flex;align-items:center;font-size:7.4pt;">Sessions actives</div>
+        <div style="height:8.5mm;border-bottom:.4pt solid var(--bordure);display:flex;align-items:center;font-size:7.4pt;">Mot de passe</div>
+        <div style="height:8.5mm;display:flex;align-items:center;font-size:7.4pt;">Organisations</div>
+      </div>
+      <div style="flex:1;background:var(--blanc);border:.4pt solid var(--bordure);border-radius:10px;padding:2.8mm;">
+        <div style="font-family:var(--mono);font-size:5.6pt;letter-spacing:.18em;color:var(--action);font-weight:500;margin-bottom:2.6mm;">COMPACT</div>
+        <div style="height:7.1mm;border-bottom:.4pt solid var(--bordure);display:flex;align-items:center;font-size:7.4pt;">Sessions actives</div>
+        <div style="height:7.1mm;border-bottom:.4pt solid var(--bordure);display:flex;align-items:center;font-size:7.4pt;">Mot de passe</div>
+        <div style="height:7.1mm;display:flex;align-items:center;font-size:7.4pt;">Organisations</div>
+      </div>
+    </div>
+    <p class="small" style="margin-top:2.6mm;">
+      Le texte fait 7,4 points dans les quatre. Seul l’espace change.</p>
+
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>12</b></div>
+</section>
+
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>08 · Les densités</span></div>
+  <div class="body">
+    <div class="eyebrow">Les densités · suite</div>
+    <h1>Deux règles. Et <em>elles<br>ne se négocient pas.</em></h1>
+    <p class="lede" style="margin-top:5mm;">Un profil dense dérive vers le confort de celui
+      qui l’écrit. En six mois, il devient illisible. Ces deux règles sont ce qui l’en
+      empêche.</p>
+
+    <div class="lab">Les deux règles</div>
+    <table>
+      <tbody>
+        <tr>
+          <td class="k" style="width:56mm;">La densité change l’espace entre les choses, jamais la taille du texte</td>
+          <td>Sans cette règle, le profil compact devient illisible en six mois : c’est la pente naturelle de tout profil dense, et la vigilance ne la corrige pas. Le fichier des profils ne contient donc ni couleur, ni famille, ni taille de police, et un test échoue s’il en apparaît une.</td>
+        </tr>
+        <tr class="fin">
+          <td class="k">Le plancher tactile de 44 px prime sur les quatre profils</td>
+          <td>Le Lab descend à 40 px sur un écran de bureau avec une souris. Jamais sur un téléphone : une cible de 40 px y produit des erreurs de saisie que la personne attribue à l’application, jamais à son doigt. La règle s’exprime une seule fois, en requête média, et n’est donc pas négociable écran par écran.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <pre style="margin-top:5mm;">@media (pointer: coarse) {
+  :root,
+  [data-densite] {
+    --hauteur-controle: max(var(--hauteur-controle), 44px);
+    --ligne-liste:      max(var(--ligne-liste), 44px);
+  }
+}</pre>
+    <p class="small" style="margin-top:2.6mm;">
+      Le sélecteur générique <code>[data-densite]</code> couvre aussi les profils qu’on
+      ajouterait plus tard et que personne n’aurait pensé à vérifier.</p>
+
+    <div class="lab">Ce qui ne varie jamais d’un profil à l’autre</div>
+    <div class="cols">
+      <div><p class="small">Les couleurs. Les polices. Les tailles de texte.</p></div>
+      <div><p class="small">Les rayons. L’élévation. L’épaisseur des icônes.</p></div>
+      <div><p class="small">Les significations sémantiques. Le plancher tactile.</p></div>
+    </div>
+    <p style="margin-top:3.4mm;">
+      Un produit qui a besoin de changer l’un de ces éléments a un problème que la densité
+      ne résout pas. C’est le sens de la première règle : elle ne décrit pas une préférence
+      esthétique, elle empêche un produit de partir seul.</p>
+
+    <div class="lab">Ajouter un cinquième profil</div>
+    <p>
+      C’est autorisé, quand un produit ne rentre dans aucun des quatre et que la
+      démonstration est faite. Deux conditions de forme : le profil se déclare
+      <strong>avant</strong> le bloc du plancher tactile, sinon il le remplacerait, et il ne
+      touche qu’aux six variables d’espacement. Un test vérifie les deux.</p>
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>13</b></div>
+</section>
+
+<!-- ======================= 09 · LES HUIT COMPOSANTS ======================= -->
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>09 · Les huit composants</span></div>
+  <div class="body">
+    <div class="op">
+      <div class="num">09</div>
+      <div>
+        <div class="eyebrow">Les huit composants</div>
+        <h1>Un composant du noyau<br>garantit <em>ce qu’on oublie.</em></h1>
+      </div>
+    </div>
+    <p class="lede">
+      Ils ne sont pas dans le noyau parce qu’ils reviennent souvent. Ils y sont parce que
+      chacun porte une règle qu’un développeur pressé enfreindrait sans le vouloir, et sans
+      le voir. Aucun ne dépend d’un framework de style.</p>
+
+    <div class="lab">Ce que chacun garantit</div>
+    <table>
+      <thead><tr><th style="width:28mm;">Composant</th><th>Sa garantie</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Logotype</td><td>Le « 5 » incliné à moins cinq degrés et bleu, <strong>dans toutes les variantes</strong>. Par défaut les lettres suivent le texte fort, donc le logotype se retourne tout seul avec le thème</td></tr>
+        <tr><td class="k">Bouton</td><td>Trois variantes, trois tailles, hauteur pilotée par la densité, plancher tactile respecté, <code>aria-busy</code> pendant le chargement. Un seul bouton primaire par vue</td></tr>
+        <tr><td class="k">Champ</td><td>Le libellé est <strong>toujours</strong> lié par <code>htmlFor</code>, l’aide et l’erreur par <code>aria-describedby</code>, et l’erreur n’est jamais portée par la seule couleur</td></tr>
+        <tr><td class="k">Carte</td><td>Padding piloté par la densité. Cliquable, elle rend un <code>&lt;button&gt;</code>, jamais une <code>&lt;div&gt;</code> avec un gestionnaire de clic</td></tr>
+        <tr><td class="k">Bandeau</td><td>Une icône <strong>et</strong> un texte. <code>role="alert"</code> pour ce qui demande une réaction, <code>role="status"</code> pour ce qui informe</td></tr>
+        <tr><td class="k">Pastille</td><td>Un état compact, qui contient toujours du texte. Une pastille de couleur sans mot ne dit rien</td></tr>
+        <tr><td class="k">Icone</td><td>Lucide, contour, épaisseur 1,75. Décorative par défaut, accessible seulement si on lui donne un titre</td></tr>
+        <tr class="fin"><td class="k">GabaritAuth</td><td>Le gabarit d’authentification en deux colonnes, avec ses mesures. Voir le chapitre 11</td></tr>
+      </tbody>
+    </table>
+
+    <div class="lab" style="margin-top:5mm;">Trois refus, et leur raison</div>
+    <div class="cols">
+      <div class="planche clair">
+        <div class="t">Pas de div cliquable</div>
+        <div class="d">Une carte actionnable qui n’est pas un bouton n’est ni atteignable
+        au clavier ni annoncée comme actionnable. Le composant tranche à la place de
+        l’écran.</div>
+      </div>
+      <div class="planche clair">
+        <div class="t">Pas d’icône seule</div>
+        <div class="d">Un cadenas ne dit pas quelle licence manque, ni à qui la demander.
+        L’icône accompagne le mot, elle ne le remplace jamais dans une information d’état.</div>
+      </div>
+      <div class="planche clair">
+        <div class="t">Pas d’erreur en couleur seule</div>
+        <div class="d">Le champ pose <code>aria-invalid</code>, change la bordure et affiche
+        un texte. Les trois, ensemble, ou le message n’atteint pas tout le monde.</div>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:5mm;">
+      <strong>Pourquoi le gabarit d’authentification est dans le noyau.</strong> Tout produit
+      peut avoir à afficher un écran de session expirée, même si le portail Compte porte
+      l’essentiel des flux. Le placer dans l’écosystème obligerait chaque produit à en dépendre pour un écran qu’il affiche une fois par mois.
+    </div>
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>14</b></div>
+</section>
+
+<!-- ======================= 10 · PLANCHES ======================= -->
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>10 · Planches</span></div>
+  <div class="body">
+    <div class="op">
+      <div class="num">10</div>
+      <div>
+        <div class="eyebrow">Planches</div>
+        <h1>Rien ne change.<br><em>Sauf la lumière.</em></h1>
+      </div>
+    </div>
+
+    <div class="lab">Boutons · trois variantes</div>
+    <div class="planche clair" style="display:flex;gap:4mm;align-items:center;padding:5mm 6mm;">
+      <span class="btn pri">Se connecter</span>
+      <span class="btn sec">Annuler</span>
+      <span class="btn dis">Mot de passe oublié</span>
+      <span class="small" style="margin-left:auto;font-size:7pt;">Primaire, secondaire, discret</span>
+    </div>
+    <div class="planche sombre" style="display:flex;gap:4mm;align-items:center;padding:5mm 6mm;margin-top:3mm;">
+      <span class="btn pri">Se connecter</span>
+      <span class="btn sec">Annuler</span>
+      <span class="btn dis">Mot de passe oublié</span>
+      <span style="margin-left:auto;font-size:7pt;color:var(--texte-faible-sombre);">Un seul primaire par vue</span>
+    </div>
+
+    <div class="lab">Champs · normal et en erreur</div>
+    <div class="cols">
+      <div class="planche clair">
+        <div class="champ" style="margin-bottom:4mm;">
+          <span class="lb">Adresse électronique</span>
+          <div class="in">prenom.nom@exemple.fr</div>
+        </div>
+        <div class="champ">
+          <span class="lb">Mot de passe</span>
+          <div class="in err">••••••••</div>
+          <div class="msg">Adresse ou mot de passe incorrect.</div>
+        </div>
+      </div>
+      <div class="planche sombre">
+        <div class="champ" style="margin-bottom:4mm;">
+          <span class="lb">Adresse électronique</span>
+          <div class="in">prenom.nom@exemple.fr</div>
+        </div>
+        <div class="champ">
+          <span class="lb">Mot de passe</span>
+          <div class="in err">••••••••</div>
+          <div class="msg">Adresse ou mot de passe incorrect.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lab">Bandeaux et pastilles · quatre tons</div>
+    <div class="cols">
+      <div class="planche clair">
+        <div class="band" style="background:var(--attention-fond);color:var(--attention);margin-bottom:3mm;">
+          <span class="pt" style="background:var(--attention);"></span>
+          <span>Votre adresse n’est pas confirmée. Un lien vous a été envoyé.</span>
+        </div>
+        <div style="display:flex;gap:1.8mm;flex-wrap:wrap;">
+          <span class="past" style="background:#EAEFFF;color:var(--action);">Information</span>
+          <span class="past" style="background:var(--reussite-fond);color:var(--reussite);">Réussite</span>
+          <span class="past" style="background:var(--attention-fond);color:var(--attention);">Attention</span>
+          <span class="past" style="background:var(--erreur-fond);color:var(--erreur);">Erreur</span>
+        </div>
+      </div>
+      <div class="planche sombre">
+        <div class="band" style="background:#2E2413;color:var(--attention-sombre);margin-bottom:3mm;">
+          <span class="pt" style="background:var(--attention-sombre);"></span>
+          <span>Votre adresse n’est pas confirmée. Un lien vous a été envoyé.</span>
+        </div>
+        <div style="display:flex;gap:1.8mm;flex-wrap:wrap;">
+          <span class="past" style="background:#14203A;color:var(--action-sombre);">Information</span>
+          <span class="past" style="background:#103029;color:var(--reussite-sombre);">Réussite</span>
+          <span class="past" style="background:#2E2413;color:var(--attention-sombre);">Attention</span>
+          <span class="past" style="background:#331A18;color:var(--erreur-sombre);">Erreur</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="lab">Logotype · le « 5 » ne change jamais</div>
+    <div class="cols">
+      <div class="planche clair" style="display:flex;align-items:center;gap:6mm;padding:4.4mm 6mm;">
+        <span style="font-family:var(--sans);font-size:15pt;font-weight:600;color:var(--encre);letter-spacing:-.02em;">AI<span style="color:var(--action);display:inline-block;transform:rotate(-5deg);">5</span>D</span>
+        <span style="font-family:var(--serif);font-size:12pt;font-weight:300;color:var(--texte);">Compte</span>
+      </div>
+      <div class="planche sombre" style="display:flex;align-items:center;gap:6mm;padding:4.4mm 6mm;">
+        <span style="font-family:var(--sans);font-size:15pt;font-weight:600;color:var(--texte-fort-sombre);letter-spacing:-.02em;">AI<span style="color:var(--action-sombre);display:inline-block;transform:rotate(-5deg);">5</span>D</span>
+        <span style="font-family:var(--serif);font-size:12pt;font-weight:300;color:var(--texte-sombre);">Compte</span>
+      </div>
+    </div>
+    <p class="small" style="margin-top:3mm;">
+      Le label de produit suit en Fraunces léger. La différenciation se fait par le nom,
+      jamais par la couleur.</p>
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>15</b></div>
+</section>
+
+<!-- ======================= 11 · LE GABARIT D'AUTHENTIFICATION ======================= -->
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>11 · Gabarit d’authentification</span></div>
+  <div class="body">
+    <div class="op">
+      <div class="num">11</div>
+      <div>
+        <div class="eyebrow">Le gabarit d’authentification</div>
+        <h1>Cette disposition n’est pas<br>une proposition. <em>Elle est mesurée.</em></h1>
+      </div>
+    </div>
+    <p class="lede">
+      Elle vient de l’Académie, où elle est en production. Chacune de ses valeurs a été
+      relevée sur un écran réel, et chacune corrige un défaut constaté. Les raisons sont
+      recopiées ici parce qu’un jour, quelqu’un voudra les changer.</p>
+
+    <div class="lab">À partir de 1024 px · deux colonnes</div>
+    <div style="display:flex;border:.4pt solid var(--bordure);border-radius:10px;overflow:hidden;height:62mm;">
+      <div style="flex:1;background:var(--papier);display:flex;align-items:center;justify-content:center;padding:6mm;">
+        <div style="width:52mm;">
+          <div style="font-family:var(--serif);font-size:13pt;color:var(--encre);margin-bottom:1.4mm;letter-spacing:-.01em;">Connexion</div>
+          <div style="font-size:7pt;color:var(--texte-faible);margin-bottom:4mm;">Accédez à tous les produits AI5D.</div>
+          <div class="champ" style="margin-bottom:3mm;"><span class="lb" style="font-size:6.6pt;">Adresse électronique</span><div class="in" style="height:7.4mm;font-size:7pt;">prenom.nom@exemple.fr</div></div>
+          <div class="champ" style="margin-bottom:4mm;"><span class="lb" style="font-size:6.6pt;">Mot de passe</span><div class="in" style="height:7.4mm;font-size:7pt;">••••••••</div></div>
+          <div class="btn pri" style="width:100%;height:7.4mm;font-size:7.4pt;">Se connecter</div>
+        </div>
+      </div>
+      <div style="width:42%;max-width:70mm;background:var(--encre);padding:7mm;display:flex;flex-direction:column;justify-content:space-between;">
+        <span style="font-family:var(--sans);font-size:11pt;font-weight:600;color:var(--blanc);letter-spacing:-.02em;">AI<span style="color:var(--action-clair);display:inline-block;transform:rotate(-5deg);">5</span>D <span style="font-family:var(--serif);font-weight:300;font-size:10pt;">Compte</span></span>
+        <span style="font-family:var(--serif);font-size:13pt;font-weight:300;color:var(--blanc);line-height:1.24;letter-spacing:-.01em;">Un seul compte, tout l’écosystème.</span>
+      </div>
+    </div>
+    <p class="small" style="margin-top:2.6mm;">
+      Formulaire à gauche dans 440 px. Panneau d’encre à droite à 45 %, plafonné à 560 px,
+      qui porte le logotype et une phrase, et rien d’autre. Ni photo, ni illustration, ni
+      filet, ni forme animée : cette sobriété est le signal de sérieux qui distingue un
+      produit AI5D des plateformes grand public.</p>
+
+    <div class="lab">Sous 1024 px · colonne unique</div>
+    <div style="display:flex;gap:6mm;align-items:flex-start;">
+      <div style="width:46mm;border:.4pt solid var(--bordure);border-radius:10px;background:var(--papier);padding:5mm;height:52mm;display:flex;flex-direction:column;">
+        <div style="text-align:center;margin-bottom:5mm;">
+          <span style="font-family:var(--sans);font-size:9pt;font-weight:600;color:var(--encre);letter-spacing:-.02em;">AI<span style="color:var(--action);display:inline-block;transform:rotate(-5deg);">5</span>D</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-family:var(--serif);font-size:11pt;color:var(--encre);margin-bottom:3mm;">Connexion</div>
+          <div class="champ" style="margin-bottom:2.4mm;"><div class="in" style="height:6.6mm;font-size:6.6pt;">prenom.nom@exemple.fr</div></div>
+          <div class="champ" style="margin-bottom:3mm;"><div class="in" style="height:6.6mm;font-size:6.6pt;">••••••••</div></div>
+          <div class="btn pri" style="width:100%;height:6.6mm;font-size:7pt;">Se connecter</div>
+        </div>
+      </div>
+      <div style="flex:1;">
+        <p><strong>Logotype centré au-dessus, marge de 16 px, aucune image lourde.</strong>
+        L’écran doit s’afficher en moins de deux secondes et demie sur une 4G irrégulière,
+        ce qui interdit tout décor.</p>
+        <p style="margin-top:2.6mm;">Le contenu court, comme un oubli de mot de passe ou une
+        confirmation, se centre dans la hauteur restante au lieu de rester collé en haut
+        d’un écran à moitié vide. Un formulaire long pousse simplement le conteneur, et rien
+        ne change pour lui.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>16</b></div>
+</section>
+
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>11 · Gabarit d’authentification</span></div>
+  <div class="body">
+    <div class="eyebrow">Le gabarit d’authentification · suite</div>
+    <h1>Trois mesures,<br>et <em>ce qu’elles ont coûté.</em></h1>
+    <p class="lede" style="margin-top:5mm;">Aucune de ces trois valeurs n’a été choisie.
+      Chacune est le prix d’un défaut constaté à l’écran. Un chiffre rond aurait été plus
+      élégant, et faux.</p>
+
+    <div class="lab">Ce qui a été mesuré</div>
+    <table>
+      <tbody>
+        <tr>
+          <td class="k" style="width:44mm;">La bascule est à 1024 px, et non 768</td>
+          <td>À 768 px, le panneau prend 45 %, soit 345 px, et il reste 423 px pour un formulaire annoncé à 440 px plus ses marges : l’écran de réinitialisation débordait de 14 px. À 1024 px, la colonne du formulaire dispose de 563 px et tout respire.</td>
+        </tr>
+        <tr>
+          <td class="k"><code>min-width: 0</code> sur la colonne du formulaire</td>
+          <td>Ce n’est pas décoratif. Sans cette déclaration, une colonne flexible refuse de descendre sous la largeur intrinsèque de son contenu et pousse le panneau hors de l’écran au lieu de se réduire. C’est la cause exacte du débordement mesuré.</td>
+        </tr>
+        <tr class="fin">
+          <td class="k">Le logotype mobile est à 20 px, et non 18</td>
+          <td>À 18 px, le verrouillage complet mesurait 19 px de haut, sous le plancher de 28 px de la charte : il se voyait mal. On ne monte pas plus haut non plus, car à 30 px la signature réclame 250 px de large et se casse en deux lignes sur un écran de 320 px.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note" style="margin-top:6mm;">
+      <strong>Ce que le panneau ne porte plus.</strong> Il a porté trois preuves, avec des
+      chiffres et des garanties. Elles ont été retirées : elles promettaient un contenu
+      qu’un écran de connexion n’a pas à vendre. On y arrive déjà décidé.
+    </div>
+
+    <div class="lab">Les cinq écrans que le gabarit porte</div>
+    <table>
+      <thead><tr><th style="width:44mm;">Écran</th><th>Ce qui change dans la colonne de gauche</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Connexion</td><td class="g">Deux champs et le bouton primaire. Le lien d’oubli en variante discrète, sous le bouton</td></tr>
+        <tr><td class="k">Inscription</td><td class="g">Le formulaire le plus long des cinq : c’est lui qui pousse le conteneur au lieu de se centrer</td></tr>
+        <tr><td class="k">Oubli du mot de passe</td><td class="g">Un seul champ. Contenu court, donc centré dans la hauteur restante</td></tr>
+        <tr><td class="k">Réinitialisation</td><td class="g">Deux champs. C’est cet écran qui débordait de 14 px à 768 px</td></tr>
+        <tr class="fin"><td class="k">Vérification d’adresse</td><td class="g">Aucun champ. Un titre, une phrase, et l’action de renvoi en variante discrète</td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin-top:2.6mm;">
+      Le panneau de droite est identique dans les cinq. Il ne commente pas l’écran : s’il
+      changeait de phrase à chaque étape, il redeviendrait un argumentaire.</p>
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>17</b></div>
+</section>
+
+<!-- ======================= 12 · MOBILE D'ABORD ======================= -->
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>12 · Mobile d’abord</span></div>
+  <div class="body dense">
+    <div class="op">
+      <div class="num">12</div>
+      <div>
+        <div class="eyebrow">Mobile d’abord</div>
+        <h1>Le téléphone n’est pas<br>un palier. <em>C’est le départ.</em></h1>
+      </div>
+    </div>
+    <p class="lede">
+      Un écran dessiné pour 1440 px puis rétréci garde les décisions du grand écran : une
+      grille qui s’empile mal, une navigation qui déborde, des cibles calibrées pour un
+      curseur. Un écran dessiné pour 390 px puis élargi n’a que de la place en plus. Les
+      espaces d’administration sont la seule exception.</p>
+
+    <div class="lab">Les paliers</div>
+    <table class="serre">
+      <thead><tr><th style="width:40mm;">Constante</th><th style="width:18mm;text-align:right;">Valeur</th><th style="width:24mm;">Nature</th><th>Ce qui s’y passe</th></tr></thead>
+      <tbody>
+        <tr><td class="k">--plancher</td><td class="c">320 px</td><td class="g">contrainte</td><td class="g">Rien. Aucune mise en page n’a le droit d’y casser</td></tr>
+        <tr><td class="k">--reference-mobile</td><td class="c">390 px</td><td class="g">contrainte</td><td class="g">Rien. C’est la largeur sur laquelle on dessine</td></tr>
+        <tr><td class="k">--compact</td><td class="c">640 px</td><td class="g">palier</td><td class="g">La marge de page passe de 16 à 24 px</td></tr>
+        <tr><td class="k">--tablette</td><td class="c">768 px</td><td class="g">palier</td><td class="g">La barre d’onglets disparaît, la navigation remonte</td></tr>
+        <tr><td class="k">--bureau</td><td class="c">1024 px</td><td class="g">palier</td><td class="g">Deux colonnes deviennent possibles</td></tr>
+        <tr class="fin"><td class="k">--large</td><td class="c">1280 px</td><td class="g">palier</td><td class="g">Le contenu est plafonné et centré</td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin-top:2.6mm;">
+      <strong>Deux des six ne sont pas des paliers.</strong> Rien ne s’y déclenche. Les
+      distinguer évite qu’on écrive un jour <code>@media (min-width: 320px)</code>, qui ne
+      voudrait rien dire.</p>
+
+    <div class="lab">Pourquoi 640 et non 480</div>
+    <p>
+      Le formulaire du chapitre 11 vaut 440 px, et deux marges de 32 px en ajoutent 64. Il
+      faut donc <strong>au moins 504 px</strong> avant d’élargir les marges. 640 est la
+      valeur ronde immédiatement au-dessus. Le palier bureau retrouve indépendamment le
+      1024 px du même chapitre, et un test croise les deux valeurs.</p>
+
+    <div class="lab">Les sept règles</div>
+    <table class="serre">
+      <tbody>
+        <tr><td class="k" style="width:52mm;">Le pouce d’abord</td><td>L’action principale vit dans le tiers bas. Sur un téléphone de six pouces tenu d’une main, le coin haut droit demande de changer la prise</td></tr>
+        <tr><td class="k">La zone sûre se réserve</td><td>Sans <code>env(safe-area-inset-*)</code>, une barre basse passe sous la barre de gestes d’un iPhone : visible, et inatteignable</td></tr>
+        <tr><td class="k"><code>dvh</code>, jamais <code>vh</code></td><td>La barre d’URL entre et sort du cadre en défilant. Un écran calé sur <code>100vh</code> se fait couper au chargement</td></tr>
+        <tr><td class="k">Aucune largeur figée au-delà de 320 px</td><td><code>max-width</code> est la solution, <code>width: 440px</code> est le problème : il ne descend pas quand l’écran descend</td></tr>
+        <tr><td class="k">Le survol n’apprend rien</td><td>Au doigt, <code>:hover</code> se déclenche après la pression et reste collé. Ce qui n’apparaît qu’au survol n’existe pas</td></tr>
+        <tr><td class="k">Le plancher tactile prime</td><td>44 px, déjà garanti par les profils de densité. Les paliers ne le renégocient pas</td></tr>
+        <tr class="fin"><td class="k">Une colonne sous 640 px</td><td>Deux colonnes sur 390 px donnent des cibles de 150 px de large. On empile</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>18</b></div>
+</section>
+
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>12 · Mobile d’abord</span></div>
+  <div class="body dense">
+    <div class="eyebrow">Mobile d’abord · suite</div>
+    <h1>La coquille d’application,<br>et <em>une mesure qui décide.</em></h1>
+    <p class="lede" style="margin-top:5mm;">
+      Trois zones. En-tête collant, contenu défilant, barre d’onglets. La mesure qui décide
+      de tout n’est aucune des trois : c’est la réserve que le contenu laisse sous lui.</p>
+
+    <div class="lab">La coquille, à l’échelle</div>
+    <div style="display:flex;gap:7mm;align-items:flex-start;">
+      <div style="width:48mm;border:.4pt solid var(--bordure);border-radius:10px;overflow:hidden;background:var(--papier);">
+        <div style="display:flex;align-items:center;justify-content:space-between;height:9mm;padding:0 4mm;background:var(--blanc);border-bottom:.4pt solid var(--bordure);">
+          <span style="font-family:var(--sans);font-size:7pt;font-weight:600;color:var(--encre);letter-spacing:-.02em;">AI<span style="color:var(--action);display:inline-block;transform:rotate(-5deg);">5</span>D</span>
+          <span style="width:4.4mm;height:4.4mm;border-radius:999px;background:var(--bordure);"></span>
+        </div>
+        <div style="padding:4mm;">
+          <div style="background:var(--blanc);border:.4pt solid var(--bordure);border-radius:6px;padding:3.4mm;margin-bottom:3mm;">
+            <div style="width:7mm;height:7mm;border-radius:999px;background:var(--papier-chaud);margin-bottom:2.4mm;"></div>
+            <div style="font-size:7.4pt;font-weight:600;color:var(--encre);margin-bottom:1mm;">Produits</div>
+            <div style="font-size:6.4pt;color:var(--texte-faible);line-height:1.4;margin-bottom:2.6mm;">Vos accès à l’écosystème AI5D.</div>
+            <div style="height:6mm;border-radius:4px;border:.6pt solid var(--action);color:var(--action);font-size:6.4pt;font-weight:600;display:flex;align-items:center;justify-content:center;">Mes produits</div>
+          </div>
+          <div style="background:var(--blanc);border:.4pt solid var(--bordure);border-radius:6px;padding:3.4mm;">
+            <div style="width:7mm;height:7mm;border-radius:999px;background:var(--papier-chaud);margin-bottom:2.4mm;"></div>
+            <div style="font-size:7.4pt;font-weight:600;color:var(--encre);margin-bottom:1mm;">Profil</div>
+            <div style="font-size:6.4pt;color:var(--texte-faible);line-height:1.4;margin-bottom:2.6mm;">Vos informations personnelles.</div>
+            <div style="height:6mm;border-radius:4px;border:.6pt solid var(--action);color:var(--action);font-size:6.4pt;font-weight:600;display:flex;align-items:center;justify-content:center;">Mon profil</div>
+          </div>
+          <div style="height:9mm;"></div>
+        </div>
+        <div style="display:flex;background:var(--blanc);border-top:.4pt solid var(--bordure);">
+          <div style="flex:1;text-align:center;padding:2mm 0 3mm;"><div style="font-size:6pt;font-weight:600;color:var(--action);">Accueil</div></div>
+          <div style="flex:1;text-align:center;padding:2mm 0 3mm;"><div style="font-size:6pt;color:var(--texte-faible);">Sécurité</div></div>
+          <div style="flex:1;text-align:center;padding:2mm 0 3mm;"><div style="font-size:6pt;color:var(--texte-faible);">Produits</div></div>
+          <div style="flex:1;text-align:center;padding:2mm 0 3mm;"><div style="font-size:6pt;color:var(--texte-faible);">Plus</div></div>
+        </div>
+      </div>
+      <div style="flex:1;">
+        <p><strong>La réserve basse.</strong> Le contenu réserve sous lui la hauteur de la
+        barre plus la zone sûre. Sans elle, le dernier élément se glisse <strong>sous</strong>
+        la barre. Le défaut ne se voit pas sur une page courte, et apparaît le jour où
+        quelqu’un ajoute une ligne.</p>
+        <p style="margin-top:2.6mm;"><strong>Trois à cinq onglets.</strong> Sous trois, deux
+        liens tiennent dans l’en-tête. Au-delà de cinq, chaque cible descend sous 70 px sur
+        un téléphone de 390 px. Le sixième devient « Plus ».</p>
+        <p style="margin-top:2.6mm;"><strong>L’onglet actif ne se signale pas par la seule
+        couleur.</strong> Il porte <code>aria-current</code>, prend la couleur d’action, et
+        passe sa graisse à semi-grasse. Les trois ensemble.</p>
+      </div>
+    </div>
+
+    <div class="lab">Ce qu’on refuse au motif de référence</div>
+    <table class="serre">
+      <thead><tr><th style="width:52mm;">Élément du motif</th><th style="width:26mm;">Décision</th><th>Raison</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Une couleur par section</td><td style="color:var(--erreur);font-weight:600;">Refusé</td><td class="g">La charte mère écrit que la différenciation se fait par le nom, jamais par la couleur</td></tr>
+        <tr><td class="k">Fond de carte teinté</td><td style="color:var(--erreur);font-weight:600;">Refusé</td><td class="g">Vert et jaune sont des jetons sémantiques. Décoratifs, « réussite » ne veut plus rien dire ailleurs</td></tr>
+        <tr><td class="k">Boutons entièrement arrondis</td><td style="color:var(--erreur);font-weight:600;">Refusé</td><td class="g">Le rayon de bouton vaut 10 px. Le rayon plein est réservé aux pastilles et aux avatars</td></tr>
+        <tr class="fin"><td class="k">Quatre onglets dont « Plus »</td><td class="g">Repris, et borné</td><td class="g">Trois à cinq, et pas davantage</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note" style="margin-top:2mm;">
+      <strong>Ce que les gardes ne peuvent pas prouver.</strong> Elles lisent des fichiers,
+      pas des écrans. Une largeur figée se voit ; un tableau illisible sur 390 px, non.
+    </div>
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>19</b></div>
+</section>
+<!-- ======================= 12 · ICONOGRAPHIE ET MOUVEMENT ======================= -->
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>13 · Iconographie et mouvement</span></div>
+  <div class="body">
+    <div class="op">
+      <div class="num">13</div>
+      <div>
+        <div class="eyebrow">Iconographie et mouvement</div>
+        <h1>Un quart de pixel<br>qui <em>se justifie.</em></h1>
+      </div>
+    </div>
+
+    <div class="lab">L’iconographie</div>
+    <div style="display:flex;gap:8mm;align-items:flex-start;">
+      <div style="width:46mm;background:var(--blanc);border:.4pt solid var(--bordure);border-radius:10px;padding:5mm;display:flex;gap:5mm;align-items:center;justify-content:center;">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#051C2C" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#051C2C" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#051C2C" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      </div>
+      <div style="flex:1;">
+        <p><strong>Lucide, style contour, épaisseur 1,75 px</strong>, contre 1,5 dans le
+        registre institutionnel. Les 0,25 px se justifient sur un écran de téléphone, où un
+        trait de 1,5 disparaît. Jamais d’icône remplie. Tailles 16, 20, 24, 32 et 72.</p>
+        <p style="margin-top:2.6mm;">Par défaut, une icône est <strong>décorative</strong> et
+        masquée aux lecteurs d’écran. Ce n’est pas de la négligence : c’est la règle. Quand
+        l’icône porte réellement l’information, et cela devrait être rare, on lui donne un
+        titre.</p>
+      </div>
+    </div>
+
+    <div class="lab">La géométrie</div>
+    <div style="display:flex;gap:5mm;">
+      <div style="flex:1;background:var(--blanc);border:.4pt solid var(--bordure);border-radius:4px;padding:4mm;text-align:center;"><div style="font-family:var(--mono);font-size:8pt;font-weight:500;color:var(--encre);">4 px</div><div class="small" style="font-size:6.8pt;">Boutons, champs, pastilles</div></div>
+      <div style="flex:1;background:var(--blanc);border:.4pt solid var(--bordure);border-radius:10px;padding:4mm;text-align:center;"><div style="font-family:var(--mono);font-size:8pt;font-weight:500;color:var(--encre);">10 px</div><div class="small" style="font-size:6.8pt;">Cartes, panneaux</div></div>
+      <div style="flex:1;background:var(--blanc);border:.4pt solid var(--bordure);border-radius:16px;padding:4mm;text-align:center;"><div style="font-family:var(--mono);font-size:8pt;font-weight:500;color:var(--encre);">16 px</div><div class="small" style="font-size:6.8pt;">Dialogues, grands blocs</div></div>
+      <div style="flex:1;background:var(--blanc);border:.4pt solid var(--bordure);border-radius:999px;padding:4mm;text-align:center;"><div style="font-family:var(--mono);font-size:8pt;font-weight:500;color:var(--encre);">Plein</div><div class="small" style="font-size:6.8pt;">Pastilles, avatars</div></div>
+    </div>
+
+    <div class="lab">L’élévation</div>
+    <div style="display:flex;gap:5mm;">
+      <div style="flex:1;background:var(--blanc);border:.4pt solid var(--bordure);border-radius:10px;padding:4.6mm;box-shadow:0 1px 2px rgba(5,28,44,.06);"><div style="font-family:var(--mono);font-size:7pt;font-weight:500;color:var(--encre);">Élévation 1</div><div class="small" style="font-size:6.8pt;margin-top:1mm;">Repos, listes</div></div>
+      <div style="flex:1;background:var(--blanc);border:.4pt solid var(--bordure);border-radius:10px;padding:4.6mm;box-shadow:0 4px 12px rgba(5,28,44,.08);"><div style="font-family:var(--mono);font-size:7pt;font-weight:500;color:var(--encre);">Élévation 2</div><div class="small" style="font-size:6.8pt;margin-top:1mm;">Cartes actionnables</div></div>
+      <div style="flex:1;background:var(--blanc);border:.4pt solid var(--bordure);border-radius:10px;padding:4.6mm;box-shadow:0 12px 32px rgba(5,28,44,.12);"><div style="font-family:var(--mono);font-size:7pt;font-weight:500;color:var(--encre);">Élévation 3</div><div class="small" style="font-size:6.8pt;margin-top:1mm;">Dialogues, menus</div></div>
+    </div>
+    <p class="small" style="margin-top:2.6mm;">
+      Les trois valent <code>none</code> en mode sombre. Voir le chapitre 05.</p>
+
+    <div class="lab">Le mouvement</div>
+    <table>
+      <thead><tr><th style="width:26mm;">Durée</th><th style="width:20mm;">Valeur</th><th>Usage</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Courte</td><td class="m">150 ms</td><td class="g">Survol, pression, apparition d’une aide</td></tr>
+        <tr><td class="k">Moyenne</td><td class="m">250 ms</td><td class="g">Ouverture d’un menu, bascule de panneau</td></tr>
+        <tr class="fin"><td class="k">Longue</td><td class="m">800 ms</td><td class="g">Confirmation qui engage la sécurité du compte, jamais un ornement</td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin-top:2.6mm;">
+      Courbe d’entrée <code>cubic-bezier(0.16, 1, 0.3, 1)</code>, courbe de sortie
+      <code>cubic-bezier(0.4, 0, 1, 1)</code>. Sous
+      <code>prefers-reduced-motion</code>, la durée longue tombe à zéro et les deux autres à
+      100 ms : il ne reste que des transitions d’opacité imperceptibles.</p>
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>20</b></div>
+</section>
+
+<!-- ======================= 13 · LA VOIX ======================= -->
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>14 · La voix</span></div>
+  <div class="body">
+    <div class="op">
+      <div class="num">14</div>
+      <div>
+        <div class="eyebrow">La voix</div>
+        <h1>Un verrou dit toujours<br><em>ce qui le lève.</em></h1>
+      </div>
+    </div>
+    <p class="lede">
+      La vitrine parle quand tout va bien. Le produit parle au moment du refus, de la
+      panne, de la suppression de compte. C’est là que le ton se joue, et c’est là qu’il
+      est le plus souvent raté.</p>
+
+    <div class="lab">Les règles propres à l’applicatif</div>
+    <div class="cols">
+      <div>
+        <p><strong>Vouvoiement partout</strong>, y compris dans les erreurs et les
+        courriels.</p>
+        <p style="margin-top:2.4mm;"><strong>Aucun tiret cadratin.</strong> Ni emoji, ni
+        point d’exclamation, nulle part.</p>
+      </div>
+      <div>
+        <p><strong>Nommer la conséquence.</strong> Un verrou dit ce qui le lève, un
+        avertissement dit ce qu’on perd.</p>
+        <p style="margin-top:2.4mm;"><strong>Pas d’anglicisme</strong> quand le français
+        existe.</p>
+      </div>
+      <div>
+        <p><strong>Assumer l’absence</strong> plutôt qu’inventer une réponse. Un tiret à la
+        place d’une valeur laisse croire à une valeur nulle.</p>
+      </div>
+    </div>
+
+    <div class="lab">Formulations de référence</div>
+    <table class="serre">
+      <thead><tr><th style="width:36mm;">Situation</th><th style="width:76mm;">Formulation</th><th>La règle derrière</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Échec de connexion</td><td>« Adresse ou mot de passe incorrect. »</td><td class="g">Jamais lequel des deux : le dire révèle quelles adresses existent</td></tr>
+        <tr><td class="k">Mot de passe oublié</td><td>« Si un compte existe pour cette adresse, vous recevrez un lien dans quelques minutes. »</td><td class="g">La réponse est identique que l’adresse existe ou non</td></tr>
+        <tr><td class="k">Compte verrouillé</td><td>« Trop de tentatives. Réessayez dans cinq minutes. »</td><td class="g">On dit toujours quand le verrou se lève</td></tr>
+        <tr><td class="k">Session expirée</td><td>« Votre session a expiré. Reconnectez-vous pour reprendre où vous en étiez. »</td><td class="g">On promet la reprise, sinon la personne craint d’avoir tout perdu</td></tr>
+        <tr><td class="k">Accès refusé, organisation</td><td>« Votre organisation n’a pas d’accès à ce produit. Demandez-le à son administrateur. »</td><td class="g">On nomme qui peut lever le blocage</td></tr>
+        <tr><td class="k">Accès expiré</td><td>« Votre accès a pris fin le 4 septembre. »</td><td class="g">On donne la date, jamais une durée relative</td></tr>
+        <tr><td class="k">Avant une suppression</td><td>« Votre compte sera supprimé dans trente jours, avec vos accès à tous les produits AI5D. D’ici là, une simple connexion annule la demande. »</td><td class="g">On nomme la conséquence et la sortie</td></tr>
+        <tr><td class="k">Après une réinitialisation</td><td>« Votre mot de passe est modifié. Toutes vos autres sessions ont été fermées. »</td><td class="g">On dit l’effet de bord : il rassure au lieu d’inquiéter</td></tr>
+        <tr class="fin"><td class="k">Information indisponible</td><td>« Nous ne pouvons pas afficher cette information pour le moment. »</td><td class="g">Assumer l’absence plutôt qu’afficher un tiret</td></tr>
+      </tbody>
+    </table>
+
+    <p class="small" style="margin-top:3.4mm;">
+      Ce répertoire existe pour qu’un même refus ne soit pas dit de quatre façons dans
+      quatre produits. Un produit y puise plutôt que de réinventer sa formulation.</p>
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>21</b></div>
+</section>
+
+<!-- ======================= 14 · LES GARDES ======================= -->
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>15 · Les gardes</span></div>
+  <div class="body">
+    <div class="op">
+      <div class="num">15</div>
+      <div>
+        <div class="eyebrow">Les gardes</div>
+        <h1>Une règle qu’aucune machine<br>ne vérifie <em>sera enfreinte.</em></h1>
+      </div>
+    </div>
+    <p class="lede">
+      Quatre jetons ont divergé sans décision. Aucun n’était visible à l’œil. Trois étaient
+      en production. La discipline humaine a échoué une fois ; elle échouera encore.</p>
+
+    <div class="lab">Les trois gardes distribuées</div>
+    <table class="serre">
+      <thead><tr><th style="width:52mm;">Garde</th><th>Ce qu’elle refuse, et pourquoi</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="k"><code>aucune-couleur-en-dur</code></td>
+          <td>Toute valeur hexadécimale ou fonction de couleur dans un fichier qui n’est pas un fichier de définition de jetons. Un écran qui décide une couleur dans son coin est un écran qui dérivera.</td>
+        </tr>
+        <tr>
+          <td class="k"><code>aucun-jeton-de-marque-redefini</code></td>
+          <td>Toute ligne qui redéfinit l’un des six jetons de marque. C’est exactement le mécanisme qui a produit les écarts constatés.</td>
+        </tr>
+        <tr class="fin">
+          <td class="k"><code>cible-tactile-minimale</code></td>
+          <td>L’absence de la requête média qui relève la hauteur de contrôle à 44 px sur pointeur grossier. Une règle unique protège tous les écrans à la fois ; sa disparition les découvre tous d’un coup.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top:5mm;">
+      Ce sont des <strong>fonctions pures</strong>. Elles rendent une liste d’infractions,
+      ne lèvent rien et ne décident rien : c’est le projet qui choisit de faire échouer sa
+      construction. Une garde qui déciderait à sa place serait désactivée le jour où elle
+      gênerait.</p>
+
+    <pre style="margin-top:4mm;">import { verifierAucuneCouleurEnDur, decrire } from '@ai5d/design-system/gardes';
+
+const infractions = verifierAucuneCouleurEnDur('apps/compte', {
+  exceptions: ['app/globals.css'],
+});
+
+if (infractions.length > 0) {
+  throw new Error(decrire(infractions));
+}</pre>
+
+    <div class="lab">Les gardes internes au système</div>
+    <table class="serre">
+      <tbody>
+        <tr><td class="k" style="width:44mm;">Contraste</td><td>Recalcule <strong>44 paires</strong> à chaque exécution, en clair et en sombre, et échoue sous 4,5. C’est ce test qui aurait attrapé les quatre défauts dès le premier jour.</td></tr>
+        <tr><td class="k">Fidélité de la marque</td><td>Relit la source institutionnelle et échoue si la copie des six jetons a divergé.</td></tr>
+        <tr><td class="k">Pureté des densités</td><td>Échoue si une couleur, une famille ou une taille de police apparaît dans le fichier des profils, et vérifie que le plancher tactile est déclaré en dernier.</td></tr>
+        <tr class="fin"><td class="k">Autonomie des polices</td><td>Échoue si un appel vers un service de polices tiers apparaît quelque part.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note" style="margin-top:2mm;">
+      <strong>Ce qu’aucune garde ne peut faire.</strong> Elles lisent des fichiers, pas des
+      écrans rendus. La relecture visuelle reste nécessaire ; les gardes lui retirent le
+      travail qu’elle fait mal.
+    </div>
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>22</b></div>
+</section>
+
+<!-- ======================= 15 · ADOPTION ======================= -->
+<section class="page">
+  <div class="hd"><span>AI5D Digital Design System</span><span>16 · Adoption</span></div>
+  <div class="body">
+    <div class="op">
+      <div class="num">16</div>
+      <div>
+        <div class="eyebrow">Adoption</div>
+        <h1>Un import, un attribut.<br><em>C’est toute l’adoption.</em></h1>
+      </div>
+    </div>
+
+    <div class="lab">Les deux gestes</div>
+    <pre>/* apps/&lt;produit&gt;/app/globals.css */
+@import '@ai5d/design-system/preset';</pre>
+    <pre style="margin-top:3mm;">&lt;!-- apps/&lt;produit&gt;/app/layout.tsx --&gt;
+&lt;html lang="fr" data-densite="equilibre"&gt;</pre>
+    <p class="small" style="margin-top:2.6mm;">
+      Le préréglage tire derrière lui les polices, les jetons de marque, les jetons du noyau
+      et les quatre profils de densité. Les composants lisent la hauteur de contrôle et le
+      padding de carte sans jamais savoir quel profil est actif.</p>
+
+    <div class="lab">Choisir son profil</div>
+    <table class="serre">
+      <thead><tr><th style="width:34mm;">Produit</th><th style="width:30mm;">Profil</th><th>Pourquoi</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Académie</td><td class="m">aere</td><td class="g">Lecture, apprentissage, respiration</td></tr>
+        <tr><td class="k">Compte</td><td class="m">equilibre</td><td class="g">Gestion, sécurité, paramètres</td></tr>
+        <tr><td class="k">Le Cercle</td><td class="m">modere</td><td class="g">Communauté, interactions, flux</td></tr>
+        <tr class="fin"><td class="k">Le Lab</td><td class="m">compact</td><td class="g">Données, workflows, outils, expérimentation</td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin-top:2.6mm;">
+      Un cinquième profil est autorisé quand un produit ne rentre dans aucun des quatre,
+      avec démonstration à l’appui. Il se déclare avant le bloc du plancher tactile, sinon
+      il le remplacerait.</p>
+
+    <div class="lab" style="margin-top:5mm;">Le versionnement</div>
+    <div class="note">
+      <strong>Un changement de valeur de jeton est une version majeure.</strong> Il modifie le
+      rendu de tous les produits qui consomment le système, y compris ceux dont personne ne
+      s’occupe ce mois-ci. Une correction de contraste se lit donc dans le numéro de version,
+      avant même d’ouvrir le journal des changements.
+    </div>
+
+    <div class="lab" style="margin-top:5mm;">Ce qui reste à écrire</div>
+    <table class="serre">
+      <tbody>
+        <tr><td class="k" style="width:52mm;">Les composants inter-produits</td><td>Menu de compte, sélecteur d’organisation, écran d’accès refusé, bandeau d’environnement. Ils attendent leur deuxième consommateur : écrits plus tôt, ils figeraient une hypothèse.</td></tr>
+        <tr><td class="k">Les logotypes vectorisés</td><td>Les fichiers actuels dépendent d’une police pour composer le mot-symbole. En courriel et en export hors ligne, le nom AI5D se rend donc dans une police de substitution.</td></tr>
+        <tr class="fin"><td class="k">La migration de l’Académie</td><td>Le produit consomme aujourd’hui sa propre charte. Il rejoindra le système quand le portail Compte l’aura éprouvé.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ft"><span>Charte de référence · Édition 2026</span><b>23</b></div>
+</section>
+
+<!-- ======================= CLÔTURE ======================= -->
+<section class="page pleine">
+  <div class="inner" style="text-align:center;">
+    <div style="font-family:var(--serif);font-size:26pt;line-height:1.22;
+                color:var(--blanc);font-weight:300;letter-spacing:-.015em;">
+      Un seul ADN.</div>
+    <div style="font-family:var(--serif);font-size:26pt;line-height:1.22;
+                color:var(--action-clair);font-weight:300;letter-spacing:-.015em;
+                margin-bottom:8mm;">quatre respirations.</div>
+    <p style="color:#8FA3B2;font-size:8.8pt;max-width:112mm;margin:0 auto;
+              line-height:1.62;">
+      Source de vérité du registre applicatif AI5D. Toute évolution passe par une nouvelle
+      édition de ce document et une mise à jour de <code style="color:#8FA3B2;">noyau/jetons.css</code>.</p>
+  </div>
+</section>
+
+</body>
+</html>

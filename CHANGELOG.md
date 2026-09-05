@@ -7,6 +7,62 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 0.2.0 — 5 septembre 2026
+
+### Mobile d'abord
+
+Le sujet manquait entièrement, et c'est le commanditaire qui l'a relevé, à partir du portail
+de compte d'une autre entreprise rendu sur téléphone. La responsivité n'était traitée nulle
+part comme une doctrine : elle existait à l'intérieur de `GabaritAuth`, sous forme de trois
+requêtes média écrites pour cet écran-là.
+
+**Ce qui entre :**
+
+| Ajout                           | Ce qu'il apporte                                                                               |
+| ------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `noyau/paliers.ts`              | Six constantes, dont deux sont des contraintes et non des points de bascule, et deux fonctions |
+| `noyau/paliers.css`             | Marges de page, zones sûres, et les deux règles universelles du rendu mobile                   |
+| `noyau/PALIERS.md`              | La doctrine, les sept règles, la coquille d'application                                        |
+| `GabaritApp`                    | La coquille : en-tête collant, contenu défilant, barre d'onglets                               |
+| `BarreOnglets`                  | La navigation basse, trois à cinq onglets                                                      |
+| `CarteAction`                   | Le motif « une carte, une action »                                                             |
+| `verifierAucuneLargeurFixe`     | Refuse toute largeur figée au-delà du plancher de 320 px                                       |
+| `verifierHauteurDeVueDynamique` | Refuse `vh` et exige `dvh`                                                                     |
+
+**Pourquoi une version mineure et non majeure.** Aucune valeur de jeton ne change. Les
+variables ajoutées sont nouvelles, et un produit qui ne les lit pas rend exactement comme
+avant. La règle du versionnement sévère ne s'applique qu'aux valeurs existantes.
+
+### Ce qu'on refuse au motif de référence
+
+La ressemblance sera tentante, donc elle est écrite.
+
+| Élément du motif                   | Décision             | Raison                                                                                                    |
+| ---------------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------- |
+| Une couleur par section            | **Refusé**           | La charte mère écrit que la différenciation se fait par le nom, jamais par la couleur                     |
+| Fond de carte teinté vert ou jaune | **Refusé**           | Ce sont des jetons sémantiques. Un fond vert décoratif, et « réussite » ne veut plus rien dire nulle part |
+| Boutons entièrement arrondis       | **Refusé**           | Le rayon de bouton vaut 10 px. Le rayon plein est réservé aux pastilles et aux avatars                    |
+| Quatre onglets dont « Plus »       | **Repris, et borné** | Trois à cinq                                                                                              |
+
+### Corrigé
+
+`NOYAU.md` annonçait encore `CarteAuth` avec une largeur bloquée à 420 px, alors que le
+composant s'appelle `GabaritAuth` depuis la 0.1.1 et tient sur deux colonnes. La ligne était
+périmée depuis la livraison précédente.
+
+### Preuves
+
+`pnpm typecheck`, `pnpm lint`, `pnpm format:check` et `pnpm test` passent. **248 tests, 12
+fichiers**, dont 14 sur les paliers, 28 sur les trois nouveaux composants et 28 sur les
+gardes.
+
+**Ce qui n'est pas prouvé, et il faut le dire :** jsdom n'évalue pas les requêtes média. Les
+tests lisent les règles CSS injectées par les composants, ils prouvent donc que la règle est
+**écrite**, pas que la barre d'onglets disparaît réellement à 768 px. Cela se vérifie à
+l'écran, et nulle part ailleurs. Aucun rendu sur un téléphone réel n'a été fait.
+
+---
+
 ## 0.1.1 — 5 septembre 2026
 
 ### `CarteAuth` remplacé par `GabaritAuth`
