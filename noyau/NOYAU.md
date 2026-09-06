@@ -105,21 +105,22 @@ overlines.
 
 ---
 
-## 3. Les onze composants
+## 3. Les douze composants
 
-| Composant      | Ce qu'il garantit                                                                                                                          |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `Logotype`     | Le « 5 » incliné à -5° et bleu, **dans toutes les variantes**. Interdit de la charte mère : ne jamais le redresser, ne jamais le recolorer |
-| `Bouton`       | Trois variantes, trois tailles, hauteur pilotée par la densité, plancher tactile respecté, `aria-busy` en chargement                       |
-| `Champ`        | Libellé **toujours** lié par `htmlFor`, aide et erreur reliées par `aria-describedby`, erreur jamais portée par la seule couleur           |
-| `Carte`        | Padding piloté par la densité. Rend un `<button>` quand elle est cliquable, jamais une `<div>` avec un gestionnaire de clic                |
-| `Bandeau`      | Une icône **et** un texte. `role="alert"` pour attention et erreur, `role="status"` pour le reste                                          |
-| `Pastille`     | Un état compact, qui contient toujours du texte                                                                                            |
-| `Icone`        | Lucide, contour, épaisseur **1,75**. Décorative par défaut, accessible seulement si on lui donne un titre                                  |
-| `GabaritAuth`  | Le gabarit d'authentification. Colonne unique sous 1024 px, deux colonnes au-delà. Chaque valeur est mesurée                               |
-| `GabaritApp`   | La coquille d'application : en-tête collant, contenu défilant, barre d'onglets. Il réserve la hauteur de la barre sous le contenu          |
-| `BarreOnglets` | La navigation basse. Trois à cinq onglets, icône **et** mot, zone sûre réservée, disparaît à partir de 768 px                              |
-| `CarteAction`  | Le motif « une carte, une action ». Pastille d'icône, titre, description, bouton qui **nomme sa destination**                              |
+| Composant        | Ce qu'il garantit                                                                                                                                                |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Logotype`       | Le « 5 » incliné à -5° et bleu, **dans toutes les variantes**. Interdit de la charte mère : ne jamais le redresser, ne jamais le recolorer                       |
+| `Bouton`         | Quatre variantes, trois tailles, hauteur pilotée par la densité, plancher tactile respecté, `aria-busy` en chargement                                            |
+| `Champ`          | Libellé **toujours** lié par `htmlFor`, aide et erreur reliées par `aria-describedby`, erreur jamais portée par la seule couleur                                 |
+| `Carte`          | Padding piloté par la densité. Rend un `<button>` quand elle est cliquable, jamais une `<div>` avec un gestionnaire de clic                                      |
+| `Bandeau`        | Une icône **et** un texte. `role="alert"` pour attention et erreur, `role="status"` pour le reste                                                                |
+| `Pastille`       | Un état compact, qui contient toujours du texte                                                                                                                  |
+| `Icone`          | Lucide, contour, épaisseur **1,75**. Décorative par défaut, accessible seulement si on lui donne un titre                                                        |
+| `GabaritAuth`    | Le gabarit d'authentification. Colonne unique sous 1024 px, deux colonnes au-delà. Chaque valeur est mesurée                                                     |
+| `GabaritApp`     | La coquille d'application : en-tête collant, contenu défilant, barre d'onglets. Il réserve la hauteur de la barre sous le contenu                                |
+| `BarreOnglets`   | La navigation basse. Trois à cinq onglets, icône **et** mot, zone sûre réservée, disparaît à partir de 768 px                                                    |
+| `GabaritPortail` | La coquille des écrans de réglages. Rail de rubriques de 240 px en tablette, 280 px sur bureau, barre basse sous 768 px. Les deux navigations sont la même liste |
+| `CarteAction`    | Le motif « une carte, une action ». Pastille d'icône, titre, description, bouton qui **nomme sa destination**                                                    |
 
 `GabaritAuth` est dans le noyau et non dans l'écosystème parce que tout produit peut avoir à
 afficher un écran de session expirée, même si le portail Compte porte l'essentiel des flux.

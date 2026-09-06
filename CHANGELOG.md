@@ -7,6 +7,65 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 0.3.0 — 6 septembre 2026
+
+### `GabaritPortail`, la coquille des écrans de réglages
+
+Demandé par le portail Compte, sprint 02. La charte, chapitre 07, prescrit un rail de
+rubriques de 280 px sur bureau. `GabaritApp` ne peut pas le porter : il fait disparaître
+sa navigation dès la tablette et laisse au produit le soin de la remonter dans l'en-tête,
+ce qui est juste pour une application dont la navigation est un choix de produit. Un
+portail de réglages n'a pas ce choix.
+
+Écrire ce rail dans le portail Compte aurait suffi une fois. Le jour où l'Académie voudra
+le même réglage, il existerait en deux exemplaires, et ils divergeraient à la première
+correction.
+
+**Trois paliers.** Sous 768 px, la barre basse de `BarreOnglets`, inchangée. Entre 768 et
+1279 px, un rail de 240 px. À partir de 1280 px, un rail de 280 px et un contenu plafonné
+à `--contenu-max`.
+
+Le 240 est une mesure, pas une prescription : la charte donne 280 pour le bureau et reste
+muette en tablette, où elle demande seulement « deux colonnes ». À 768 px, un rail de 280
+laisse 416 px de contenu ; un rail de 240 en laisse 456.
+
+**Les deux navigations sont la même liste**, rendues toutes les deux dans le HTML, et
+c'est la requête média qui en masque une. Choisir au montage en mesurant la fenêtre
+produirait un écart d'hydratation, et le rendu au serveur ne saurait pas laquelle servir.
+
+`display: none` et non une classe visuelle : c'est ce qui retire la navigation masquée de
+l'arbre d'accessibilité. Sans cela, un lecteur d'écran annoncerait six rubriques au lieu
+de trois. Un test le garde.
+
+`Rubrique.href` est **requis**, là où `Onglet.href` est optionnel. Un onglet peut piloter
+un état local ; une rubrique de portail est une page, et une page a une adresse.
+
+### `Bouton` gagne la variante `danger`
+
+Pour les actions destructrices : suppression de compte, révocation, retrait d'un membre.
+
+**Elle ne compte pas comme un bouton primaire** dans la règle « un seul par vue ». Une
+action destructrice et une action d'avancement ne se disputent pas le même regard : l'une
+est ce qu'on est venu faire, l'autre ce qu'on veut être sûr de ne pas faire par mégarde.
+Les gardes des produits qui comptent les boutons primaires doivent l'exclure ; le
+`data-variante="danger"` du marquage le leur permet.
+
+### Deux jetons nouveaux, et une mesure qui les justifie
+
+`--texte-sur-erreur` et `--erreur-survol`, dans les quatre blocs de thème.
+
+Le premier n'est pas `--texte-sur-action` déguisé, et la différence est mesurée : en mode
+sombre, `--erreur` vaut `#F27063`, un rouge clair, et du blanc dessus donne **2,89**, sous
+le seuil AA. L'encre y donne **6,02**. Le jeton change donc de rôle entre les deux modes,
+comme `--action`, et pour la même raison. Un test de contraste le garde dans les deux
+modes : remplacer `--texte-sur-erreur` par `--texte-sur-action` le fait échouer.
+
+`--erreur-survol` assombrit en clair et éclaircit en sombre, comme `--action-survol`. Un
+survol qui éclaircirait en mode clair ferait paraître le bouton désactivé au passage de
+la souris.
+
+---
+
 ## 0.2.2 — 6 septembre 2026
 
 ### `Champ` accepte une icône et une commande

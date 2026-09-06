@@ -9,9 +9,18 @@ import type { ButtonHTMLAttributes, CSSProperties } from 'react';
  *
  * Un seul bouton primaire par vue. C'est une règle de la charte, pas une préférence :
  * deux actions bleues sur un même écran, et l'œil ne sait plus laquelle est la sortie.
+ *
+ * ── LA VARIANTE `danger` NE COMPTE PAS DANS CETTE RÈGLE ──────────────────────
+ * Une action destructrice et une action d'avancement ne se disputent pas le même regard :
+ * l'une est ce qu'on est venu faire, l'autre est ce qu'on veut être sûr de ne pas faire
+ * par mégarde. Un écran de suppression porte donc légitimement un `primaire` et un
+ * `danger`. Les gardes des produits qui comptent les boutons primaires doivent l'exclure.
+ *
+ * Elle porte `--texte-sur-erreur` et non `--texte-sur-action` : en mode sombre, `--erreur`
+ * vaut un rouge clair, et du blanc dessus tombe à 2,89. Voir la note dans `jetons.css`.
  */
 
-export type VarianteBouton = 'primaire' | 'secondaire' | 'discret';
+export type VarianteBouton = 'primaire' | 'secondaire' | 'discret' | 'danger';
 export type TailleBouton = 'sm' | 'md' | 'lg';
 
 export interface ProprietesBouton extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -48,6 +57,13 @@ function styleVariante(variante: VarianteBouton): CSSProperties {
       background: 'transparent',
       color: 'var(--action)',
       border: '1px solid var(--action)',
+    };
+  }
+  if (variante === 'danger') {
+    return {
+      background: 'var(--erreur)',
+      color: 'var(--texte-sur-erreur)',
+      border: '1px solid var(--erreur)',
     };
   }
   return {

@@ -88,7 +88,7 @@ describe('Bouton', () => {
     expect(screen.getByRole('button').style.minHeight).toContain('--cible-tactile');
   });
 
-  it('rend les trois variantes avec des styles distincts', () => {
+  it('rend les quatre variantes avec des styles distincts', () => {
     const { rerender } = render(<Bouton variante="primaire">A</Bouton>);
     expect(screen.getByRole('button').style.background).toContain('--action');
 
@@ -98,6 +98,27 @@ describe('Bouton', () => {
 
     rerender(<Bouton variante="discret">A</Bouton>);
     expect(screen.getByRole('button').style.border).toContain('transparent');
+
+    rerender(<Bouton variante="danger">A</Bouton>);
+    expect(screen.getByRole('button').style.background).toContain('--erreur');
+  });
+
+  it('la variante danger porte --texte-sur-erreur, jamais --texte-sur-action', () => {
+    // Ce n'est pas un detail de nommage. En mode sombre, --erreur vaut un rouge clair,
+    // et --texte-sur-action y vaut du blanc : le rapport tombe a 2,89. Le jeton dedie
+    // bascule en encre, et le test garde ce choix.
+    render(<Bouton variante="danger">Supprimer</Bouton>);
+    const bouton = screen.getByRole('button');
+    expect(bouton.style.color).toContain('--texte-sur-erreur');
+    expect(bouton.style.color).not.toContain('--texte-sur-action');
+  });
+
+  it('la variante danger est lisible dans le marquage, pour les gardes des produits', () => {
+    // Les produits comptent leurs boutons primaires. Sans `data-variante`, un bouton
+    // destructeur serait compte comme un primaire et l'ecran de suppression, qui en
+    // porte legitimement un de chaque, echouerait a une garde correcte.
+    render(<Bouton variante="danger">Supprimer</Bouton>);
+    expect(screen.getByRole('button').dataset.variante).toBe('danger');
   });
 
   it('signale le chargement et desactive, sans perdre son libelle', () => {

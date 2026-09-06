@@ -42,6 +42,7 @@
   --color-texte: var(--texte);
   --color-texte-faible: var(--texte-faible);
   --color-texte-sur-action: var(--texte-sur-action);
+  --color-texte-sur-erreur: var(--texte-sur-erreur);
 
   /* --- Semantiques --------------------------------------------------- */
   --color-reussite: var(--reussite);
@@ -50,6 +51,7 @@
   --color-attention-fond: var(--attention-fond);
   --color-erreur: var(--erreur);
   --color-erreur-fond: var(--erreur-fond);
+  --color-erreur-survol: var(--erreur-survol);
   --color-info: var(--info);
   --color-info-fond: var(--info-fond);
 

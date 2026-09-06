@@ -67,8 +67,17 @@
   --reussite-fond: #e6f4ee;
   --attention: #b45309;
   --attention-fond: #fdf2e3;
+
+  /* Le bouton destructeur, variante `danger`, ajoute en v0.3.0.
+
+     --texte-sur-erreur n'est pas --texte-sur-action deguise, et la difference est
+     mesuree : en mode sombre --erreur vaut #F27063, un rouge clair, et du blanc
+     dessus tombe a 2,89. L'encre y donne 6,02. Le jeton change donc de role entre
+     les deux modes, comme --action, et pour la meme raison. */
   --erreur: #b42318;
   --erreur-fond: #fdecea;
+  --erreur-survol: #9a1e14;
+  --texte-sur-erreur: var(--blanc);
   --info: var(--action);
   --info-fond: #eaefff;
 
@@ -181,6 +190,8 @@
     --attention-fond: #2e2413;
     --erreur: #f27063;
     --erreur-fond: #331a18;
+    --erreur-survol: #f58b80;
+    --texte-sur-erreur: var(--encre);
     --info: var(--action-sur-sombre);
     --info-fond: #14203a;
 
@@ -214,6 +225,8 @@
   --attention-fond: #2e2413;
   --erreur: #f27063;
   --erreur-fond: #331a18;
+  --erreur-survol: #f58b80;
+  --texte-sur-erreur: var(--encre);
   --info: var(--action-sur-sombre);
   --info-fond: #14203a;
 
@@ -243,6 +256,8 @@
   --attention-fond: #fdf2e3;
   --erreur: #b42318;
   --erreur-fond: #fdecea;
+  --erreur-survol: #9a1e14;
+  --texte-sur-erreur: var(--blanc);
   --info: var(--action);
   --info-fond: #eaefff;
 

@@ -1,5 +1,5 @@
 /**
- * Les onze composants de base du noyau.
+ * Les douze composants de base du noyau.
  *
  * Ils ne dépendent d'aucun framework de style : leurs styles passent par les variables
  * CSS du noyau, de sorte qu'un projet qui n'utiliserait pas Tailwind les rend
@@ -7,9 +7,10 @@
  * `densites/profils.css`.
  *
  * Trois d'entre eux forment la coquille d'application mobile : `GabaritApp`,
- * `BarreOnglets` et `CarteAction`. Ils sont dans le noyau et non dans l'écosystème parce
- * qu'ils ne lisent ni la session ni les droits : c'est le produit qui leur donne son
- * contenu.
+ * `BarreOnglets` et `CarteAction`. Un quatrième, `GabaritPortail`, porte la coquille des
+ * écrans de réglages, avec son rail de rubriques. Ils sont dans le noyau et non dans
+ * l'écosystème parce qu'ils ne lisent ni la session ni les droits : c'est le produit qui
+ * leur donne son contenu.
  *
  * Les composants inter-produits — menu de compte, sélecteur d'organisation, sélecteur
  * de produit, accès refusé, bandeau d'environnement — n'appartiennent pas ici : ils
@@ -42,6 +43,9 @@ export {
   PART_PANNEAU,
 } from './GabaritAuth';
 export type { ProprietesGabaritAuth } from './GabaritAuth';
+
+export { GabaritPortail, LARGEUR_RAIL_BUREAU, LARGEUR_RAIL_TABLETTE } from './GabaritPortail';
+export type { ProprietesGabaritPortail, Rubrique } from './GabaritPortail';
 
 export { Champ, TAILLE_ICONE_CHAMP } from './Champ';
 export type { ProprietesChamp } from './Champ';

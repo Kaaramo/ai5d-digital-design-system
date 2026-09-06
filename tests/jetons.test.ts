@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { lireJetons, resoudre } from '../outils/jetons';
-import { ratioContraste, SEUIL_TEXTE_COURANT } from '../outils/contraste';
+import { luminance, ratioContraste, SEUIL_TEXTE_COURANT } from '../outils/contraste';
 
 const CHEMIN = 'noyau/jetons.css';
 const brut = readFileSync(CHEMIN, 'utf8');
@@ -133,6 +133,19 @@ describe('jetons - contraste en clair (garde C3)', () => {
     const ratio = ratioContraste(couleur(clair, '--texte-sur-action'), couleur(clair, '--action'));
     expect(ratio).toBeGreaterThanOrEqual(SEUIL_TEXTE_COURANT);
   });
+
+  it('--texte-sur-erreur se lit sur le bouton danger', () => {
+    const ratio = ratioContraste(couleur(clair, '--texte-sur-erreur'), couleur(clair, '--erreur'));
+    expect(ratio, `${ratio.toFixed(2)} en clair`).toBeGreaterThanOrEqual(SEUIL_TEXTE_COURANT);
+  });
+
+  it('--erreur-survol reste plus sombre que --erreur en clair', () => {
+    // Le survol assombrit en mode clair, comme --action-survol. S'il eclaircissait,
+    // le bouton paraitrait se desactiver au passage de la souris.
+    expect(luminance(couleur(clair, '--erreur-survol'))).toBeLessThan(
+      luminance(couleur(clair, '--erreur')),
+    );
+  });
 });
 
 describe('jetons - contraste en sombre (garde C3)', () => {
@@ -145,6 +158,27 @@ describe('jetons - contraste en sombre (garde C3)', () => {
     { jeton: '--erreur', fonds: ['--surface-1', '--surface-2', '--erreur-fond'] },
     { jeton: '--action', fonds: ['--surface-1', '--surface-2', '--surface-3', '--info-fond'] },
   ];
+
+  /**
+   * Le couple du bouton danger, mesure separement.
+   *
+   * C'est LE test qui justifie l'existence de --texte-sur-erreur : en sombre, --erreur
+   * vaut #F27063 et du blanc dessus tombe a 2,89. Remplacer --texte-sur-erreur par
+   * --texte-sur-action fait echouer ce test, et c'est exactement ce qu'on veut.
+   */
+  it('--texte-sur-erreur se lit sur le bouton danger, en sombre aussi', () => {
+    const ratio = ratioContraste(
+      couleur(sombre, '--texte-sur-erreur'),
+      couleur(sombre, '--erreur'),
+    );
+    expect(ratio, `${ratio.toFixed(2)} en sombre`).toBeGreaterThanOrEqual(SEUIL_TEXTE_COURANT);
+  });
+
+  it('--erreur-survol s eclaircit en sombre, comme --action-survol', () => {
+    expect(luminance(couleur(sombre, '--erreur-survol'))).toBeGreaterThan(
+      luminance(couleur(sombre, '--erreur')),
+    );
+  });
 
   for (const { jeton, fonds } of exigencesSombres) {
     for (const fond of fonds) {

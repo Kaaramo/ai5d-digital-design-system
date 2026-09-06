@@ -14,13 +14,14 @@ const ATTENDUS = [
   'Champ',
   'GabaritApp',
   'GabaritAuth',
+  'GabaritPortail',
   'Icone',
   'Logotype',
   'Pastille',
 ] as const;
 
 describe('index des composants', () => {
-  it('exporte les onze composants du noyau', () => {
+  it('exporte les douze composants du noyau', () => {
     for (const nom of ATTENDUS) {
       expect(composants, `${nom} n'est pas exporte`).toHaveProperty(nom);
       expect(typeof composants[nom], `${nom} n'est pas un composant`).toBe('function');
