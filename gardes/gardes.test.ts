@@ -52,6 +52,24 @@ describe('garde 1 - aucune couleur en dur', () => {
     expect(infractions[0]?.ligne).toBe(1);
   });
 
+  it('ne prend pas une entite HTML numerique pour une couleur', () => {
+    // `&#8239;` est l espace fine insecable, exigee par la typographie francaise avant un
+    // point d interrogation. La garde y voyait la couleur `#8239` et refusait un ecran
+    // parfaitement conforme. Trouve dans le portail Compte, sur la ligne
+    // « Mot de passe oublie&#8239;? ».
+    const racine = depotTemporaire();
+    writeFileSync(join(racine, 'Ecran.tsx'), 'const t = "Mot de passe oublie&#8239;?";\n');
+    expect(verifierAucuneCouleurEnDur(racine)).toEqual([]);
+  });
+
+  it('releve encore un hexadecimal colle a une esperluette au loin', () => {
+    // La correction ne doit pas ouvrir de porte : seul le `&` IMMEDIATEMENT avant le
+    // croisillon designe une entite.
+    const racine = depotTemporaire();
+    writeFileSync(join(racine, 'Ecran.tsx'), "const c = a && '#2251FF';\n");
+    expect(verifierAucuneCouleurEnDur(racine)).toHaveLength(1);
+  });
+
   it('releve rgba autant qu un hexadecimal', () => {
     const racine = depotTemporaire();
     writeFileSync(join(racine, 'styles.css'), '.a { color: rgba(5, 28, 44, 0.6); }\n');

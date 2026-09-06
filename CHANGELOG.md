@@ -7,6 +7,43 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 0.2.2 — 6 septembre 2026
+
+### `Champ` accepte une icône et une commande
+
+Demandé par le portail Compte, en revue de ses écrans d'authentification. La comparaison
+avec l'Académie a montré deux manques, et les deux tenaient au composant, pas à l'écran.
+
+**Une icône décorative, à gauche dans le cadre**, en 20 px : la charte, chapitre 08,
+attribue cette taille aux boutons et aux champs. Elle se reconnaît avant d'être lue, ce qui aide au balayage
+d'un formulaire ; un champ nu se lit comme une boîte vide. Elle porte `aria-hidden` et
+n'est jamais focalisable : un lecteur d'écran n'a que le libellé, et le libellé doit
+suffire.
+
+**Une commande, à droite dans le cadre.** L'usage qui l'a fait naître est la bascule
+« Afficher / Masquer » d'un mot de passe. Posée hors du composant par le portail, elle
+atterrissait sur la ligne du libellé et se lisait comme un second libellé. Rattachée au
+cadre, elle dit visiblement à quel champ elle appartient.
+
+Le rembourrage s'ouvre du côté concerné, sans quoi le texte saisi passerait dessous dès
+qu'il est long.
+
+### La garde des couleurs prenait une entité HTML pour une couleur
+
+`&#8239;` est l'espace fine insécable, celle que la typographie française exige avant un
+point d'interrogation. Le motif `#[0-9a-fA-F]{3,8}` y voyait la couleur `#8239` et refusait
+un écran parfaitement conforme.
+
+Trouvé dans le portail Compte, sur la ligne « Mot de passe oublié&#8239;? ». Le motif exige
+désormais que le croisillon ne soit pas précédé d'une esperluette. Deux tests encadrent la
+correction : l'entité passe, et un hexadécimal écrit après un `&&` est toujours relevé, pour
+que la porte ne s'ouvre pas plus large que nécessaire.
+
+**Rétrocompatible, et c'est vérifié plutôt qu'affirmé.** Un `Champ` sans icône ni commande
+garde ses 14 px de chaque côté, et un test le mesure : aucun formulaire existant ne bouge.
+
+---
+
 ## 0.2.1 — 5 septembre 2026
 
 ### Le paquet ne compilait pas chez un consommateur strict

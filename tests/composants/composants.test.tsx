@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Shield } from 'lucide-react';
+import { Mail, Shield } from 'lucide-react';
 import {
   Bandeau,
   BASCULE_DEUX_COLONNES,
@@ -153,6 +153,44 @@ describe('Champ', () => {
     const premier = screen.getByLabelText('Premier');
     const second = screen.getByLabelText('Second');
     expect(premier.id).not.toBe(second.id);
+  });
+
+  it('accepte une icone, decorative et jamais annoncee', () => {
+    // Elle aide au balayage d un formulaire : une enveloppe et un cadenas se
+    // reconnaissent avant d etre lus. Mais un lecteur d ecran n a que le libelle, et
+    // c est lui qui doit suffire.
+    const { container } = render(<Champ libelle="Adresse" icone={Mail} />);
+    const svg = container.querySelector('svg');
+    expect(svg).not.toBeNull();
+    expect(svg).toHaveAttribute('aria-hidden', 'true');
+    expect(screen.getByLabelText('Adresse')).toBeInTheDocument();
+  });
+
+  it('ouvre le rembourrage a gauche quand une icone est posee', () => {
+    // Sans cela, le texte saisi passe sous l icone et devient illisible.
+    const { rerender } = render(<Champ libelle="Sans" />);
+    const sansIcone = screen.getByLabelText('Sans').style.paddingLeft;
+    rerender(<Champ libelle="Avec" icone={Mail} />);
+    const avecIcone = screen.getByLabelText('Avec').style.paddingLeft;
+    expect(Number.parseInt(avecIcone, 10)).toBeGreaterThan(Number.parseInt(sansIcone, 10));
+  });
+
+  it('accueille une commande dans le cadre, a droite', () => {
+    // La bascule « Afficher » d un mot de passe. Posee hors du composant, elle se
+    // retrouvait sur la ligne du libelle et se lisait comme un second libelle.
+    render(<Champ libelle="Mot de passe" commande={<button type="button">Afficher</button>} />);
+    expect(screen.getByRole('button', { name: 'Afficher' })).toBeInTheDocument();
+    const rembourrage = screen.getByLabelText('Mot de passe').style.paddingRight;
+    expect(Number.parseInt(rembourrage, 10)).toBeGreaterThan(14);
+  });
+
+  it('un champ nu garde exactement le rendu qu il avait', () => {
+    // La retro-compatibilite n est pas une intention : elle se verifie. Un champ sans
+    // icone ni commande garde ses 14 px de chaque cote.
+    render(<Champ libelle="Nu" />);
+    const entree = screen.getByLabelText('Nu');
+    expect(entree.style.paddingLeft).toBe('14px');
+    expect(entree.style.paddingRight).toBe('14px');
   });
 
   it("respecte l'identifiant fourni", () => {

@@ -112,7 +112,15 @@ export function verifierAucuneCouleurEnDur(
   racine: string,
   options: OptionsGarde = {},
 ): Infraction[] {
-  const hexadecimal = /#[0-9a-fA-F]{3,8}\b/;
+  /**
+   * `(?<!&)` : une entité HTML numérique n'est PAS une couleur.
+   *
+   * `&#8239;` est l'espace fine insécable, celle que la typographie française exige avant
+   * un point d'interrogation. Sans cette exclusion, la garde y voyait la couleur `#8239`
+   * et refusait un écran parfaitement conforme. Trouvé dans le portail Compte, sur la
+   * ligne « Mot de passe oublié&#8239;? ».
+   */
+  const hexadecimal = /(?<!&)#[0-9a-fA-F]{3,8}\b/;
   const fonctionCouleur = /\b(?:rgba?|hsla?)\s*\(/;
   return examinerLignes(racine, options, 'aucune-couleur-en-dur', (ligne) => {
     const utile = sansCommentaire(ligne);

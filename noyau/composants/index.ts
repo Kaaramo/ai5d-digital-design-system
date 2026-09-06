@@ -43,7 +43,7 @@ export {
 } from './GabaritAuth';
 export type { ProprietesGabaritAuth } from './GabaritAuth';
 
-export { Champ } from './Champ';
+export { Champ, TAILLE_ICONE_CHAMP } from './Champ';
 export type { ProprietesChamp } from './Champ';
 
 export { EPAISSEUR_TRAIT, Icone } from './Icone';
