@@ -227,3 +227,45 @@ describe('jetons - geometrie et mouvement', () => {
     expect(clair.get('--cible-tactile')).toBe('44px');
   });
 });
+
+/**
+ * L echelle d espacement.
+ *
+ * Elle etait promise par la charte, chapitre 07, et par le contrat de jetons du portail
+ * depuis le premier jour. Elle n'avait jamais ete implementee, et le defaut etait
+ * parfaitement silencieux : `var(--espace-4)` resolvait au vide, le navigateur appliquait
+ * zero, la page s'affichait collee. Rien dans la console, rien dans les tests.
+ *
+ * Ce bloc-la existe pour que cela ne puisse plus arriver.
+ */
+describe('jetons - echelle d espacement (charte ch. 07)', () => {
+  const ATTENDUS: [string, string][] = [
+    ['--espace-1', '4px'],
+    ['--espace-2', '8px'],
+    ['--espace-3', '12px'],
+    ['--espace-4', '16px'],
+    ['--espace-6', '24px'],
+    ['--espace-8', '32px'],
+    ['--espace-12', '48px'],
+    ['--espace-16', '64px'],
+  ];
+
+  for (const [jeton, valeur] of ATTENDUS) {
+    it(`${jeton} vaut ${valeur}`, () => {
+      expect(clair.get(jeton), `${jeton} manquant`).toBe(valeur);
+    });
+  }
+
+  it('ne change ni avec le theme ni avec la densite', () => {
+    // La densite decrit l espace entre les SECTIONS, l echelle entre les elements.
+    for (const [jeton, valeur] of ATTENDUS) {
+      expect(sombre.get(jeton), `${jeton} differe en sombre`).toBe(valeur);
+    }
+  });
+
+  it('suit un pas de quatre pixels, sans exception', () => {
+    for (const [jeton, valeur] of ATTENDUS) {
+      expect(Number.parseInt(valeur, 10) % 4, `${jeton} sort du pas`).toBe(0);
+    }
+  });
+});

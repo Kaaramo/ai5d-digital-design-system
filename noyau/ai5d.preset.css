@@ -103,6 +103,16 @@
   /* --- Densite -------------------------------------------------------
      Ces quatre-la changent avec data-densite. Les exposer a Tailwind permet
      d'ecrire p-carte ou h-controle sans jamais coder une valeur en dur. */
+  /* L echelle a pas de 4 px, charte ch. 07. `p-4` vaut donc 16 px, comme partout. */
+  --spacing-1: var(--espace-1);
+  --spacing-2: var(--espace-2);
+  --spacing-3: var(--espace-3);
+  --spacing-4: var(--espace-4);
+  --spacing-6: var(--espace-6);
+  --spacing-8: var(--espace-8);
+  --spacing-12: var(--espace-12);
+  --spacing-16: var(--espace-16);
+
   --spacing-section: var(--rythme-section);
   --spacing-carte: var(--padding-carte);
   --spacing-controle: var(--hauteur-controle);

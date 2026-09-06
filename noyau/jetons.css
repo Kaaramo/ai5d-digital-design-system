@@ -116,6 +116,32 @@
   --lettrage-mono: 0.16em;
 
   /* -----------------------------------------------------------------------
+     Espacement. Une seule unite, declinee huit fois, a pas de 4 px.
+
+     Elle etait promise par la charte, chapitre 07, et par le contrat de jetons
+     `docs/tokens-contrat.md` du portail, qui l'enumere depuis le premier jour. Elle
+     n'avait jamais ete implementee : tout `var(--espace-4)` ecrit par un produit
+     resolvait au vide, et le navigateur appliquait zero.
+
+     Le defaut est silencieux et il ne casse rien : la page s'affiche, simplement collee.
+     Mesure au navigateur sur le portail Compte, avant correction : le rail de rubriques
+     n'avait aucun rembourrage, l'icone touchait son libelle, et le nom de la personne
+     touchait « Se deconnecter ». Rien dans la console, rien dans les tests.
+
+     Les huit valeurs sont celles de la charte, sans exception. Elles ne changent ni avec
+     le theme, ni avec la densite : la densite decrit l'espace entre les SECTIONS,
+     l'echelle decrit l'espace entre les elements.
+     ----------------------------------------------------------------------- */
+  --espace-1: 4px; /* icone et texte */
+  --espace-2: 8px; /* rembourrage serre */
+  --espace-3: 12px; /* ecart proche */
+  --espace-4: 16px; /* marge sur telephone */
+  --espace-6: 24px; /* rembourrage de carte */
+  --espace-8: 32px; /* separation de blocs */
+  --espace-12: 48px; /* grande respiration */
+  --espace-16: 64px; /* section sur bureau */
+
+  /* -----------------------------------------------------------------------
      Geometrie. La maison mere impose le rayon zero ; le registre applicatif ne
      la suit pas. C'est l'une des cinq libertes accordees.
      ----------------------------------------------------------------------- */

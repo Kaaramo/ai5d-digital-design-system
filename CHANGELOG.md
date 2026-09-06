@@ -7,6 +7,33 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 0.3.1 — 6 septembre 2026
+
+### L'échelle d'espacement existe enfin
+
+Elle était promise par la charte, chapitre 07, qui énumère ses huit valeurs, et par le
+contrat de jetons du portail, qui les documente depuis le premier jour. Elle n'avait
+**jamais été implémentée**.
+
+Tout `var(--espace-4)` écrit par un produit résolvait au vide, et le navigateur appliquait
+zéro. Le défaut ne casse rien : la page s'affiche, simplement collée. Rien dans la console,
+rien dans les tests, rien dans le typecheck.
+
+Mesuré au navigateur sur le portail Compte, avant correction : le rail de rubriques n'avait
+aucun rembourrage et débordait jusqu'au bord de la fenêtre, l'icône touchait son libellé,
+et le nom de la personne touchait « Se déconnecter ». `GabaritPortail`, livré par ce
+système en v0.3.0, était lui-même écrit avec ces jetons : il était donc cassé aussi.
+
+Les huit valeurs sont celles de la charte, sans exception, à pas de 4 px. Elles ne changent
+ni avec le thème ni avec la densité : la densité décrit l'espace entre les **sections**,
+l'échelle décrit l'espace entre les **éléments**.
+
+Elles sont aussi mises en correspondance Tailwind, `--spacing-1` à `--spacing-16`.
+
+Onze tests les gardent, dont un qui vérifie le pas de quatre.
+
+---
+
 ## 0.3.0 — 6 septembre 2026
 
 ### `GabaritPortail`, la coquille des écrans de réglages
