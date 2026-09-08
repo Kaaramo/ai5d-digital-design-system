@@ -7,6 +7,102 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 0.6.0 — 8 septembre 2026
+
+Trois ajouts, aucun retrait, aucune valeur de jeton modifiée. Une mineure.
+
+Ils viennent tous d'un même constat, fait à l'écran sur le portail Compte : deux rubriques
+de réglages y empilaient quatre à cinq cartes, et la personne qui venait pour une chose en
+lisait cinq. Le découpage en sous-pages demandait trois choses que le système n'avait pas.
+
+### `OngletsRubrique` — et pourquoi `BarreOnglets` ne pouvait pas servir
+
+Le système portait déjà un composant nommé « onglets ». C'est une barre **basse et fixe**,
+`position: fixed; bottom: 0`, qui disparaît au palier tablette : la navigation d'une
+coquille d'application mobile, posée là où le pouce arrive.
+
+Rien de tout cela ne convient à des sous-pages de réglages, lues surtout sur un poste de
+bureau. Le nom se ressemble, le rôle est opposé. Les deux fichiers le disent maintenant, et
+l'index aussi : c'est la seule protection contre le prochain qui cherchera « les onglets ».
+
+**Ce sont des liens, pas un `tablist`.** Le motif ARIA `tablist` promet des panneaux qui
+apparaissent sans navigation, et un lecteur d'écran qui l'entend attend les flèches pour
+circuler. Ici la page change vraiment : chaque onglet est une route rendue au serveur, qui
+se met en signet et revient par le bouton Retour. On emploie donc `nav` et
+`aria-current="page"`. Annoncer un `tablist` qui navigue serait une promesse fausse.
+
+**L'état actif porte trois signaux à la fois** : la couleur d'action, la graisse
+semi-grasse, et un trait de 2 px. Même règle que `BarreOnglets`, même raison : près d'un
+homme sur douze ne distingue pas correctement le rouge du vert, et un trait de 2 px seul se
+rate au balayage.
+
+**Le débordement se voit.** Trois onglets de deux mots ne tiennent pas sur un téléphone de
+390 px. Le conteneur défile, son ascenseur est masqué, et un dégradé de 24 px collé au bord
+droit dit qu'il reste quelque chose derrière. Sans lui, personne ne devine qu'un troisième
+onglet existe : la sous-page est perdue pour tous les téléphones, et aucun test ne peut le
+voir.
+
+**Le composant ne déduit pas l'onglet actif, il le reçoit.** Déduire le chemin courant
+demanderait un routeur, donc une dépendance à un framework, dans un système qui n'en a
+aucune.
+
+### `Avatar` — la photo d'une personne, ou ses initiales
+
+Le portail Compte portait un `DisqueInitiales` maison, qui ne savait faire que les
+initiales. L'arrivée de la photo de profil aurait demandé un second composant, et deux
+composants pour un même objet divergent à la première correction : l'un prend un liseré,
+l'autre non, et personne ne le voit avant de les mettre côte à côte.
+
+Ils sont ici les deux **états** d'une seule chose, et l'état par défaut est celui qui ne
+dépend de rien.
+
+**Une photo cassée retombe sur les initiales**, par `onError`. Une URL meurt de plusieurs
+façons : objet supprimé, domaine de médias en panne, réseau d'entreprise qui filtre les
+images distantes. Le repli garde un visage lisible là où l'absence laisserait un trou à la
+place de quelqu'un.
+
+**Les initiales prennent les deux PREMIERS mots**, jamais le premier et le dernier.
+« Marie Claire Dupont » donne « MC » et non « MD » : c'est le prénom composé qui est le nom
+d'usage, et l'inverse afficherait des initiales que la personne ne reconnaît pas comme les
+siennes.
+
+**Un nom vide rend un point d'interrogation**, jamais un disque vide, qui se lit comme un
+défaut de chargement et fait chercher une panne qui n'existe pas.
+
+La taille est un nombre libre et non une échelle contrainte, contrairement à `Icone`. Un
+avatar se cale sur ce qui l'entoure : 32 px dans un en-tête, 40 px dans une ligne de liste,
+96 px dans une carte de profil. Contraindre la liste obligerait à la rouvrir à chaque
+nouvel emploi.
+
+### `Bouton`, variante `danger-contour`
+
+La couleur porte l'avertissement, le contour lui retire le **poids**.
+
+`danger` est un aplat rouge, et c'est ce qu'il faut au bout d'un parcours de suppression,
+là où l'action destructrice est ce qu'on est venu faire. Ailleurs il est trop fort : sur un
+écran de réglages qui porte déjà un bouton primaire, deux aplats de couleur se lisent comme
+deux invitations d'égale force, celle qui protège et celle qui détruit.
+
+Le portail Compte a fait ce constat au sprint 07 et s'est dessiné un contour à la main dans
+sa zone de suppression. La console d'administration en a le même besoin sur trois écrans, et
+la carte des méthodes de connexion sur un quatrième. **Un bouton de danger dessiné à la main
+dans deux dépôts finit par avoir deux apparences.**
+
+Le survol pose `--erreur-fond`, une teinte très pâle, et ne touche ni la bordure ni le
+texte : un survol qui passerait à `--erreur` plein annulerait la variante. Comme `danger`,
+elle ne compte pas dans la règle du bouton primaire.
+
+### Compatibilité
+
+Aucune propriété retirée, aucune valeur de jeton modifiée, aucun composant existant ne
+change de rendu. `Bouton` gagne une valeur de `VarianteBouton` ; un consommateur qui
+énumère exhaustivement ce type devra la traiter.
+
+Le portail Compte supprimera son `DisqueInitiales` en consommant cette version. Aucun autre
+produit ne l'employait.
+
+---
+
 ## 0.5.1 — 8 septembre 2026
 
 ### Un bouton qui charge n'est pas un bouton indisponible

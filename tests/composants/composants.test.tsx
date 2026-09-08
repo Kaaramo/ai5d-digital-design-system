@@ -143,6 +143,44 @@ describe('Bouton', () => {
     expect(screen.getByRole('button').dataset.variante).toBe('danger');
   });
 
+  it('danger-contour porte la couleur SANS le poids de l aplat', () => {
+    /*
+      La distinction est tout l objet de la variante. `danger` est un aplat rouge, et sur un
+      ecran de reglages qui porte deja un bouton primaire, deux aplats se lisent comme deux
+      invitations d egale force : celle qui protege et celle qui detruit.
+
+      Le contour garde la COULEUR, donc l avertissement, et lui retire le POIDS.
+    */
+    const { container } = render(<Bouton variante="danger-contour">Retirer Google</Bouton>);
+    const css = container.querySelector('#ai5d-bouton')?.innerHTML ?? '';
+    const regle =
+      css.split('}').find((r) => r.includes("[data-variante='danger-contour'] {")) ?? '';
+
+    expect(regle).toContain('background: transparent');
+    expect(regle).toContain('color: var(--erreur)');
+    expect(regle).toContain('border-color: var(--erreur)');
+
+    expect(screen.getByRole('button').dataset.variante).toBe('danger-contour');
+  });
+
+  it('danger-contour ne devient pas un aplat au survol', () => {
+    // Le survol pose `--erreur-fond`, une teinte tres pale, et ne touche ni la bordure ni
+    // le texte. Un survol qui passerait a `--erreur` plein annulerait la variante.
+    const { container } = render(<Bouton variante="danger-contour">Retirer</Bouton>);
+    const css = (container.querySelector('#ai5d-bouton')?.innerHTML ?? '').replace(/\s+/g, ' ');
+    const survol =
+      css.split('}').find((r) => r.includes(":hover[data-variante='danger-contour']")) ?? '';
+
+    expect(survol).toContain('background: var(--erreur-fond)');
+    expect(survol).not.toContain('var(--erreur-survol)');
+  });
+
+  it('danger-contour porte l anneau de focus rouge, comme danger', () => {
+    const { container } = render(<Bouton variante="danger-contour">Retirer</Bouton>);
+    const css = container.querySelector('#ai5d-bouton')?.innerHTML ?? '';
+    expect(css).toContain("[data-variante='danger-contour']:focus-visible");
+  });
+
   it('signale le chargement et desactive, sans perdre son libelle', () => {
     render(<Bouton chargement>Enregistrer</Bouton>);
     const bouton = screen.getByRole('button', { name: 'Enregistrer' });

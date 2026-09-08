@@ -50,9 +50,27 @@ import type { ButtonHTMLAttributes, CSSProperties } from 'react';
  *
  * La règle « un seul bouton primaire par vue » vise l'unicité du REGARD, pas la valeur
  * littérale d'un attribut.
+ *
+ * ── LA VARIANTE `danger-contour`, AJOUTÉE EN v0.6.0 ─────────────────────────
+ * La couleur porte l'avertissement, le contour lui retire le POIDS.
+ *
+ * `danger` est un aplat rouge, et c'est ce qu'il faut au bout d'un parcours de suppression,
+ * là où l'action destructrice EST ce qu'on est venu faire. Ailleurs il est trop fort : sur
+ * un écran de réglages qui porte déjà un bouton primaire, deux aplats de couleur se lisent
+ * comme deux invitations d'égale force, celle qui protège et celle qui détruit.
+ *
+ * Le portail Compte a fait ce constat au sprint 07 et s'est dessiné un contour à la main
+ * dans sa zone de suppression ; la console d'administration en a le même besoin sur trois
+ * écrans, et la carte des méthodes de connexion sur un quatrième. Un bouton de danger
+ * dessiné à la main dans deux dépôts finit par avoir deux apparences.
+ *
+ * Son survol pose `--erreur-fond`, une teinte très pâle, et ne touche ni la bordure ni le
+ * texte : un survol qui passerait à `--erreur` plein annulerait la variante. Comme
+ * `danger`, elle ne compte pas dans la règle du bouton primaire.
  */
 
-export type VarianteBouton = 'primaire' | 'secondaire' | 'neutre' | 'discret' | 'danger';
+export type VarianteBouton =
+  'primaire' | 'secondaire' | 'neutre' | 'discret' | 'danger' | 'danger-contour';
 export type TailleBouton = 'sm' | 'md' | 'lg';
 
 export interface ProprietesBouton extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -140,6 +158,11 @@ const STYLE_BOUTON = `
   color: var(--texte-sur-erreur);
   border-color: var(--erreur);
 }
+.ai5d-bouton[data-variante='danger-contour'] {
+  background: transparent;
+  color: var(--erreur);
+  border-color: var(--erreur);
+}
 
 .ai5d-bouton:not(:disabled):hover[data-variante='primaire'] {
   background: var(--action-survol);
@@ -157,11 +180,15 @@ const STYLE_BOUTON = `
   background: var(--erreur-survol);
   border-color: var(--erreur-survol);
 }
+.ai5d-bouton:not(:disabled):hover[data-variante='danger-contour'] {
+  background: var(--erreur-fond);
+}
 
 .ai5d-bouton:not(:disabled):active { transform: translateY(1px); }
 
 .ai5d-bouton:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
-.ai5d-bouton[data-variante='danger']:focus-visible { outline-color: var(--erreur); }
+.ai5d-bouton[data-variante='danger']:focus-visible,
+.ai5d-bouton[data-variante='danger-contour']:focus-visible { outline-color: var(--erreur); }
 
 .ai5d-bouton__points {
   display: inline-flex;
