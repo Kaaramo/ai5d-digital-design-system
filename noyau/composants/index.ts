@@ -1,5 +1,5 @@
 /**
- * Les treize composants de base du noyau.
+ * Les quinze composants de base du noyau.
  *
  * Ils ne dépendent d'aucun framework de style : leurs styles passent par les variables
  * CSS du noyau, de sorte qu'un projet qui n'utiliserait pas Tailwind les rend
@@ -12,10 +12,18 @@
  * l'écosystème parce qu'ils ne lisent ni la session ni les droits : c'est le produit qui
  * leur donne son contenu.
  *
+ * Deux composants portent le mot « onglet », et ils ne font pas la même chose.
+ * `BarreOnglets` est la navigation BASSE et FIXE d'une coquille mobile, qui disparaît au
+ * palier tablette ; `OngletsRubrique` découpe une rubrique en sous-pages, dans le flux du
+ * document, à tous les paliers. Chacun l'explique dans son propre fichier.
+ *
  * Les composants inter-produits — menu de compte, sélecteur d'organisation, sélecteur
  * de produit, accès refusé, bandeau d'environnement — n'appartiennent pas ici : ils
  * vivent dans la couche écosystème, parce qu'ils lisent la session et les droits.
  */
+
+export { Avatar, initiales } from './Avatar';
+export type { ProprietesAvatar } from './Avatar';
 
 export { Bandeau } from './Bandeau';
 export type { ProprietesBandeau } from './Bandeau';
@@ -62,6 +70,9 @@ export type { ProprietesChamp } from './Champ';
 
 export { EPAISSEUR_TRAIT, Icone } from './Icone';
 export type { ProprietesIcone, TailleIcone } from './Icone';
+
+export { HAUTEUR_ONGLETS, OngletsRubrique } from './OngletsRubrique';
+export type { OngletRubrique, ProprietesOngletsRubrique } from './OngletsRubrique';
 
 export { Logotype } from './Logotype';
 export type { ProprietesLogotype, VarianteLogotype } from './Logotype';

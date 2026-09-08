@@ -6,6 +6,7 @@ const DOSSIER = 'noyau/composants';
 const index = readFileSync(`${DOSSIER}/index.ts`, 'utf8');
 
 const ATTENDUS = [
+  'Avatar',
   'Bandeau',
   'BarreOnglets',
   'Bouton',
@@ -18,11 +19,12 @@ const ATTENDUS = [
   'GabaritPortail',
   'Icone',
   'Logotype',
+  'OngletsRubrique',
   'Pastille',
 ] as const;
 
 describe('index des composants', () => {
-  it('exporte les treize composants du noyau', () => {
+  it('exporte les quinze composants du noyau', () => {
     for (const nom of ATTENDUS) {
       expect(composants, `${nom} n'est pas exporte`).toHaveProperty(nom);
       expect(typeof composants[nom], `${nom} n'est pas un composant`).toBe('function');
@@ -49,6 +51,7 @@ describe('index des composants', () => {
     expect(composants.HAUTEUR_BARRE_ONGLETS).toBe(56);
     expect(composants.HAUTEUR_ENTETE).toBe(56);
     expect(composants.TAILLE_PASTILLE_ICONE).toBe(48);
+    expect(composants.HAUTEUR_ONGLETS).toBe(44);
     expect(composants.ONGLETS_MIN).toBe(3);
     expect(composants.ONGLETS_MAX).toBe(5);
     expect(composants.GRILLE_EMBLEME).toBe(240);
