@@ -33,6 +33,14 @@ import type { ButtonHTMLAttributes, CSSProperties } from 'react';
  * Elle porte `--texte-sur-erreur` et non `--texte-sur-action` : en mode sombre, `--erreur`
  * vaut un rouge clair, et du blanc dessus tombe à 2,89. Voir la note dans `jetons.css`.
  *
+ * ── L'ÉTAT `chargement`, EN v0.5.0 ──────────────────────────────────────────
+ * Il estompait le bouton à 60 %, le désactivait, posait `aria-busy`, et rien d'autre. Il
+ * disait « ce bouton est indisponible » là où il fallait dire « votre demande est partie ».
+ *
+ * Il rend désormais trois points animés, et accepte un `libelleChargement` qui remplace le
+ * libellé, donc le nom accessible. L'information ne passe JAMAIS par l'animation :
+ * `prefers-reduced-motion` la supprime, les points se figent, et le libellé porte tout.
+ *
  * ── LA VARIANTE `neutre`, AJOUTÉE EN v0.4.0 ─────────────────────────────────
  * Pour un bouton qui doit être visible sans revendiquer l'action : la connexion par un
  * fournisseur tiers, posée au-dessus du vrai bouton de l'écran. En `secondaire`, elle
@@ -52,6 +60,21 @@ export interface ProprietesBouton extends ButtonHTMLAttributes<HTMLButtonElement
   taille?: TailleBouton | undefined;
   /** Le bouton reste lisible et garde son libellé : la mise en page ne saute pas. */
   chargement?: boolean | undefined;
+  /**
+   * Le libellé affiché PENDANT le chargement, à la place du libellé normal.
+   *
+   * Absent, le bouton garde son libellé : c'est le comportement d'avant la v0.5.0, et
+   * aucun produit consommateur ne change de rendu.
+   *
+   * Il nomme l'ACTION, jamais l'attente. « Connexion en cours » et non « Veuillez
+   * patienter » : le second ne dit rien que l'estompage ne disait déjà.
+   *
+   * L'argument historique contre le changement de libellé visait la LARGEUR : un bouton
+   * ajusté à son texte change de taille quand le texte change, et la colonne saute. Il
+   * reste vrai, et c'est pourquoi cette propriété est optionnelle. Sur un bouton
+   * `pleineLargeur`, le texte se recentre sans rien déplacer.
+   */
+  libelleChargement?: string | undefined;
   /** Occupe toute la largeur disponible. Le registre `CarteAuth` s'en sert. */
   pleineLargeur?: boolean | undefined;
 }
@@ -140,15 +163,58 @@ const STYLE_BOUTON = `
 .ai5d-bouton:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
 .ai5d-bouton[data-variante='danger']:focus-visible { outline-color: var(--erreur); }
 
+.ai5d-bouton__points {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.ai5d-bouton__point {
+  width: 4px;
+  height: 4px;
+  border-radius: var(--rayon-plein);
+  background: currentColor;
+  opacity: 0.35;
+  animation: ai5d-bouton-point 1200ms infinite ease-in-out;
+}
+.ai5d-bouton__point:nth-child(2) { animation-delay: 160ms; }
+.ai5d-bouton__point:nth-child(3) { animation-delay: 320ms; }
+
+@keyframes ai5d-bouton-point {
+  0%, 60%, 100% { opacity: 0.35; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ai5d-bouton:not(:disabled):active { transform: none; }
+  .ai5d-bouton__point { animation: none; opacity: 1; }
 }
 `;
+
+/**
+ * Trois points, décoratifs.
+ *
+ * `aria-hidden` : l'information est dans le libellé de chargement et dans `aria-busy`.
+ * Un lecteur d'écran qui annoncerait trois points n'apprendrait rien à personne.
+ *
+ * `currentColor`, jamais un jeton. Le bouton primaire porte `--texte-sur-action`, le
+ * `danger` porte `--texte-sur-erreur`, le `neutre` porte `--texte-fort` : trois points
+ * figés sur une seule de ces valeurs seraient faux sur deux boutons sur trois.
+ */
+function PointsDeChargement() {
+  return (
+    <span className="ai5d-bouton__points" aria-hidden="true">
+      <span className="ai5d-bouton__point" />
+      <span className="ai5d-bouton__point" />
+      <span className="ai5d-bouton__point" />
+    </span>
+  );
+}
 
 export function Bouton({
   variante = 'primaire',
   taille = 'md',
   chargement = false,
+  libelleChargement,
   pleineLargeur = false,
   disabled,
   className,
@@ -195,7 +261,8 @@ export function Bouton({
         data-taille={taille}
         {...reste}
       >
-        {children}
+        {chargement && libelleChargement !== undefined ? libelleChargement : children}
+        {chargement ? <PointsDeChargement /> : null}
       </button>
     </>
   );

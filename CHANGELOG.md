@@ -7,6 +7,64 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 0.5.0 — 8 septembre 2026
+
+### L'état `chargement` disait « indisponible » là où il fallait dire « c'est parti »
+
+Il estompait le bouton à 60 %, le désactivait, posait `aria-busy`, et rien d'autre. Le
+libellé ne bougeait pas.
+
+Mesuré sur l'écran d'inscription du portail Compte : entre le clic et la redirection, il se
+passe la création du compte, l'écriture du journal d'audit, l'envoi d'un courriel et un
+rendu de page. Trois secondes pendant lesquelles un bouton légèrement plus pâle est le seul
+signal. La personne ne sait pas si elle doit attendre ou recliquer, et son second clic est
+absorbé par `disabled` sans rien lui dire.
+
+**Trois points animés**, dans l'esprit de l'indicateur qui dit qu'une personne est en train
+d'écrire : ils montent et redescendent l'un après l'autre, cycle de 1200 ms, décalés de
+160 ms. Le cycle est long volontairement. Une animation rapide sur un bouton pleine largeur
+donne l'impression d'une urgence que l'attente n'a pas : le rôle de l'indicateur est de
+rassurer, pas de presser.
+
+**Ils prennent `currentColor`, jamais un jeton.** Le primaire porte `--texte-sur-action`, le
+`danger` porte `--texte-sur-erreur`, le `neutre` porte `--texte-fort`. Trois points figés
+sur une seule de ces valeurs seraient faux sur deux boutons sur trois, et presque invisibles
+sur l'un d'eux en mode sombre.
+
+**`prefers-reduced-motion` supprime l'animation entièrement.** Les points restent affichés,
+statiques, à pleine opacité. Ce n'est pas un repli dégradé : l'information n'est jamais
+portée par l'animation, elle est portée par le libellé et par `aria-busy`. Les points sont
+un renfort visuel, et un renfort qu'on peut retirer sans rien perdre.
+
+### `Bouton` gagne `libelleChargement`
+
+Optionnel. Absent, le bouton garde son libellé, exactement comme avant : **aucun produit
+consommateur ne change de rendu en montant en 0.5.0.**
+
+Présent, il remplace le libellé pendant le chargement, donc le **nom accessible** du
+bouton. C'est ce qui compte : sans changement de libellé, un bouton en chargement s'annonce
+exactement comme un bouton au repos, à `aria-busy` près, que tous les lecteurs n'annoncent
+pas.
+
+Le libellé nomme l'action, jamais l'attente. « Connexion en cours » et non « Veuillez
+patienter » : le second ne dit rien que l'estompage ne disait déjà.
+
+**L'argument historique contre le changement de libellé reste vrai, et c'est pourquoi la
+propriété est optionnelle.** Il visait la LARGEUR : un bouton ajusté à son texte change de
+taille quand le texte change, et la colonne saute. Sur un bouton `pleineLargeur`, le texte
+se recentre sans rien déplacer.
+
+### Compatibilité
+
+Aucune valeur de jeton ne change. Aucune propriété n'est retirée, aucune variante n'est
+renommée. Un produit qui reste en 0.4.0 continue de fonctionner ; un produit qui monte voit
+ses boutons en chargement s'animer, sans rien changer à son code.
+
+Huit tests neufs, dont un qui vérifie que le nom accessible bascule et un qui vérifie que
+l'animation disparaît sous `prefers-reduced-motion`.
+
+---
+
 ## 0.4.0 — 8 septembre 2026
 
 ### Le libellé du bouton primaire était illisible en mode sombre

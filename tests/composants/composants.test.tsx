@@ -225,6 +225,69 @@ describe('Bouton', () => {
     expect(css).toContain("[data-variante='danger']:focus-visible");
     expect(css).toContain('outline-color: var(--erreur)');
   });
+
+  it('affiche trois points pendant le chargement, et aucun au repos', () => {
+    const { container, rerender } = render(<Bouton>Envoyer</Bouton>);
+    expect(container.querySelectorAll('.ai5d-bouton__point')).toHaveLength(0);
+    rerender(<Bouton chargement>Envoyer</Bouton>);
+    expect(container.querySelectorAll('.ai5d-bouton__point')).toHaveLength(3);
+  });
+
+  it('garde son libelle quand aucun libelle de chargement n est donne', () => {
+    // C'est la compatibilite : un produit reste a l identique en montant en v0.5.0.
+    render(<Bouton chargement>Envoyer</Bouton>);
+    expect(screen.getByRole('button', { name: 'Envoyer' })).toBeTruthy();
+  });
+
+  it('remplace son NOM ACCESSIBLE par le libelle de chargement', () => {
+    render(
+      <Bouton chargement libelleChargement="Connexion en cours">
+        Se connecter
+      </Bouton>,
+    );
+    expect(screen.getByRole('button', { name: 'Connexion en cours' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Se connecter' })).toBeNull();
+  });
+
+  it('ignore le libelle de chargement tant que rien ne charge', () => {
+    render(<Bouton libelleChargement="Connexion en cours">Se connecter</Bouton>);
+    expect(screen.getByRole('button', { name: 'Se connecter' })).toBeTruthy();
+  });
+
+  it('cache les points aux lecteurs d ecran', () => {
+    const { container } = render(<Bouton chargement>Envoyer</Bouton>);
+    expect(container.querySelector('.ai5d-bouton__points')?.getAttribute('aria-hidden')).toBe(
+      'true',
+    );
+  });
+
+  it('donne aux points la couleur du texte, jamais un jeton', () => {
+    // Les quatre variantes ont quatre couleurs de texte. Un jeton fige les points sur une
+    // seule, donc les rend faux sur les trois autres.
+    const { container } = render(<Bouton chargement>Envoyer</Bouton>);
+    const css = container.querySelector('#ai5d-bouton')?.innerHTML ?? '';
+    expect(css).toContain('background: currentColor');
+  });
+
+  it('fige les points sous prefers-reduced-motion', () => {
+    // L'information n'est JAMAIS portee par l'animation : elle est dans le libelle et
+    // dans aria-busy. Les points sont un renfort qu'on peut retirer sans rien perdre.
+    const { container } = render(<Bouton chargement>Envoyer</Bouton>);
+    const css = (container.querySelector('#ai5d-bouton')?.innerHTML ?? '').replace(/\s+/g, ' ');
+    const reduit = css.slice(css.indexOf('prefers-reduced-motion'));
+    expect(reduit).toContain('.ai5d-bouton__point { animation: none; opacity: 1; }');
+  });
+
+  it('reste occupe et desactive pendant le chargement', () => {
+    render(
+      <Bouton chargement libelleChargement="Connexion en cours">
+        Se connecter
+      </Bouton>,
+    );
+    const bouton = screen.getByRole('button');
+    expect(bouton.getAttribute('aria-busy')).toBe('true');
+    expect(bouton).toBeDisabled();
+  });
 });
 
 describe('Champ', () => {
