@@ -7,6 +7,49 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 0.6.1 — 8 septembre 2026
+
+### `Avatar` savait faire moins que ce qu'il remplaçait
+
+La 0.6.0 l'a écrit pour remplacer un `DisqueInitiales` maison du portail Compte. En allant
+substituer ses quatre points d'appel, deux propriétés se sont révélées manquantes, et
+aucune des deux n'est cosmétique.
+
+**`decoratif={false}`, et c'est une correction d'accessibilité, pas un confort.** L'avatar
+était `aria-hidden` en toutes circonstances, au motif que le nom complet est écrit juste à
+côté. C'est vrai partout, sauf à un endroit : sous 768 px, le rail du portail disparaît avec
+le nom et l'adresse, et le disque devient le **seul** marqueur d'identité de la coquille.
+Retiré de l'arbre d'accessibilité, avec une infobulle que le doigt ne déclenche pas, il ne
+disait plus rien du tout.
+
+Quelqu'un qui tient un compte personnel et un compte employeur au même nom n'avait alors, au
+lecteur d'écran et sur téléphone, aucun moyen de savoir où il se trouvait. Il pouvait
+demander la suppression du mauvais compte. Le portail avait diagnostiqué et corrigé cela
+dans son composant ; la 0.6.0 l'aurait fait régresser en le remplaçant.
+
+**`lettres`, parce que les initiales d'une organisation ne se calculent pas comme celles
+d'une personne.** Une organisation saute ses mots de liaison : « Institut de la Vision »
+donne IV, et non ID. Une personne ne le fait pas : « Jean de La Fontaine » n'a pas de mot de
+liaison, il a un nom à particule, et sauter le « de » y perdrait une lettre du nom. Les deux
+règles sont justes, chacune pour son objet ; le composant applique celle des personnes et
+laisse passer les autres.
+
+**Et une infobulle**, dans les deux états. Les initiales seules ne disent rien à qui ne les a
+pas choisies.
+
+### La leçon, qui vaut au-delà de ce composant
+
+Un composant du système écrit pour en remplacer un du produit doit être confronté à **tous**
+les points d'appel de celui qu'il remplace, avant d'être étiqueté. Ici, trois des quatre
+passaient sans rien dire ; le quatrième portait la propriété qui protégeait quelqu'un.
+
+### Compatibilité
+
+Deux propriétés ajoutées, toutes deux optionnelles, avec les valeurs par défaut du
+comportement de la 0.6.0. Aucun appel existant ne change de rendu.
+
+---
+
 ## 0.6.0 — 8 septembre 2026
 
 Trois ajouts, aucun retrait, aucune valeur de jeton modifiée. Une mineure.

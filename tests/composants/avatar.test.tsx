@@ -106,6 +106,53 @@ describe('Avatar', () => {
     expect(container.firstChild).toHaveAttribute('alt', '');
   });
 
+  it('se NOMME quand il est le seul marqueur d identite', () => {
+    /*
+      Ce n est pas un confort. Mesure sur le portail : sous 768 px, le rail disparait avec le
+      nom et l adresse, et le disque devient le seul marqueur d identite de la coquille.
+      Retire de l arbre d accessibilite, avec une infobulle que le doigt ne declenche pas, il
+      ne disait plus rien du tout.
+
+      Quelqu un qui tient un compte personnel et un compte employeur au meme nom pouvait
+      demander la suppression du mauvais compte.
+    */
+    render(<Avatar nom="Awa Ndiaye" decoratif={false} />);
+    const disque = screen.getByRole('img', { name: /Awa Ndiaye/ });
+    expect(disque).toBeInTheDocument();
+    expect(disque).not.toHaveAttribute('aria-hidden');
+  });
+
+  it('se nomme aussi quand il porte une photo', () => {
+    // Le cas est le meme, et il serait facile de ne corriger que la moitie qui se voyait.
+    const { container } = render(
+      <Avatar nom="Awa Ndiaye" image="https://exemple.test/a.jpg" decoratif={false} />,
+    );
+    const image = container.querySelector('img');
+    expect(image).toHaveAttribute('alt', 'Connecté en tant que Awa Ndiaye');
+    expect(image).not.toHaveAttribute('aria-hidden');
+  });
+
+  it('accepte des initiales fournies, pour un objet qui n est pas une personne', () => {
+    /*
+      Une organisation saute ses mots de liaison : « Institut de la Vision » donne IV, et non
+      ID. Une personne ne le fait pas : « Jean de La Fontaine » est un nom a particule, et
+      sauter le « de » y perdrait une lettre du nom. Les deux regles sont justes, chacune
+      pour son objet.
+    */
+    render(<Avatar nom="Institut de la Vision" lettres="IV" />);
+    expect(screen.getByText('IV')).toBeInTheDocument();
+    expect(screen.queryByText('ID')).toBeNull();
+  });
+
+  it('developpe le nom au survol, dans les deux etats', () => {
+    // Les initiales seules ne disent rien a qui ne les a pas choisies.
+    const { container, rerender } = render(<Avatar nom="Awa Ndiaye" />);
+    expect(container.firstChild).toHaveAttribute('title', 'Awa Ndiaye');
+
+    rerender(<Avatar nom="Awa Ndiaye" image="https://exemple.test/a.jpg" />);
+    expect(container.firstChild).toHaveAttribute('title', 'Awa Ndiaye');
+  });
+
   it('applique le diametre demande, dans les deux etats', () => {
     const { container, rerender } = render(<Avatar nom="Aminata Diallo" taille={96} />);
     expect(container.firstChild).toHaveStyle({ width: '96px', height: '96px' });

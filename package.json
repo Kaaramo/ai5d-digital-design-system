@@ -1,6 +1,6 @@
 {
   "name": "@ai5d/design-system",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "private": true,
   "description": "Systeme de design applicatif de l'ecosysteme AI5D",
   "type": "module",

@@ -15,10 +15,28 @@ import { useState, type CSSProperties } from 'react';
  * distantes. Le repli garde un visage lisible là où l'absence laisserait un trou à la place
  * de quelqu'un.
  *
- * ── IL EST DÉCORATIF, TOUJOURS ──────────────────────────────────────────────
- * `aria-hidden`, et un `alt` vide sur l'image. Le nom complet est toujours à côté, en
- * toutes lettres, dans un champ ou dans un libellé : c'est la disposition établie partout
- * où cet objet apparaît. Le faire annoncer ferait entendre deux fois la même chose.
+ * ── IL EST DÉCORATIF PAR DÉFAUT, ET CE DÉFAUT A UNE EXCEPTION ───────────────
+ * `aria-hidden`, et un `alt` vide. Le nom complet est presque toujours à côté, en toutes
+ * lettres : le faire annoncer ferait entendre deux fois la même personne.
+ *
+ * `decoratif={false}` existe pour le cas où il est SEUL, et ce n'est pas un confort.
+ * Mesuré sur le portail Compte : sous 768 px, le rail disparaît avec le nom et l'adresse,
+ * et le disque devient le seul marqueur d'identité de la coquille. Retiré de l'arbre
+ * d'accessibilité, avec une infobulle que le doigt ne déclenche pas, il ne disait plus rien
+ * du tout.
+ *
+ * Quelqu'un qui tient un compte personnel et un compte employeur au même nom n'avait alors,
+ * au lecteur d'écran et sur téléphone, aucun moyen de savoir où il se trouvait. Il pouvait
+ * demander la suppression du mauvais compte.
+ *
+ * ── LES INITIALES D'UNE PERSONNE NE SE CALCULENT PAS COMME CELLES D'UNE ORGANISATION ──
+ * Une organisation saute ses mots de liaison : « Institut de la Vision » donne IV, et non
+ * ID. Une personne ne le fait pas : « Jean de La Fontaine » n'a pas de mot de liaison, il a
+ * un nom à particule, et sauter le « de » y perdrait une lettre du nom.
+ *
+ * Les deux règles sont justes, chacune pour son objet. Le composant applique celle des
+ * personnes, et `lettres` laisse l'appelant passer les siennes plutôt que d'en imposer une
+ * aux deux.
  *
  * ── LA TAILLE EST UN NOMBRE LIBRE, ET C'EST VOULU ───────────────────────────
  * `Icone` contraint ses cinq tailles parce qu'une icône mal dimensionnée casse un rythme
@@ -34,6 +52,19 @@ export interface ProprietesAvatar {
   image?: string | null | undefined;
   /** Le diamètre, en pixels. */
   taille?: number | undefined;
+  /**
+   * Les initiales, quand elles ne se calculent pas comme celles d'une personne.
+   *
+   * Voir l'en-tête : une organisation saute ses mots de liaison, une personne non.
+   */
+  lettres?: string | undefined;
+  /**
+   * Faux quand l'avatar est le SEUL marqueur d'identité à l'écran.
+   *
+   * Il porte alors un nom accessible au lieu de disparaître de l'arbre. Voir l'en-tête :
+   * ce n'est pas un confort, c'est une correction.
+   */
+  decoratif?: boolean | undefined;
   className?: string | undefined;
   style?: CSSProperties | undefined;
 }
@@ -63,7 +94,15 @@ export function initiales(nom: string): string {
     .toUpperCase();
 }
 
-export function Avatar({ nom, image, taille = 40, className, style }: ProprietesAvatar) {
+export function Avatar({
+  nom,
+  image,
+  taille = 40,
+  lettres,
+  decoratif = true,
+  className,
+  style,
+}: ProprietesAvatar) {
   const [cassee, setCassee] = useState(false);
 
   const aUnePhoto = typeof image === 'string' && image.length > 0 && !cassee;
@@ -79,8 +118,9 @@ export function Avatar({ nom, image, taille = 40, className, style }: Proprietes
     return (
       <img
         src={image}
-        alt=""
-        aria-hidden="true"
+        alt={decoratif ? '' : `Connecté en tant que ${nom}`}
+        aria-hidden={decoratif ? true : undefined}
+        title={nom}
         onError={() => setCassee(true)}
         className={className}
         style={{ ...commun, display: 'block', objectFit: 'cover', ...style }}
@@ -90,7 +130,10 @@ export function Avatar({ nom, image, taille = 40, className, style }: Proprietes
 
   return (
     <span
-      aria-hidden="true"
+      title={nom}
+      aria-hidden={decoratif ? true : undefined}
+      role={decoratif ? undefined : 'img'}
+      aria-label={decoratif ? undefined : `Connecté en tant que ${nom}`}
       className={className}
       style={{
         ...commun,
@@ -116,7 +159,7 @@ export function Avatar({ nom, image, taille = 40, className, style }: Proprietes
         ...style,
       }}
     >
-      {initiales(nom)}
+      {lettres ?? initiales(nom)}
     </span>
   );
 }
