@@ -7,6 +7,91 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 0.4.0 — 8 septembre 2026
+
+### Le libellé du bouton primaire était illisible en mode sombre
+
+Mesuré, pas ressenti. `--action` vaut #6B88FF en mode sombre, et `--texte-sur-action`
+valait `--blanc` : **3,19**, sous le seuil AA de 4,5. Au survol, sur #8BA1FF : **2,43**. Le
+seul geste qui devrait confirmer une action rendait son libellé moins lisible qu'au repos.
+
+La garde du bloc clair mesurait ce couple depuis le premier jour. Celle du bloc sombre ne
+le mesurait pas, et c'est le seul thème où il échouait. Une utilisatrice l'avait signalé
+avec les mots dont elle disposait, « le bouton bleu est bizarre le soir » ; personne n'avait
+su quoi en faire.
+
+`--texte-sur-action` change désormais de rôle entre les deux thèmes, exactement comme
+`--texte-sur-erreur` le fait depuis la v0.3.0, et pour la même raison. En sombre il vaut
+l'encre : **5,45** au repos, **7,15** au survol.
+
+**On n'a pas touché à `--action`.** L'assombrir pour y garder du blanc aurait cassé les
+liens, les bordures et les icônes qui s'y appuient, et qui tiennent déjà 5,73 sur
+`--surface-1` et 5,15 sur `--surface-2`. C'est le texte posé dessus qui était faux, pas le
+bleu. Un test le fige : `--action` en sombre doit rester #6B88FF.
+
+Quatre tests neufs mesurent les deux couples, au repos et au survol, dans les deux thèmes.
+
+### Les états de survol, de focus et d'appui existent enfin
+
+`Bouton` et `Champ` écrivaient leurs couleurs en **style en ligne**. Une pseudo-classe posée
+dans une feuille perd toujours contre un attribut `style` : aucun `:hover` n'était possible,
+et le jeton `--action-survol`, déclaré depuis la v0.1.0, **n'a jamais été employé nulle
+part**.
+
+Aucun test ne pouvait le voir, parce que rien n'était cassé. Il ne se passait simplement
+rien, sur tous les boutons de tous les produits, depuis le premier jour.
+
+Les couleurs sortent donc du style en ligne et passent dans une feuille injectée sous
+identifiant stable, comme `GabaritAuth` le fait déjà. Le style en ligne garde ce qui dépend
+des propriétés reçues : la hauteur selon la taille, la largeur pleine, le rembourrage du
+champ selon son icône et sa commande. Un `style` passé par le consommateur gagne toujours,
+comme avant.
+
+Le focus est `:focus-visible` et non `:focus` : un anneau qui apparaît au clic de souris est
+du bruit, un anneau qui n'apparaît pas au clavier est un mur. L'anneau d'un champ est décalé
+d'un pixel et non de deux, parce qu'un champ a déjà une bordure visible. L'anneau d'un champ
+en erreur est rouge, et il s'accroche à `aria-invalid` : l'état visuel et l'état annoncé ne
+peuvent pas diverger.
+
+L'appui déplace le bouton d'un pixel. Jamais un changement d'échelle : sur un bouton pleine
+largeur de 440 px, un `scale` fait bouger toute la colonne. `prefers-reduced-motion` le
+supprime.
+
+Chaque règle de survol est gardée par `:not(:disabled)`, et un test le vérifie règle par
+règle. Un bouton en chargement réagirait sinon à la souris tout en refusant le clic.
+
+### `Bouton` gagne la variante `neutre`
+
+Pour un bouton qui doit être visible sans revendiquer l'action. Le cas qui l'a fait naître
+est la connexion par un fournisseur tiers : en `secondaire`, elle portait le bleu de
+l'action dans son trait et dans son texte, et deux boutons pleine largeur cerclés de bleu se
+disputaient l'œil sur le seul écran où il ne faut pas hésiter.
+
+`neutre` porte le fond des surfaces, la bordure des champs, et le texte fort.
+
+### `Embleme`, treizième composant du noyau
+
+Le pentagone institutionnel devient la **tête** d'une silhouette, un arc devient ses
+**épaules**. Ce n'est pas une seconde marque : c'est la déclinaison produit d'une marque
+existante, comme « AI5D Compte » est celle du logotype.
+
+Le cartouche est `--action` et non `--encre` : l'encre vaut #051C2C et `--surface-1` en
+sombre vaut #0B1620, deux valeurs que l'œil ne sépare pas. Le bleu tient sur les deux
+thèmes, et c'est aussi le fond du favicon institutionnel.
+
+Deux variantes, `badge` et `nu`. Les cinq tailles de la charte, imposées par le type comme
+pour `Icone`. Décoratif par défaut. Le pentagone est repris sans une virgule, et un test
+l'interdit de modification.
+
+### Compatibilité
+
+Aucune propriété retirée, aucune variante renommée. Un produit qui reste en 0.3.1 continue
+de fonctionner. Un produit qui monte ne change rien à son code, sauf s'il veut la variante
+`neutre` ou l'emblème, et sauf qu'il verra sans rien demander ses boutons réagir au survol
+et son mode sombre redevenir lisible.
+
+---
+
 ## 0.3.1 — 6 septembre 2026
 
 ### L'échelle d'espacement existe enfin

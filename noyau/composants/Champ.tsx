@@ -27,6 +27,47 @@ export const TAILLE_ICONE_CHAMP = 20;
 const RETRAIT = 14;
 const ESPACE_ICONE = RETRAIT + TAILLE_ICONE_CHAMP + 10;
 
+const ID_STYLE = 'ai5d-champ';
+
+/**
+ * Les couleurs et les états, hors du style en ligne, pour la même raison que dans
+ * `Bouton` : une pseudo-classe ne peut pas battre un attribut `style`. Avant la v0.4.0, un
+ * champ ne montrait ni son survol ni son focus autrement que par l'anneau par défaut du
+ * navigateur, que la remise à zéro de Tailwind rend discret.
+ *
+ * L'anneau de focus d'un champ est décalé de **1 px** et non de 2 comme celui d'un bouton :
+ * le champ a une bordure visible, et un décalage de 2 px laisse un liseré de fond entre les
+ * deux, ce qui donne un halo flou.
+ *
+ * L'anneau d'un champ en erreur est **rouge**. Un anneau bleu sur une bordure rouge dirait
+ * deux choses contradictoires au même endroit.
+ *
+ * Les règles s'accrochent à `aria-invalid`, que le composant pose déjà : l'état visuel et
+ * l'état annoncé ne peuvent donc pas diverger.
+ */
+const STYLE_CHAMP = `
+.ai5d-champ__entree {
+  background: var(--surface-2);
+  color: var(--texte-fort);
+  border: 1px solid var(--bordure-forte);
+  transition: border-color var(--duree-courte) var(--courbe-entree);
+}
+.ai5d-champ__entree:hover:not(:disabled) { border-color: var(--texte-faible); }
+.ai5d-champ__entree:focus-visible {
+  border-color: var(--action);
+  outline: 2px solid var(--action);
+  outline-offset: 1px;
+}
+.ai5d-champ__entree[aria-invalid='true'],
+.ai5d-champ__entree[aria-invalid='true']:hover:not(:disabled) {
+  border-color: var(--erreur);
+}
+.ai5d-champ__entree[aria-invalid='true']:focus-visible {
+  border-color: var(--erreur);
+  outline-color: var(--erreur);
+}
+`;
+
 export interface ProprietesChamp extends Omit<InputHTMLAttributes<HTMLInputElement>, 'children'> {
   /** Le libellé visible. Obligatoire : un champ sans libellé n'est pas accessible. */
   libelle: string;
@@ -40,8 +81,12 @@ export interface ProprietesChamp extends Omit<InputHTMLAttributes<HTMLInputEleme
    *
    * **Le choix de l'icône n'est pas libre.** La charte, chapitre 08, attribue une icône
    * Lucide à chaque fonction, et deux se ressemblent sans dire la même chose : `shield`
-   * est la sécurité et le mot de passe, `lock` est le verrouillage et l'accès refusé. Un
-   * cadenas sur un champ de mot de passe annonce un refus avant même la saisie.
+   * est la sécurité et le mot de passe, `lock` est le verrouillage et l'accès refusé.
+   *
+   * Ce composant n'impose rien : c'est la table de fonctions du produit qui décide, et un
+   * produit peut s'écarter de la charte à condition de consigner l'écart. Le portail
+   * Compte l'a fait le 8 septembre 2026, pour poser un cadenas sur son champ de mot de
+   * passe : l'argument du refus annoncé est théorique là où l'usage est universel.
    */
   icone?: LucideIcon | undefined;
   /**
@@ -90,100 +135,101 @@ export function Champ({
     paddingBottom: 0,
     paddingLeft: Icone === undefined ? `${RETRAIT}px` : `${ESPACE_ICONE}px`,
     paddingRight: commande === undefined ? `${RETRAIT}px` : `${ESPACE_ICONE + 40}px`,
-    background: 'var(--surface-2)',
-    color: 'var(--texte-fort)',
     fontFamily: 'var(--police-corps)',
     fontSize: 'var(--taille-md)',
-    border: `1px solid ${enErreur ? 'var(--erreur)' : 'var(--bordure-forte)'}`,
     borderRadius: 'var(--rayon-md)',
-    transition: `border-color var(--duree-courte) var(--courbe-entree)`,
     ...style,
   };
 
   return (
-    <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-      <label
-        htmlFor={identifiant}
-        style={{
-          fontFamily: 'var(--police-corps)',
-          fontSize: 'var(--taille-sm)',
-          fontWeight: 'var(--graisse-moyenne)',
-          color: 'var(--texte)',
-        }}
-      >
-        {libelle}
-      </label>
+    <>
+      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_CHAMP }} />
 
-      {/*
-        Le cadre relatif ne sert qu'à porter l'icône et la commande. Il n'existe que si
-        l'une des deux est demandée : un champ nu garde exactement la structure qu'il
-        avait avant, ce qui évite de changer le rendu de tous les formulaires existants.
-      */}
-      <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-        {Icone === undefined ? null : (
-          <Icone
-            aria-hidden="true"
-            focusable="false"
-            size={TAILLE_ICONE_CHAMP}
-            strokeWidth={EPAISSEUR_TRAIT}
-            color={enErreur ? 'var(--erreur)' : 'var(--texte-faible)'}
-            style={{
-              position: 'absolute',
-              left: `${RETRAIT}px`,
-              pointerEvents: 'none',
-              flexShrink: 0,
-            }}
+      <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        <label
+          htmlFor={identifiant}
+          style={{
+            fontFamily: 'var(--police-corps)',
+            fontSize: 'var(--taille-sm)',
+            fontWeight: 'var(--graisse-moyenne)',
+            color: 'var(--texte)',
+          }}
+        >
+          {libelle}
+        </label>
+
+        {/*
+          Le cadre relatif ne sert qu'à porter l'icône et la commande. Il n'existe que si
+          l'une des deux est demandée : un champ nu garde exactement la structure qu'il
+          avait avant, ce qui évite de changer le rendu de tous les formulaires existants.
+        */}
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+          {Icone === undefined ? null : (
+            <Icone
+              aria-hidden="true"
+              focusable="false"
+              size={TAILLE_ICONE_CHAMP}
+              strokeWidth={EPAISSEUR_TRAIT}
+              color={enErreur ? 'var(--erreur)' : 'var(--texte-faible)'}
+              style={{
+                position: 'absolute',
+                left: `${RETRAIT}px`,
+                pointerEvents: 'none',
+                flexShrink: 0,
+              }}
+            />
+          )}
+
+          <input
+            id={identifiant}
+            className="ai5d-champ__entree"
+            style={styleEntree}
+            aria-invalid={enErreur || undefined}
+            aria-describedby={decritPar === '' ? undefined : decritPar}
+            {...reste}
           />
-        )}
 
-        <input
-          id={identifiant}
-          style={styleEntree}
-          aria-invalid={enErreur || undefined}
-          aria-describedby={decritPar === '' ? undefined : decritPar}
-          {...reste}
-        />
+          {commande === undefined ? null : (
+            <span
+              style={{
+                position: 'absolute',
+                right: `${RETRAIT}px`,
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              {commande}
+            </span>
+          )}
+        </div>
 
-        {commande === undefined ? null : (
+        {enErreur ? (
           <span
+            id={identifiantErreur}
+            role="alert"
             style={{
-              position: 'absolute',
-              right: `${RETRAIT}px`,
-              display: 'flex',
-              alignItems: 'center',
+              fontFamily: 'var(--police-corps)',
+              fontSize: 'var(--taille-sm)',
+              color: 'var(--erreur)',
             }}
           >
-            {commande}
+            {erreur}
           </span>
-        )}
+        ) : null}
+
+        {aide && !enErreur ? (
+          <span
+            id={identifiantAide}
+            style={{
+              fontFamily: 'var(--police-corps)',
+              fontSize: 'var(--taille-sm)',
+              color: 'var(--texte-faible)',
+            }}
+          >
+            {aide}
+          </span>
+        ) : null}
       </div>
-
-      {enErreur ? (
-        <span
-          id={identifiantErreur}
-          role="alert"
-          style={{
-            fontFamily: 'var(--police-corps)',
-            fontSize: 'var(--taille-sm)',
-            color: 'var(--erreur)',
-          }}
-        >
-          {erreur}
-        </span>
-      ) : null}
-
-      {aide && !enErreur ? (
-        <span
-          id={identifiantAide}
-          style={{
-            fontFamily: 'var(--police-corps)',
-            fontSize: 'var(--taille-sm)',
-            color: 'var(--texte-faible)',
-          }}
-        >
-          {aide}
-        </span>
-      ) : null}
-    </div>
+    </>
   );
 }

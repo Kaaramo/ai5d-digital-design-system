@@ -218,6 +218,17 @@
     --erreur-fond: #331a18;
     --erreur-survol: #f58b80;
     --texte-sur-erreur: var(--encre);
+
+    /* Le libelle du bouton primaire passe a l'encre, pour la meme raison exactement que
+       --texte-sur-erreur juste au-dessus. Mesure sur --action sombre #6B88FF : du blanc
+       dessus donne 3,19, sous le seuil AA de 4,5 ; et 2,43 au survol sur #8BA1FF, ou le
+       geste qui devrait confirmer l'action rend le libelle MOINS lisible qu'au repos.
+       L'encre donne 5,45 au repos et 7,15 au survol.
+
+       On ne touche pas a --action : les liens, bordures et icones qui s'y appuient
+       tiennent deja 5,73 sur --surface-1 et 5,15 sur --surface-2. C'est le texte pose
+       dessus qui etait faux, pas le bleu. */
+    --texte-sur-action: var(--encre);
     --info: var(--action-sur-sombre);
     --info-fond: #14203a;
 
@@ -253,6 +264,8 @@
   --erreur-fond: #331a18;
   --erreur-survol: #f58b80;
   --texte-sur-erreur: var(--encre);
+  /* Voir la note du bloc de preference systeme ci-dessus. */
+  --texte-sur-action: var(--encre);
   --info: var(--action-sur-sombre);
   --info-fond: #14203a;
 

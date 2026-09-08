@@ -8,6 +8,8 @@ import {
   Bouton,
   Carte,
   Champ,
+  CHEMIN_TETE,
+  Embleme,
   EPAISSEUR_TRAIT,
   GabaritAuth,
   Icone,
@@ -15,6 +17,7 @@ import {
   LARGEUR_MAX_PANNEAU,
   Logotype,
   Pastille,
+  TRANSFORME_TETE,
 } from '../../noyau/composants';
 
 describe('Logotype', () => {
@@ -88,29 +91,48 @@ describe('Bouton', () => {
     expect(screen.getByRole('button').style.minHeight).toContain('--cible-tactile');
   });
 
-  it('rend les quatre variantes avec des styles distincts', () => {
+  it('rend les cinq variantes avec des styles distincts', () => {
+    /*
+      Les couleurs ont quitte le style en ligne en v0.4.0 : une pseudo-classe ne peut pas
+      battre un attribut `style`, et c'est ce qui rendait tout survol impossible. Ce test
+      garde donc la MEME propriete a son nouvel endroit, la feuille injectee, plutot que
+      de disparaitre avec l'attribut qu'il lisait.
+    */
+    const { container } = render(<Bouton variante="primaire">A</Bouton>);
+    const css = (container.querySelector('#ai5d-bouton')?.innerHTML ?? '').replace(/\s+/g, ' ');
+
+    expect(css).toContain("[data-variante='primaire'] { background: var(--action);");
+    expect(css).toContain("[data-variante='secondaire'] { background: transparent;");
+    expect(css).toContain("[data-variante='neutre'] { background: var(--surface-2);");
+    expect(css).toContain("[data-variante='danger'] { background: var(--erreur);");
+    // `discret` n'a pas de bloc a lui : il herite du fond transparent et du trait
+    // transparent de la regle de base, et c'est exactement ce qu'il est.
+    expect(css).toContain('.ai5d-bouton { background: transparent;');
+  });
+
+  it('marque sa variante dans le DOM, pour la feuille et pour les gardes des produits', () => {
     const { rerender } = render(<Bouton variante="primaire">A</Bouton>);
-    expect(screen.getByRole('button').style.background).toContain('--action');
+    expect(screen.getByRole('button').dataset.variante).toBe('primaire');
 
     rerender(<Bouton variante="secondaire">A</Bouton>);
-    expect(screen.getByRole('button').style.background).toBe('transparent');
-    expect(screen.getByRole('button').style.color).toContain('--action');
+    expect(screen.getByRole('button').dataset.variante).toBe('secondaire');
 
     rerender(<Bouton variante="discret">A</Bouton>);
-    expect(screen.getByRole('button').style.border).toContain('transparent');
+    expect(screen.getByRole('button').dataset.variante).toBe('discret');
 
     rerender(<Bouton variante="danger">A</Bouton>);
-    expect(screen.getByRole('button').style.background).toContain('--erreur');
+    expect(screen.getByRole('button').dataset.variante).toBe('danger');
   });
 
   it('la variante danger porte --texte-sur-erreur, jamais --texte-sur-action', () => {
     // Ce n'est pas un detail de nommage. En mode sombre, --erreur vaut un rouge clair,
     // et --texte-sur-action y vaut du blanc : le rapport tombe a 2,89. Le jeton dedie
     // bascule en encre, et le test garde ce choix.
-    render(<Bouton variante="danger">Supprimer</Bouton>);
-    const bouton = screen.getByRole('button');
-    expect(bouton.style.color).toContain('--texte-sur-erreur');
-    expect(bouton.style.color).not.toContain('--texte-sur-action');
+    const { container } = render(<Bouton variante="danger">Supprimer</Bouton>);
+    const css = container.querySelector('#ai5d-bouton')?.innerHTML ?? '';
+    const regleDanger = css.split('}').find((r) => r.includes("[data-variante='danger'] {")) ?? '';
+    expect(regleDanger).toContain('color: var(--texte-sur-erreur)');
+    expect(regleDanger).not.toContain('--texte-sur-action');
   });
 
   it('la variante danger est lisible dans le marquage, pour les gardes des produits', () => {
@@ -155,6 +177,53 @@ describe('Bouton', () => {
     render(<Bouton>A</Bouton>);
     const style = screen.getByRole('button').getAttribute('style') ?? '';
     expect(style).not.toMatch(/#[0-9a-fA-F]{3,8}/);
+  });
+
+  it('porte la classe qui rend ses etats atteignables par une feuille', () => {
+    render(<Bouton>Envoyer</Bouton>);
+    expect(screen.getByRole('button').className).toContain('ai5d-bouton');
+  });
+
+  it('n ecrit AUCUNE couleur en style en ligne', () => {
+    // C'est la condition meme du survol : un attribut style bat toujours une
+    // pseudo-classe. La regression se verrait ici avant de se voir a l'ecran.
+    render(<Bouton variante="primaire">Envoyer</Bouton>);
+    const bouton = screen.getByRole('button');
+    expect(bouton.style.background).toBe('');
+    expect(bouton.style.color).toBe('');
+    expect(bouton.style.borderColor).toBe('');
+  });
+
+  it('injecte la feuille qui porte le survol, le focus et l appui', () => {
+    const { container } = render(<Bouton>Envoyer</Bouton>);
+    const feuille = container.querySelector('#ai5d-bouton');
+    expect(feuille).not.toBeNull();
+    const css = feuille?.innerHTML ?? '';
+    expect(css).toContain('--action-survol');
+    expect(css).toContain(':focus-visible');
+    expect(css).toContain('translateY(1px)');
+    expect(css).toContain('prefers-reduced-motion');
+  });
+
+  it('n applique le survol qu aux boutons actifs', () => {
+    const { container } = render(<Bouton>Envoyer</Bouton>);
+    const css = container.querySelector('#ai5d-bouton')?.innerHTML ?? '';
+    // Un bouton en chargement reagirait sinon a la souris tout en refusant le clic.
+    for (const regle of css.split('}').filter((r) => r.includes(':hover'))) {
+      expect(regle, regle).toContain(':not(:disabled)');
+    }
+  });
+
+  it('offre la variante neutre, qui ne revendique pas l action', () => {
+    render(<Bouton variante="neutre">Continuer avec Google</Bouton>);
+    expect(screen.getByRole('button').dataset.variante).toBe('neutre');
+  });
+
+  it('donne au bouton destructeur un anneau rouge, pas bleu', () => {
+    const { container } = render(<Bouton variante="danger">Supprimer</Bouton>);
+    const css = container.querySelector('#ai5d-bouton')?.innerHTML ?? '';
+    expect(css).toContain("[data-variante='danger']:focus-visible");
+    expect(css).toContain('outline-color: var(--erreur)');
   });
 });
 
@@ -235,7 +304,11 @@ describe('Champ', () => {
     // Trois signaux, pas un : l'attribut, le texte, et le role d'alerte.
     expect(entree).toHaveAttribute('aria-invalid', 'true');
     expect(screen.getByRole('alert')).toHaveTextContent('Adresse ou mot de passe incorrect.');
-    expect(entree.style.border).toContain('--erreur');
+    // La bordure rouge vient desormais de la feuille, accrochee a `aria-invalid` : l'etat
+    // visuel ne peut donc plus diverger de l'etat annonce.
+    const css = document.querySelector('#ai5d-champ')?.innerHTML ?? '';
+    expect(css).toContain("[aria-invalid='true']");
+    expect(css).toContain('border-color: var(--erreur)');
   });
 
   it("masque l'aide quand une erreur est presente", () => {
@@ -252,6 +325,34 @@ describe('Champ', () => {
   it('tire sa hauteur du profil de densite', () => {
     render(<Champ libelle="Courriel" />);
     expect(screen.getByLabelText('Courriel').style.height).toContain('--hauteur-controle');
+  });
+
+  it('n ecrit plus la bordure en style en ligne : le focus doit pouvoir la changer', () => {
+    render(<Champ libelle="Adresse" />);
+    const entree = screen.getByLabelText('Adresse');
+    expect(entree.style.border).toBe('');
+    expect(entree.className).toContain('ai5d-champ__entree');
+  });
+
+  it('injecte un anneau de focus decale d un pixel, pas de deux', () => {
+    // Le champ a deja une bordure visible : deux pixels laisseraient un lisere de fond
+    // entre les deux, et donneraient un halo flou.
+    const { container } = render(<Champ libelle="Adresse" />);
+    const css = container.querySelector('#ai5d-champ')?.innerHTML ?? '';
+    expect(css).toContain('outline-offset: 1px');
+    expect(css).toContain(':focus-visible');
+  });
+
+  it('donne un anneau ROUGE a un champ en erreur', () => {
+    const { container } = render(<Champ libelle="Adresse" erreur="Adresse invalide" />);
+    const css = container.querySelector('#ai5d-champ')?.innerHTML ?? '';
+    expect(css).toContain("[aria-invalid='true']:focus-visible");
+    expect(css).toContain('outline-color: var(--erreur)');
+  });
+
+  it('accroche l etat visuel a aria-invalid, pour qu il ne diverge pas de l etat annonce', () => {
+    render(<Champ libelle="Adresse" erreur="Adresse invalide" />);
+    expect(screen.getByLabelText('Adresse').getAttribute('aria-invalid')).toBe('true');
   });
 });
 
@@ -457,5 +558,53 @@ describe('GabaritAuth', () => {
     expect(style).not.toMatch(/#[0-9a-fA-F]{3,8}/);
     expect(style).toContain('var(--blanc)');
     expect(style).toContain('var(--encre)');
+  });
+});
+
+describe('Embleme', () => {
+  it('rend le cartouche et la silhouette en variante badge', () => {
+    const { container } = render(<Embleme />);
+    expect(container.querySelector('svg')?.getAttribute('viewBox')).toBe('0 0 240 240');
+    expect(container.querySelectorAll('rect')).toHaveLength(1);
+    expect(container.querySelectorAll('path')).toHaveLength(2);
+  });
+
+  it('retire le cartouche en variante nue, et suit la couleur du texte', () => {
+    const { container } = render(<Embleme variante="nu" />);
+    expect(container.querySelectorAll('rect')).toHaveLength(0);
+    for (const chemin of container.querySelectorAll('path')) {
+      expect(chemin.getAttribute('fill')).toBe('currentColor');
+    }
+  });
+
+  it('reprend le pentagone institutionnel sans le modifier', () => {
+    // L'interdit de la charte mere : le pentagone ne se redresse pas, ne se recolore pas,
+    // ne se recadre pas. Un test le rend verifiable plutot que memorable.
+    const { container } = render(<Embleme />);
+    const tete = container.querySelectorAll('path')[0];
+    expect(tete?.getAttribute('d')).toBe(CHEMIN_TETE);
+    expect(tete?.getAttribute('transform')).toBe(TRANSFORME_TETE);
+  });
+
+  it('est decoratif par defaut : le nom du produit est ecrit a cote', () => {
+    const { container } = render(<Embleme />);
+    expect(container.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('devient annoncable quand on lui donne un titre', () => {
+    render(<Embleme titre="Compte AI5D" />);
+    expect(screen.getByRole('img', { name: 'Compte AI5D' })).toBeTruthy();
+  });
+
+  it('rend la taille demandee, en carre', () => {
+    const { container } = render(<Embleme taille={20} />);
+    const svg = container.querySelector('svg');
+    expect(svg?.getAttribute('width')).toBe('20');
+    expect(svg?.getAttribute('height')).toBe('20');
+  });
+
+  it('ne prend jamais le focus : ce n est pas une commande', () => {
+    const { container } = render(<Embleme />);
+    expect(container.querySelector('svg')?.getAttribute('focusable')).toBe('false');
   });
 });

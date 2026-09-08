@@ -10,7 +10,21 @@ import type { ButtonHTMLAttributes, CSSProperties } from 'react';
  * Un seul bouton primaire par vue. C'est une règle de la charte, pas une préférence :
  * deux actions bleues sur un même écran, et l'œil ne sait plus laquelle est la sortie.
  *
- * ── LA VARIANTE `danger` NE COMPTE PAS DANS CETTE RÈGLE ──────────────────────
+ * ── POURQUOI LES COULEURS SONT SORTIES DU STYLE EN LIGNE, EN v0.4.0 ──────────
+ * Elles y étaient depuis le premier jour, et c'est ce qui rendait tout état impossible :
+ * une pseudo-classe posée dans une feuille perd toujours contre un attribut `style`. Le
+ * jeton `--action-survol` était déclaré depuis la v0.1.0 et **n'a jamais été employé nulle
+ * part**. Aucun test ne pouvait le voir, parce que rien n'était cassé : il ne se passait
+ * simplement rien au survol, sur tous les boutons de tous les produits.
+ *
+ * Le style en ligne garde ce qui dépend des propriétés reçues : la hauteur selon la
+ * taille, la largeur pleine, l'opacité d'un bouton inactif. Ce qui en sort, ce sont les
+ * couleurs et les états, et rien d'autre.
+ *
+ * Un consommateur peut toujours passer `style` : il gagne, comme avant. C'est la seule
+ * façon de ne rien casser chez les produits qui s'en servaient déjà.
+ *
+ * ── LA VARIANTE `danger` NE COMPTE PAS DANS LA RÈGLE DU BOUTON PRIMAIRE ──────
  * Une action destructrice et une action d'avancement ne se disputent pas le même regard :
  * l'une est ce qu'on est venu faire, l'autre est ce qu'on veut être sûr de ne pas faire
  * par mégarde. Un écran de suppression porte donc légitimement un `primaire` et un
@@ -18,9 +32,19 @@ import type { ButtonHTMLAttributes, CSSProperties } from 'react';
  *
  * Elle porte `--texte-sur-erreur` et non `--texte-sur-action` : en mode sombre, `--erreur`
  * vaut un rouge clair, et du blanc dessus tombe à 2,89. Voir la note dans `jetons.css`.
+ *
+ * ── LA VARIANTE `neutre`, AJOUTÉE EN v0.4.0 ─────────────────────────────────
+ * Pour un bouton qui doit être visible sans revendiquer l'action : la connexion par un
+ * fournisseur tiers, posée au-dessus du vrai bouton de l'écran. En `secondaire`, elle
+ * portait le bleu de l'action dans son trait et dans son texte, et deux boutons pleine
+ * largeur cerclés de bleu se disputaient l'œil sur le seul écran où il ne faut pas
+ * hésiter.
+ *
+ * La règle « un seul bouton primaire par vue » vise l'unicité du REGARD, pas la valeur
+ * littérale d'un attribut.
  */
 
-export type VarianteBouton = 'primaire' | 'secondaire' | 'discret' | 'danger';
+export type VarianteBouton = 'primaire' | 'secondaire' | 'neutre' | 'discret' | 'danger';
 export type TailleBouton = 'sm' | 'md' | 'lg';
 
 export interface ProprietesBouton extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -44,34 +68,82 @@ const TAILLES_TEXTE: Record<TailleBouton, string> = {
   lg: 'var(--taille-md)',
 };
 
-function styleVariante(variante: VarianteBouton): CSSProperties {
-  if (variante === 'primaire') {
-    return {
-      background: 'var(--action)',
-      color: 'var(--texte-sur-action)',
-      border: '1px solid var(--action)',
-    };
-  }
-  if (variante === 'secondaire') {
-    return {
-      background: 'transparent',
-      color: 'var(--action)',
-      border: '1px solid var(--action)',
-    };
-  }
-  if (variante === 'danger') {
-    return {
-      background: 'var(--erreur)',
-      color: 'var(--texte-sur-erreur)',
-      border: '1px solid var(--erreur)',
-    };
-  }
-  return {
-    background: 'transparent',
-    color: 'var(--action)',
-    border: '1px solid transparent',
-  };
+const ID_STYLE = 'ai5d-bouton';
+
+/**
+ * Les couleurs et les états, hors du style en ligne.
+ *
+ * `:focus-visible` et non `:focus` : un anneau qui apparaît au clic de souris est du
+ * bruit, un anneau qui n'apparaît pas au clavier est un mur.
+ *
+ * L'appui est un déplacement d'un pixel, jamais un changement d'échelle : un `scale` sur
+ * un bouton pleine largeur fait bouger toute la colonne, et sur un écran de 440 px cela
+ * se voit.
+ *
+ * Chaque règle de survol est gardée par `:not(:disabled)`. Un bouton en chargement
+ * réagirait sinon à la souris tout en refusant le clic, ce qui est la pire des deux
+ * réponses possibles.
+ */
+const STYLE_BOUTON = `
+.ai5d-bouton {
+  background: transparent;
+  color: var(--action);
+  border: 1px solid transparent;
+  transition:
+    background var(--duree-courte) var(--courbe-entree),
+    border-color var(--duree-courte) var(--courbe-entree),
+    color var(--duree-courte) var(--courbe-entree),
+    opacity var(--duree-courte) var(--courbe-entree),
+    transform var(--duree-courte) var(--courbe-sortie);
 }
+
+.ai5d-bouton[data-variante='primaire'] {
+  background: var(--action);
+  color: var(--texte-sur-action);
+  border-color: var(--action);
+}
+.ai5d-bouton[data-variante='secondaire'] {
+  background: transparent;
+  color: var(--action);
+  border-color: var(--action);
+}
+.ai5d-bouton[data-variante='neutre'] {
+  background: var(--surface-2);
+  color: var(--texte-fort);
+  border-color: var(--bordure-forte);
+}
+.ai5d-bouton[data-variante='danger'] {
+  background: var(--erreur);
+  color: var(--texte-sur-erreur);
+  border-color: var(--erreur);
+}
+
+.ai5d-bouton:not(:disabled):hover[data-variante='primaire'] {
+  background: var(--action-survol);
+  border-color: var(--action-survol);
+}
+.ai5d-bouton:not(:disabled):hover[data-variante='secondaire'],
+.ai5d-bouton:not(:disabled):hover[data-variante='discret'] {
+  background: var(--info-fond);
+}
+.ai5d-bouton:not(:disabled):hover[data-variante='neutre'] {
+  background: var(--surface-chaude);
+  border-color: var(--texte-faible);
+}
+.ai5d-bouton:not(:disabled):hover[data-variante='danger'] {
+  background: var(--erreur-survol);
+  border-color: var(--erreur-survol);
+}
+
+.ai5d-bouton:not(:disabled):active { transform: translateY(1px); }
+
+.ai5d-bouton:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
+.ai5d-bouton[data-variante='danger']:focus-visible { outline-color: var(--erreur); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ai5d-bouton:not(:disabled):active { transform: none; }
+}
+`;
 
 export function Bouton({
   variante = 'primaire',
@@ -106,25 +178,25 @@ export function Bouton({
     borderRadius: 'var(--rayon-md)',
     cursor: inactif ? 'not-allowed' : 'pointer',
     opacity: inactif ? 0.6 : 1,
-    transition: `background var(--duree-courte) var(--courbe-entree),
-                 border-color var(--duree-courte) var(--courbe-entree),
-                 opacity var(--duree-courte) var(--courbe-entree)`,
-    ...styleVariante(variante),
     ...style,
   };
 
   return (
-    <button
-      type={type}
-      className={className}
-      style={styleBouton}
-      disabled={inactif}
-      aria-busy={chargement || undefined}
-      data-variante={variante}
-      data-taille={taille}
-      {...reste}
-    >
-      {children}
-    </button>
+    <>
+      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_BOUTON }} />
+
+      <button
+        type={type}
+        className={className === undefined ? 'ai5d-bouton' : `ai5d-bouton ${className}`}
+        style={styleBouton}
+        disabled={inactif}
+        aria-busy={chargement || undefined}
+        data-variante={variante}
+        data-taille={taille}
+        {...reste}
+      >
+        {children}
+      </button>
+    </>
   );
 }

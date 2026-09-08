@@ -1,5 +1,5 @@
 /**
- * Les douze composants de base du noyau.
+ * Les treize composants de base du noyau.
  *
  * Ils ne dépendent d'aucun framework de style : leurs styles passent par les variables
  * CSS du noyau, de sorte qu'un projet qui n'utiliserait pas Tailwind les rend
@@ -31,6 +31,16 @@ export type { ProprietesCarte } from './Carte';
 
 export { CarteAction, TAILLE_PASTILLE_ICONE } from './CarteAction';
 export type { ProprietesCarteAction } from './CarteAction';
+
+export {
+  CHEMIN_EPAULES,
+  CHEMIN_TETE,
+  Embleme,
+  GRILLE_EMBLEME,
+  RAYON_CARTOUCHE,
+  TRANSFORME_TETE,
+} from './Embleme';
+export type { ProprietesEmbleme, TailleEmbleme, VarianteEmbleme } from './Embleme';
 
 export { GabaritApp, HAUTEUR_ENTETE } from './GabaritApp';
 export type { ProprietesGabaritApp } from './GabaritApp';

@@ -134,6 +134,18 @@ describe('jetons - contraste en clair (garde C3)', () => {
     expect(ratio).toBeGreaterThanOrEqual(SEUIL_TEXTE_COURANT);
   });
 
+  it('--texte-sur-action se lit AUSSI sur le bouton primaire survole', () => {
+    // Le survol etait le trou : on mesurait le repos et jamais l etat vers lequel la
+    // souris emmene. En clair il tient largement ; c est en sombre qu il ne tenait pas.
+    const ratio = ratioContraste(
+      couleur(clair, '--texte-sur-action'),
+      couleur(clair, '--action-survol'),
+    );
+    expect(ratio, `${ratio.toFixed(2)} en clair, au survol`).toBeGreaterThanOrEqual(
+      SEUIL_TEXTE_COURANT,
+    );
+  });
+
   it('--texte-sur-erreur se lit sur le bouton danger', () => {
     const ratio = ratioContraste(couleur(clair, '--texte-sur-erreur'), couleur(clair, '--erreur'));
     expect(ratio, `${ratio.toFixed(2)} en clair`).toBeGreaterThanOrEqual(SEUIL_TEXTE_COURANT);
@@ -172,6 +184,49 @@ describe('jetons - contraste en sombre (garde C3)', () => {
       couleur(sombre, '--erreur'),
     );
     expect(ratio, `${ratio.toFixed(2)} en sombre`).toBeGreaterThanOrEqual(SEUIL_TEXTE_COURANT);
+  });
+
+  /**
+   * Le couple du bouton PRIMAIRE, qui manquait ici alors que celui du danger y etait.
+   *
+   * C'est le defaut trouve le 8 septembre 2026, a la relecture de l'ecran de connexion.
+   * En sombre, --action vaut #6B88FF et du blanc dessus donne 3,19 : sous le seuil AA.
+   * Au survol, sur #8BA1FF, 2,43 - le seul geste qui devrait confirmer l'action rendait
+   * son libelle MOINS lisible qu'au repos.
+   *
+   * Rien ne le signalait. La garde du bloc clair mesurait ce couple depuis le premier
+   * jour ; celle du bloc sombre ne le mesurait pas, et c'est le seul theme ou il echouait.
+   *
+   * --texte-sur-action vaut desormais l'encre en sombre, comme --texte-sur-erreur, et
+   * pour la meme raison : 5,45 au repos, 7,15 au survol. Le remettre a --blanc fait
+   * echouer ces deux tests, et c'est exactement ce qu'on veut.
+   */
+  it('--texte-sur-action se lit sur le bouton primaire, en sombre aussi', () => {
+    const ratio = ratioContraste(
+      couleur(sombre, '--texte-sur-action'),
+      couleur(sombre, '--action'),
+    );
+    expect(ratio, `${ratio.toFixed(2)} en sombre, au repos`).toBeGreaterThanOrEqual(
+      SEUIL_TEXTE_COURANT,
+    );
+  });
+
+  it('--texte-sur-action se lit sur le bouton primaire SURVOLE, en sombre', () => {
+    const ratio = ratioContraste(
+      couleur(sombre, '--texte-sur-action'),
+      couleur(sombre, '--action-survol'),
+    );
+    expect(ratio, `${ratio.toFixed(2)} en sombre, au survol`).toBeGreaterThanOrEqual(
+      SEUIL_TEXTE_COURANT,
+    );
+  });
+
+  it('--action lui-meme n a PAS ete assombri pour corriger le libelle', () => {
+    // L'autre correction possible etait d'assombrir le bleu pour y garder du blanc. Elle
+    // aurait casse les liens, les bordures et les icones qui s'appuient sur --action et
+    // qui tiennent deja leurs mesures sur les trois surfaces sombres. C'est le texte pose
+    // dessus qui etait faux, pas le bleu.
+    expect(couleur(sombre, '--action')).toBe('#6B88FF');
   });
 
   it('--erreur-survol s eclaircit en sombre, comme --action-survol', () => {

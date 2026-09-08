@@ -12,6 +12,7 @@ const ATTENDUS = [
   'Carte',
   'CarteAction',
   'Champ',
+  'Embleme',
   'GabaritApp',
   'GabaritAuth',
   'GabaritPortail',
@@ -21,7 +22,7 @@ const ATTENDUS = [
 ] as const;
 
 describe('index des composants', () => {
-  it('exporte les douze composants du noyau', () => {
+  it('exporte les treize composants du noyau', () => {
     for (const nom of ATTENDUS) {
       expect(composants, `${nom} n'est pas exporte`).toHaveProperty(nom);
       expect(typeof composants[nom], `${nom} n'est pas un composant`).toBe('function');
@@ -50,6 +51,8 @@ describe('index des composants', () => {
     expect(composants.TAILLE_PASTILLE_ICONE).toBe(48);
     expect(composants.ONGLETS_MIN).toBe(3);
     expect(composants.ONGLETS_MAX).toBe(5);
+    expect(composants.GRILLE_EMBLEME).toBe(240);
+    expect(composants.RAYON_CARTOUCHE).toBe(53);
   });
 
   it("n'exporte aucun composant inter-produits - ils appartiennent a l'ecosysteme", () => {
