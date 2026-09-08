@@ -7,6 +7,40 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 0.5.1 — 8 septembre 2026
+
+### Un bouton qui charge n'est pas un bouton indisponible
+
+L'opacité de 0,6 s'appliquait aux deux états, `disabled` et `chargement`. Elle était sans
+conséquence tant que le bouton en chargement gardait son libellé : le texte ne portait
+aucune information neuve.
+
+La 0.5.0 a changé cela. Le bouton porte désormais la **seule** information de l'écran
+pendant l'attente, et mesure faite juste après :
+
+| Contexte                              | Ratio    | AA 4,5 |
+| ------------------------------------- | -------- | ------ |
+| Clair, « Connexion en cours » à 60 %  | **1,95** | ❌     |
+| Sombre, « Connexion en cours » à 60 % | **1,89** | ❌     |
+| Clair, à pleine opacité               | **5,69** | ✅     |
+| Sombre, à pleine opacité              | **5,45** | ✅     |
+
+L'élément le plus important de l'écran en était le moins lisible.
+
+**L'estompage reste pour `disabled`**, où il dit la vérité : cette action n'est pas
+disponible. Le chargement garde sa pleine opacité, et son curseur passe à `progress` plutôt
+qu'à `not-allowed` : on attend, on n'est pas refusé.
+
+Le défaut n'a été trouvé ni par les types, ni par le linter, ni par les 324 tests. Il a
+fallu regarder un bouton en train de charger, dans les deux thèmes.
+
+### Compatibilité
+
+Aucune propriété ajoutée ni retirée. Un bouton `disabled` se rend exactement comme avant ;
+seul un bouton `chargement` change d'apparence, et dans le sens de la lisibilité.
+
+---
+
 ## 0.5.0 — 8 septembre 2026
 
 ### L'état `chargement` disait « indisponible » là où il fallait dire « c'est parti »

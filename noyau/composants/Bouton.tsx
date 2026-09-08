@@ -38,7 +38,7 @@ import type { ButtonHTMLAttributes, CSSProperties } from 'react';
  * disait « ce bouton est indisponible » là où il fallait dire « votre demande est partie ».
  *
  * Il rend désormais trois points animés, et accepte un `libelleChargement` qui remplace le
- * libellé, donc le nom accessible. L'information ne passe JAMAIS par l'animation :
+ * libellé, donc le nom accessible. Il **n'estompe plus** : voir la note dans le style. L'information ne passe JAMAIS par l'animation :
  * `prefers-reduced-motion` la supprime, les points se figent, et le libellé porte tout.
  *
  * ── LA VARIANTE `neutre`, AJOUTÉE EN v0.4.0 ─────────────────────────────────
@@ -242,8 +242,20 @@ export function Bouton({
     fontWeight: 'var(--graisse-semi)',
     lineHeight: 1,
     borderRadius: 'var(--rayon-md)',
-    cursor: inactif ? 'not-allowed' : 'pointer',
-    opacity: inactif ? 0.6 : 1,
+    /*
+      UN BOUTON QUI CHARGE N EST PAS UN BOUTON INDISPONIBLE.
+
+      L opacite de 0.6 s appliquait aux deux etats. Mesure apres l ajout du libelle de
+      chargement : « Connexion en cours » sur un bouton primaire a 60 % donne 1,95 en
+      clair et 1,89 en sombre, tres loin du seuil AA de 4,5. Le bouton porte desormais la
+      seule information de l ecran, et il en etait l element le moins lisible.
+
+      L estompage reste pour `disabled`, ou il dit la verite : cette action n est pas
+      disponible. Le chargement garde sa pleine opacite, et son curseur dit qu on attend
+      plutot qu on est refuse.
+    */
+    cursor: chargement ? 'progress' : disabled === true ? 'not-allowed' : 'pointer',
+    opacity: disabled === true ? 0.6 : 1,
     ...style,
   };
 

@@ -278,6 +278,21 @@ describe('Bouton', () => {
     expect(reduit).toContain('.ai5d-bouton__point { animation: none; opacity: 1; }');
   });
 
+  it('n estompe PAS un bouton qui charge, seulement un bouton indisponible', () => {
+    /*
+      Mesure apres l ajout du libelle de chargement : « Connexion en cours » sur un
+      primaire a 60 % d opacite donne 1,95 en clair et 1,89 en sombre. Le bouton porte la
+      seule information de l ecran, et il en etait l element le moins lisible.
+    */
+    const { rerender } = render(<Bouton chargement>Envoyer</Bouton>);
+    expect(screen.getByRole('button').style.opacity).toBe('1');
+    expect(screen.getByRole('button').style.cursor).toBe('progress');
+
+    rerender(<Bouton disabled>Envoyer</Bouton>);
+    expect(screen.getByRole('button').style.opacity).toBe('0.6');
+    expect(screen.getByRole('button').style.cursor).toBe('not-allowed');
+  });
+
   it('reste occupe et desactive pendant le chargement', () => {
     render(
       <Bouton chargement libelleChargement="Connexion en cours">
