@@ -7,6 +7,56 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 0.6.2 — 9 septembre 2026
+
+### `Avatar` faisait tomber tout écran rendu par un composant serveur
+
+La 0.6.1 lui a donné un état — le repli sur les initiales quand une photo ne charge pas —
+sans la directive `'use client'`.
+
+Le portail Compte rend cet avatar depuis sa coquille, qui est un composant **serveur**. Les
+cinq rubriques ont rendu **500** d'un coup :
+
+```
+TypeError: useState only works in Client Components.
+  at GabaritDuPortail (app/(portail)/layout.tsx:90)
+```
+
+**Aucun test ne pouvait le voir.** En jsdom, un hook fonctionne toujours ; les gardes de
+forme lisent du texte ; le typecheck ne connaît pas cette frontière. Les 357 tests du système
+et les 1 961 du portail étaient verts pendant que rien ne s'affichait. Il a fallu ouvrir une
+page dans un vrai navigateur.
+
+### `Champ` portait le même piège, latent depuis toujours
+
+`useId`, sans directive. Il ne tombait pas parce que seuls des formulaires l'importaient, et
+un formulaire est déjà un composant client. **C'était une chance, pas une propriété** : le
+premier composant serveur qui aurait rendu un `Champ` aurait fait tomber son écran entier.
+
+### La règle, et pourquoi elle est plus stricte pour un système que pour un produit
+
+Un composant sans directive n'est ni serveur ni client : il prend l'environnement de celui
+qui l'importe.
+
+Dans un produit, on connaît ses appelants. Dans un système, on ne les connaît pas : le
+composant marche chez l'un et tombe chez l'autre, et l'appelant qui le fait tomber peut
+n'arriver que six mois plus tard, dans un dépôt qu'on ne lit pas.
+
+Une garde le vérifie désormais, **dans les deux sens** : tout composant qui emploie un hook
+déclare `'use client'`, et aucun composant sans état ne le déclare — la directive de trop
+enverrait son code au navigateur pour rien et forcerait une frontière là où il n'en faut
+aucune. `Icone`, `Carte`, `Bandeau` et les quatre gabarits sont rendus par des composants
+serveur dans le portail.
+
+### Compatibilité
+
+Aucune propriété ajoutée ni retirée, aucun jeton modifié. Deux composants changent
+d'environnement d'exécution : un consommateur qui les rendait déjà depuis un composant client
+ne voit aucune différence, et celui qui les rendait depuis un composant serveur passe d'une
+page en erreur à une page qui s'affiche.
+
+---
+
 ## 0.6.1 — 8 septembre 2026
 
 ### `Avatar` savait faire moins que ce qu'il remplaçait

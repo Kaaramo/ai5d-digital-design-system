@@ -1,3 +1,15 @@
+'use client';
+
+/*
+  `useId` est un hook, et un composant partagé qui emploie un hook doit le déclarer.
+
+  Ce fichier ne tombait pas : il n'est importé que par des formulaires, qui sont eux-mêmes
+  des composants clients. Un composant sans directive prend l'environnement de celui qui
+  l'importe — il marche donc, ou il tombe, selon l'appelant.
+
+  Le premier composant serveur qui aurait rendu un `Champ` aurait fait tomber son écran
+  entier, et rien dans ce dépôt ne l'aurait signalé avant. C'est arrivé à `Avatar`.
+*/
 import { useId } from 'react';
 import type { CSSProperties, InputHTMLAttributes, ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';

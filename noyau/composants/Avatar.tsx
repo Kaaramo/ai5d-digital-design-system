@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, type CSSProperties } from 'react';
 
 /**
@@ -8,6 +10,21 @@ import { useState, type CSSProperties } from 'react';
  * la photo aurait demandé un second composant. Deux composants pour un même objet divergent
  * à la première correction : l'un prend un liseré, l'autre non, et personne ne le voit avant
  * de les mettre côte à côte. Ils sont ici les deux états d'une seule chose.
+ *
+ * ── IL EST UN COMPOSANT CLIENT, ET IL DOIT L'ÊTRE ───────────────────────────
+ * `onError` demande un état, donc un hook, donc `'use client'`.
+ *
+ * Le `DisqueInitiales` qu'il remplace était délibérément un composant SERVEUR, et son
+ * en-tête l'écrivait : « le disque est du texte dans un cercle, il n'a aucun état ». La
+ * photo change cela, et la directive a d'abord été oubliée.
+ *
+ * **Le portail entier a rendu 500**, sur les cinq rubriques, parce que sa coquille est un
+ * composant serveur qui rend cet avatar. Aucun des 1 961 tests ne l'a vu : en jsdom, un hook
+ * fonctionne toujours, et les gardes de forme lisent du texte. Il a fallu ouvrir une page.
+ *
+ * Un composant partagé sans directive n'est ni serveur ni client : il prend l'environnement
+ * de celui qui l'importe. Il marche donc, ou il tombe, selon l'appelant — et l'appelant qui
+ * le fait tomber peut n'arriver que six mois plus tard.
  *
  * ── UNE PHOTO CASSÉE RETOMBE SUR LES INITIALES ──────────────────────────────
  * Par `onError`, et non par un carré gris. Une URL peut mourir de plusieurs façons : objet
