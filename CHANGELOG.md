@@ -7,6 +7,42 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 0.6.3 — 9 septembre 2026
+
+### Le voile de débordement des onglets se voyait là où rien ne débordait
+
+La 0.6.0 posait, au bord droit de `OngletsRubrique`, un dégradé de 24 px censé dire qu'il
+reste un onglet derrière quand la place manque. Son entrée de journal affirmait que sans lui,
+« la sous-page est perdue pour tous les téléphones ». **C'était une supposition, et elle était
+fausse dans les deux sens.**
+
+Vu à l'écran sur le portail Compte, en 1440 px et dans les deux thèmes : le dégradé se
+dessine **toujours**, y compris là où rien ne déborde. Il y apparaissait comme une bande plus
+claire qui coupait le filet des onglets et le trait de l'onglet actif. Sur les cinq écrans de
+bureau des deux rubriques.
+
+Un ornement posé sans mesure ne peut pas être conditionnel : le rendre tel demanderait de
+mesurer la largeur au montage, donc un état, donc de faire de ce composant un module client.
+C'est un coût disproportionné, et la 0.6.2 vient justement de rappeler ce que coûte une
+directive `'use client'` posée sans y penser.
+
+**Ce qui signale le débordement est le dernier onglet coupé net par le bord.** C'est ce que
+font les réglages d'iOS, GitHub et Stripe. L'œil reconnaît un mot tronqué comme la promesse
+d'un défilement, et il n'a pas besoin qu'on le lui dise deux fois.
+
+### La leçon
+
+Aucun test ne pouvait voir ce défaut : le voile était présent, `aria-hidden`, dans un
+conteneur qui défile — un test l'affirmait, et il passait. **Il fallait regarder.** C'est le
+troisième défaut de ce sprint que seul un rendu réel a montré, après le 500 de la 0.6.2 et
+la politique de sécurité du portail.
+
+### Compatibilité
+
+Aucune propriété, aucun jeton, aucune API. Un élément décoratif en moins dans le DOM.
+
+---
+
 ## 0.6.2 — 9 septembre 2026
 
 ### `Avatar` faisait tomber tout écran rendu par un composant serveur

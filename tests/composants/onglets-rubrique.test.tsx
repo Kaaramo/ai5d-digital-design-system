@@ -108,15 +108,31 @@ describe('OngletsRubrique', () => {
     expect(regleActive).toContain('border-bottom-color');
   });
 
-  it('signale le debordement par un voile, sinon la sous-page est perdue sur telephone', () => {
-    const { container } = render(<OngletsRubrique onglets={TROIS} actif="connexion" />);
-    const voile = container.querySelector('.ai5d-onglets-r__voile');
-    expect(voile).not.toBeNull();
-    expect(voile).toHaveAttribute('aria-hidden', 'true');
-
+  it('defile horizontalement, ascenseur masque, quand la place manque', () => {
+    render(<OngletsRubrique onglets={TROIS} actif="connexion" />);
     const feuille = document.getElementById('ai5d-onglets-rubrique')?.innerHTML ?? '';
     expect(feuille).toContain('overflow-x: auto');
     expect(feuille).toContain('scrollbar-width: none');
+  });
+
+  it('ne pose AUCUN voile de debordement, et c est une correction', () => {
+    /*
+      La 0.6.0 en posait un : un degrade de 24 px colle au bord droit, cense dire qu il reste
+      quelque chose derriere.
+
+      Vu a l ecran en 0.6.2, il se dessinait TOUJOURS, y compris sur un ecran de 1440 px ou
+      rien ne deborde, et il y apparaissait comme une bande claire qui COUPAIT le filet et le
+      trait de l onglet actif. Le rendre conditionnel demanderait de mesurer la largeur au
+      montage, donc un etat, donc de faire de ce composant un module client — un cout
+      disproportionne pour un ornement.
+
+      Ce qui signale le debordement est le dernier onglet coupe net par le bord.
+    */
+    const { container } = render(<OngletsRubrique onglets={TROIS} actif="connexion" />);
+    expect(container.querySelector('.ai5d-onglets-r__voile')).toBeNull();
+
+    const feuille = document.getElementById('ai5d-onglets-rubrique')?.innerHTML ?? '';
+    expect(feuille).not.toContain('linear-gradient');
   });
 
   it("n'ecrit aucune couleur en dur dans sa feuille", () => {

@@ -31,12 +31,22 @@ import { Icone } from './Icone';
  * correctement le rouge du vert, et un trait de 2 px seul se rate au balayage. C'est la
  * même règle que celle écrite dans `BarreOnglets`, et pour la même raison.
  *
- * ── LE DÉBORDEMENT SE VOIT ──────────────────────────────────────────────────
+ * ── LE DÉBORDEMENT SE VOIT, ET C'EST LE DERNIER ONGLET COUPÉ QUI LE DIT ─────
  * Trois onglets de deux mots ne tiennent pas sur un téléphone de 390 px. Le conteneur
- * défile, son ascenseur est masqué, et un dégradé de 24 px collé au bord droit dit qu'il
- * reste quelque chose derrière. Sans ce dégradé, personne ne devine qu'un troisième onglet
- * existe, et la sous-page est perdue pour tous les téléphones — sans qu'aucun test ne
- * puisse le voir.
+ * défile, et son ascenseur est masqué.
+ *
+ * La 0.6.0 y ajoutait un dégradé de 24 px collé au bord droit, censé dire qu'il reste
+ * quelque chose derrière. **Il a été retiré en 0.6.3, après l'avoir vu à l'écran.**
+ *
+ * Un dégradé posé sans mesure se dessine TOUJOURS, y compris sur un écran de 1440 px où
+ * rien ne déborde : il y apparaissait comme une bande claire qui coupait le filet et le
+ * trait de l'onglet actif. Le rendre conditionnel demanderait de mesurer la largeur au
+ * montage, donc un état, donc de faire de ce composant un module client — un coût
+ * disproportionné pour un ornement.
+ *
+ * Ce qui signale le débordement est donc le dernier onglet **coupé net par le bord**. C'est
+ * ce que font les réglages d'iOS, GitHub et Stripe, et c'est suffisant : l'œil reconnaît un
+ * mot tronché comme la promesse d'un défilement.
  *
  * ── LE COMPOSANT NE DÉDUIT PAS L'ACTIF, IL LE REÇOIT ────────────────────────
  * Déduire le chemin courant demanderait un routeur, donc une dépendance à un framework,
@@ -125,15 +135,6 @@ const STYLE_ONGLETS = `
   border-bottom-color: var(--action);
 }
 
-.ai5d-onglets-r__voile {
-  position: sticky;
-  right: 0;
-  flex: 0 0 24px;
-  margin-left: -24px;
-  pointer-events: none;
-  background: linear-gradient(to right, transparent, var(--surface-2));
-}
-
 @media (prefers-reduced-motion: reduce) {
   .ai5d-onglets-r__lien { transition: none; }
 }
@@ -171,17 +172,6 @@ export function OngletsRubrique({
             <span>{onglet.libelle}</span>
           </a>
         ))}
-
-        {/*
-          Le voile de debordement. Il est DANS le conteneur qui defile et colle a droite par
-          `position: sticky` : pose en dehors, il faudrait connaitre la largeur du conteneur
-          pour le placer, donc mesurer au montage, donc rendre le composant dependant du
-          navigateur.
-
-          Sa marge negative le fait chevaucher le dernier onglet plutot que d ajouter de la
-          largeur : sans elle, il creerait lui-meme le debordement qu il est cense signaler.
-        */}
-        <span aria-hidden="true" className="ai5d-onglets-r__voile" />
       </nav>
     </>
   );
