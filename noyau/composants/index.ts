@@ -38,7 +38,7 @@ export { Carte } from './Carte';
 export type { ProprietesCarte } from './Carte';
 
 export { CarteAction, TAILLE_PASTILLE_ICONE } from './CarteAction';
-export type { ProprietesCarteAction } from './CarteAction';
+export type { EtatCarteAction, ProprietesCarteAction } from './CarteAction';
 
 export {
   CHEMIN_EPAULES,
@@ -64,6 +64,9 @@ export type { ProprietesGabaritAuth } from './GabaritAuth';
 
 export { GabaritPortail, LARGEUR_RAIL_BUREAU, LARGEUR_RAIL_TABLETTE } from './GabaritPortail';
 export type { ProprietesGabaritPortail, Rubrique } from './GabaritPortail';
+
+export { CONTENEUR_DEUX_COLONNES, CONTENEUR_TROIS_COLONNES, GrilleCartes } from './GrilleCartes';
+export type { ProprietesGrilleCartes } from './GrilleCartes';
 
 export { Champ, TAILLE_ICONE_CHAMP } from './Champ';
 export type { ProprietesChamp } from './Champ';

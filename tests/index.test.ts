@@ -17,6 +17,7 @@ const ATTENDUS = [
   'GabaritApp',
   'GabaritAuth',
   'GabaritPortail',
+  'GrilleCartes',
   'Icone',
   'Logotype',
   'OngletsRubrique',
@@ -24,7 +25,7 @@ const ATTENDUS = [
 ] as const;
 
 describe('index des composants', () => {
-  it('exporte les quinze composants du noyau', () => {
+  it('exporte les seize composants du noyau', () => {
     for (const nom of ATTENDUS) {
       expect(composants, `${nom} n'est pas exporte`).toHaveProperty(nom);
       expect(typeof composants[nom], `${nom} n'est pas un composant`).toBe('function');
@@ -56,6 +57,8 @@ describe('index des composants', () => {
     expect(composants.ONGLETS_MAX).toBe(5);
     expect(composants.GRILLE_EMBLEME).toBe(240);
     expect(composants.RAYON_CARTOUCHE).toBe(53);
+    expect(composants.CONTENEUR_DEUX_COLONNES).toBe(560);
+    expect(composants.CONTENEUR_TROIS_COLONNES).toBe(900);
   });
 
   it("n'exporte aucun composant inter-produits - ils appartiennent a l'ecosysteme", () => {

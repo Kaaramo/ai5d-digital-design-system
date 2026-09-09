@@ -4,6 +4,8 @@ import { Carte } from './Carte';
 import { Bouton } from './Bouton';
 import type { VarianteBouton } from './Bouton';
 import { Icone } from './Icone';
+import { Pastille } from './Pastille';
+import type { TonSemantique } from './Pastille';
 import { COMPACT } from '../paliers';
 
 /**
@@ -26,10 +28,20 @@ import { COMPACT } from '../paliers';
  * des jetons sémantiques. Un fond vert décoratif, et « réussite » ne veut plus rien dire
  * nulle part ailleurs.
  *
+ * L'état ajouté en 0.7.0 ne change rien à cette règle : il colore une PASTILLE, jamais la
+ * carte. La couleur y dit un état sémantique — vérifiée, inactive — et le mot le dit aussi,
+ * parce qu'une information portée par la seule couleur ne parvient pas à tout le monde.
+ *
  * ── UN SEUL PRIMAIRE PAR VUE ────────────────────────────────────────────────
  * La variante du bouton se règle en propriété. Le composant ne peut pas compter ses
  * voisins ; c'est au produit de tenir la règle, et elle est écrite dans la charte.
  */
+
+/** L'état d'une carte : un ton et un mot. Le mot porte l'information, jamais le ton seul. */
+export interface EtatCarteAction {
+  ton: TonSemantique;
+  libelle: string;
+}
 
 export interface ProprietesCarteAction {
   /** Une icône Lucide. Décorative : le titre porte l'information. */
@@ -41,6 +53,15 @@ export interface ProprietesCarteAction {
   /** Fourni, le bouton devient un lien. Absent, il appelle `onAction`. */
   href?: string | undefined;
   onAction?: (() => void) | undefined;
+  /**
+   * Un état, rendu en pastille à droite de la pastille d'icône.
+   *
+   * La carte rend la pastille ELLE-MÊME plutôt que d'accepter un `ReactNode` : deux cartes
+   * d'un même accueil rendraient sinon deux formes du même état. Et une propriété
+   * `ReactNode` qui traverse la frontière serveur / client est la faute qui a coûté cinq
+   * écrans en 500 au portail Compte.
+   */
+  etat?: EtatCarteAction | undefined;
   /** Un seul `primaire` par vue. Voir l'en-tête de ce fichier. */
   variante?: VarianteBouton | undefined;
   className?: string | undefined;
@@ -53,13 +74,18 @@ export const TAILLE_PASTILLE_ICONE = 48;
 const ID_STYLE = 'ai5d-carte-action';
 
 const STYLE_CARTE = `
+.ai5d-carte-action__tete {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: var(--espace-3);
+  margin-bottom: 16px;
+}
 .ai5d-carte-action__pastille {
   display: flex; align-items: center; justify-content: center;
   width: ${TAILLE_PASTILLE_ICONE}px; height: ${TAILLE_PASTILLE_ICONE}px;
+  flex-shrink: 0;
   border-radius: var(--rayon-plein);
   background: var(--surface-chaude);
   color: var(--texte-fort);
-  margin-bottom: 16px;
 }
 .ai5d-carte-action__titre {
   margin: 0 0 6px;
@@ -92,6 +118,7 @@ export function CarteAction({
   action,
   href,
   onAction,
+  etat,
   variante = 'secondaire',
   className,
   style,
@@ -101,8 +128,12 @@ export function CarteAction({
       <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_CARTE }} />
 
       <Carte className={className} style={style} data-carte="action">
-        <div className="ai5d-carte-action__pastille">
-          <Icone nom={icone} taille={24} />
+        <div className="ai5d-carte-action__tete">
+          <div className="ai5d-carte-action__pastille">
+            <Icone nom={icone} taille={24} />
+          </div>
+
+          {etat === undefined ? null : <Pastille ton={etat.ton}>{etat.libelle}</Pastille>}
         </div>
 
         <h3 className="ai5d-carte-action__titre">{titre}</h3>

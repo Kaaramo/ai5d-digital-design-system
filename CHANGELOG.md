@@ -7,6 +7,46 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 0.7.0 — 9 septembre 2026
+
+### `GrilleCartes` : apparier des cartes courtes, sans se tromper de largeur
+
+Le portail Compte refait son accueil en quatre cartes appariées deux par deux, et sa rubrique
+Produits en deux blocs de cartes. Cette mise en page appartient au système : le jour où
+l'Académie aura un accueil, elle ne la réécrira pas.
+
+**Elle interroge son CONTENEUR, et non la fenêtre.** C'est le seul point qui compte dans ce
+composant. Une requête média ne sait pas qu'un rail de 280 px mange la largeur : à 768 px de
+fenêtre, la colonne de contenu d'un portail ne vaut que 464 px, et deux cartes y feraient
+216 px chacune. La grille déclare donc son propre contexte de conteneur et bascule à 560 px
+de largeur disponible, valeur mesurée : deux cartes de 260 px plus un écart de 24 px font
+544 px.
+
+Un navigateur sans requêtes de conteneur rend une colonne, ce qui est la mise en page du
+téléphone : correcte partout, simplement pas optimale sur grand écran.
+
+Aucun rôle ARIA : une grille de cartes n'est ni un tableau, ni une liste d'onglets.
+
+### `CarteAction` accepte un état
+
+Une pastille sémantique facultative, à droite de la pastille d'icône : « Vérifiée »,
+« Inactive ». Le mot porte l'information, la couleur la renforce.
+
+**La carte rend la pastille elle-même**, plutôt que d'accepter un `ReactNode`. Deux cartes
+d'un même accueil rendraient sinon deux formes du même état, et une propriété `ReactNode` qui
+traverse la frontière serveur / client est exactement la faute qui a coûté cinq écrans en 500
+au portail Compte en 0.6.1.
+
+### Inchangé, et volontairement
+
+`CarteAction` ne teinte toujours pas son fond. Le motif de référence donne une couleur à
+chaque section, vert, bleu, jaune ; la charte mère pose que la différenciation se fait par le
+**nom** et jamais par la couleur, et le vert comme le jaune sont des jetons **sémantiques**.
+Un fond vert décoratif, et « réussite » ne veut plus rien dire nulle part ailleurs. L'état
+ajouté ici colore une pastille, jamais la carte.
+
+---
+
 ## 0.6.3 — 9 septembre 2026
 
 ### Le voile de débordement des onglets se voyait là où rien ne débordait

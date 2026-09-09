@@ -289,6 +289,55 @@ describe('CarteAction', () => {
     expect(css).toContain('background: var(--surface-chaude)');
   });
 
+  it('ne rend aucune pastille sans etat', () => {
+    const { container } = render(<CarteAction icone={User} titre="Profil" action="Mon profil" />);
+    expect(container.querySelector('.ai5d-carte-action__tete')?.children).toHaveLength(1);
+  });
+
+  it('rend le MOT de l etat, et pas seulement sa couleur', () => {
+    render(
+      <CarteAction
+        icone={User}
+        titre="Adresse"
+        action="Mon profil"
+        href="/profil"
+        etat={{ ton: 'reussite', libelle: 'Vérifiée' }}
+      />,
+    );
+    expect(screen.getByText('Vérifiée')).toBeInTheDocument();
+  });
+
+  it('pose l etat A DROITE de la pastille d icone, sur la meme ligne', () => {
+    const { container } = render(
+      <CarteAction
+        icone={User}
+        titre="Adresse"
+        action="Mon profil"
+        etat={{ ton: 'attention', libelle: 'Non vérifiée' }}
+      />,
+    );
+    const tete = container.querySelector('.ai5d-carte-action__tete');
+    expect(tete?.children).toHaveLength(2);
+    expect(tete?.firstElementChild?.className).toContain('ai5d-carte-action__pastille');
+    expect(styleInjecte('ai5d-carte-action')).toContain('justify-content: space-between');
+  });
+
+  it('un etat ne teinte toujours pas la carte', () => {
+    // La regle du paragraphe precedent tient AVEC un etat : c est la pastille qui porte la
+    // couleur, jamais le fond de la carte.
+    render(
+      <CarteAction
+        icone={User}
+        titre="Adresse"
+        action="Mon profil"
+        etat={{ ton: 'reussite', libelle: 'Vérifiée' }}
+      />,
+    );
+    const css = styleInjecte('ai5d-carte-action');
+    expect(css).not.toMatch(/--reussite|--attention|--erreur/);
+    expect(css).toContain('background: var(--surface-chaude)');
+  });
+
   it("n'ecrit aucune couleur en dur", () => {
     const source = readFileSync('noyau/composants/CarteAction.tsx', 'utf8');
     const declarations = source
