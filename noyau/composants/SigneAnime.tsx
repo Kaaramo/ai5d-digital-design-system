@@ -13,6 +13,20 @@ import type { CSSProperties, ReactNode } from 'react';
  * mettra le sien. Un composant qui coderait la marque obligerait a le forker au deuxieme produit,
  * et l ecosysteme aurait deux animations pour une seule idee.
  *
+ * ── MAIS C EST LE SIGNE QUI DONNE SA TAILLE A L EMPLACEMENT ─────────────────
+ * Le systeme ne connait pas la marque ; il connait la GEOMETRIE de ses anneaux, et c est elle
+ * qui dit quelle place reste au centre. L emplacement porte donc une taille, et la marque la
+ * remplit.
+ *
+ * Sans cette regle, le produit devait deviner : Compte a passe un embleme de 72 px, juste dans
+ * un signe de 10 rem et trop grand dans un signe de 8 rem. Mesure au navigateur le 11 septembre
+ * 2026, a 390 px de large : les coins du cartouche passaient a 5 px de l anneau interne, contre
+ * 21 px sur grand ecran. Un carre inscrit dans un cercle touche par ses COINS, donc c est la
+ * demi-diagonale qu il faut comparer au rayon, jamais la demi-largeur.
+ *
+ * Le rapport est desormais constant : 3,5 rem dans 8 rem, 4,5 rem dans 10 rem. Le produit passe
+ * la marque qu il veut, a la taille qu il veut ; l emplacement la ramene a la sienne.
+ *
  * ── IL NE SERT PAS A FAIRE PATIENTER ────────────────────────────────────────
  * Il accompagne une attente qui existe deja. Une mise en scene qui fait patienter pour se faire
  * admirer est un peage : c est le produit qui doit etre rapide, pas l animation qui doit etre
@@ -48,8 +62,11 @@ export const STYLE_SIGNE = `
 .ai5d-signe__marque {
   position: relative;
   display: flex;
+  width: 3.5rem;
+  height: 3.5rem;
   animation: ai5d-signe-entree 800ms var(--courbe-sortie) both;
 }
+.ai5d-signe__marque > * { width: 100%; height: 100%; }
 @keyframes ai5d-signe-rotation {
   to { transform: rotate(360deg); }
 }
@@ -59,6 +76,7 @@ export const STYLE_SIGNE = `
 }
 @media (min-width: 768px) {
   .ai5d-signe { width: 10rem; height: 10rem; }
+  .ai5d-signe__marque { width: 4.5rem; height: 4.5rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   .ai5d-signe__anneau, .ai5d-signe__marque { animation: none; }

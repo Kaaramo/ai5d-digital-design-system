@@ -53,6 +53,46 @@ describe('SigneAnime, la marque entouree de ses anneaux', () => {
   it('grandit au palier tablette, sans autre rupture', () => {
     expect(STYLE_SIGNE).toContain('@media (min-width: 768px)');
   });
+
+  it('donne sa taille a l emplacement, aux DEUX paliers, et la marque la remplit', () => {
+    /*
+      LE SYSTEME NE CONNAIT PAS LA MARQUE, MAIS IL CONNAIT LA PLACE QUI RESTE.
+
+      Sans cette regle, le produit devait deviner la taille de sa marque : Compte en a passe une
+      de 72 px, juste dans un signe de 10 rem et trop grande dans un signe de 8 rem. Mesure au
+      navigateur le 11 septembre 2026, a 390 px : les coins du cartouche passaient a 5 px de
+      l anneau interne, contre 21 px sur grand ecran.
+
+      Un carre inscrit dans un cercle touche par ses COINS. La verification ci-dessous compare
+      donc la demi-DIAGONALE de l emplacement au rayon interne, jamais sa demi-largeur.
+    */
+    expect(STYLE_SIGNE).toMatch(/\.ai5d-signe__marque\s*\{[^}]*width: 3\.5rem/);
+    expect(STYLE_SIGNE).toContain('.ai5d-signe__marque > * { width: 100%; height: 100%; }');
+
+    // Le palier ne se lit qu a l interieur de son propre bloc : une recherche sur la feuille
+    // entiere trouverait n importe quelle declaration, y compris hors du palier.
+    const palier = STYLE_SIGNE.slice(STYLE_SIGNE.indexOf('@media (min-width: 768px)'));
+    expect(palier.slice(0, palier.indexOf('@media', 1))).toMatch(
+      /\.ai5d-signe__marque\s*\{[^}]*4\.5rem/,
+    );
+  });
+
+  it('laisse de l air entre la marque et l anneau interne, aux deux paliers', () => {
+    // L anneau interne est pose a `inset: var(--espace-2)`, soit 8 px de chaque cote.
+    const paliers = [
+      { signe: 8 * 16, marque: 3.5 * 16 },
+      { signe: 10 * 16, marque: 4.5 * 16 },
+    ];
+
+    for (const { signe, marque } of paliers) {
+      const rayonInterne = (signe - 2 * 8) / 2;
+      const demiDiagonale = (marque / 2) * Math.SQRT2;
+      expect(
+        rayonInterne - demiDiagonale,
+        `${signe} px : la marque touche l anneau`,
+      ).toBeGreaterThan(12);
+    }
+  });
 });
 
 describe('GabaritSeuil, l ecran', () => {

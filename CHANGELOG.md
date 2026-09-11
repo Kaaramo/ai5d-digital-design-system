@@ -7,6 +7,28 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 0.8.1 — 11 septembre 2026
+
+### `SigneAnime` : l'emplacement de la marque porte sa taille
+
+Le système ne connaît aucune marque de produit, et ne doit pas en connaître. Mais il connaît la
+**géométrie de ses anneaux**, et c'est elle qui dit quelle place reste au centre. L'emplacement
+porte donc désormais une taille, 3,5 rem puis 4,5 rem au palier tablette, et la marque la
+remplit.
+
+Sans cette règle, le produit devait deviner. Compte passait un emblème de 72 px : juste dans un
+signe de 10 rem, trop grand dans un signe de 8 rem. Mesuré au navigateur le 11 septembre 2026, à
+390 px de large, les coins du cartouche passaient à **5 px** de l'anneau interne, contre 21 px
+sur grand écran.
+
+Un carré inscrit dans un cercle le touche par ses **coins** : c'est la demi-diagonale qu'il faut
+comparer au rayon, jamais la demi-largeur. Une garde le vérifie maintenant aux deux paliers.
+
+**Ce que cela change pour un produit qui consomme le système :** la taille passée à la marque
+n'est plus déterminante, l'emplacement la ramène à la sienne. Aucun appel n'est à réécrire.
+
+---
+
 ## 0.8.0 — 11 septembre 2026
 
 ### `Squelette` : l'attente prend la forme de ce qui arrive
