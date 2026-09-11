@@ -1,5 +1,5 @@
 /**
- * Les quinze composants de base du noyau.
+ * Les dix-neuf composants de base du noyau.
  *
  * Ils ne dépendent d'aucun framework de style : leurs styles passent par les variables
  * CSS du noyau, de sorte qu'un projet qui n'utiliserait pas Tailwind les rend

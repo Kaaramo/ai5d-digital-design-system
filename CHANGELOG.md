@@ -7,6 +7,45 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 0.8.0 — 11 septembre 2026
+
+### `Squelette` : l'attente prend la forme de ce qui arrive
+
+Une primitive et six formes composables (en-tête, cartes, tableau, liste, indicateurs,
+formulaire), plus `ZoneEnChargement`, qui annonce le chargement une seule fois pour tout un
+écran.
+
+**La teinte est celle de la bordure, et c'est une mesure, pas un goût.** En thème clair,
+`--surface-2` et `--surface-3` valent tous deux le blanc : un squelette posé sur une carte y
+serait entièrement invisible, et la page paraîtrait vide au lieu de paraître en train
+d'arriver. `--bordure` est la seule valeur qui contraste avec les trois surfaces, dans les deux
+thèmes.
+
+Le système donne les formes ; le produit compose ses pages, parce que lui seul connaît la
+structure de ses écrans. Un squelette qui promet une forme que le contenu ne prendra pas est un
+défaut, pas une approximation.
+
+### `SigneAnime` et `GabaritSeuil` : la porte, après une connexion
+
+L'écran court qui s'affiche entre la porte et l'espace : la marque du produit, entourée de deux
+anneaux qui tournent **en sens inverse**, une phrase annoncée aux lecteurs d'écran, une
+signature discrète en bas.
+
+**La marque arrive en emplacement.** Le système ne connaît aucune marque de produit : chacun
+passe la sienne. Et **le seuil ne sait pas naviguer** : aucun routeur, aucune transition, aucun
+délai. Le produit écrit son module client, qui préfetche la destination, tient un plancher, part
+dans une transition React et pose un plafond ; il passe `sortie` à vrai quand le départ est
+amorcé. Même séparation que pour la coquille : le système rend, le produit pilote.
+
+Rien ne tourne, rien ne pulse et rien ne se fond sous `prefers-reduced-motion: reduce`.
+
+### Ce que cette version ne change pas
+
+Aucune valeur de jeton. Aucune signature existante. C'est une version mineure : la surface
+s'agrandit de trois fichiers et de dix exports, rien ne casse.
+
+---
+
 ## 0.7.0 — 9 septembre 2026
 
 ### `GrilleCartes` : apparier des cartes courtes, sans se tromper de largeur

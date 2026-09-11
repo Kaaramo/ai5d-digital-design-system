@@ -12,7 +12,7 @@
 ![Vitest](https://img.shields.io/badge/Vitest-051C2C?style=for-the-badge&logo=vitest&logoColor=white)
 ![pnpm](https://img.shields.io/badge/pnpm-051C2C?style=for-the-badge&logo=pnpm&logoColor=white)
 
-![Version](https://img.shields.io/badge/version-0.1.1-2251FF?style=flat-square&labelColor=051C2C)
+![Version](https://img.shields.io/badge/version-0.8.0-2251FF?style=flat-square&labelColor=051C2C)
 ![Tests](https://img.shields.io/badge/tests-192%20passent-0E7C5A?style=flat-square&labelColor=051C2C)
 ![Contraste](https://img.shields.io/badge/contraste-44%20paires%20v%C3%A9rifi%C3%A9es-0E7C5A?style=flat-square&labelColor=051C2C)
 ![Polices](https://img.shields.io/badge/polices-134%20Ko%20en%20local-2251FF?style=flat-square&labelColor=051C2C)
@@ -180,7 +180,7 @@ recalculé à chaque exécution des tests**, contre toutes les surfaces où il a
 d'apparaître, et le build échoue sous 4,5. Quarante-quatre paires, en clair et en sombre. C'est ce
 test qui aurait attrapé les quatre défauts des années plus tôt.
 
-## Les onze composants
+## Les dix-neuf composants
 
 ```tsx
 import { GabaritApp, BarreOnglets, CarteAction } from '@ai5d/design-system/composants';
@@ -219,7 +219,7 @@ Le dépôt est **public** et n'est pas publié sur un registre. On l'installe de
 **épinglé à une étiquette** :
 
 ```bash
-pnpm add "@ai5d/design-system@github:Kaaramo/ai5d-digital-design-system#v0.2.1"
+pnpm add "@ai5d/design-system@github:Kaaramo/ai5d-digital-design-system#v0.8.0"
 ```
 
 Aucun jeton, aucune configuration : l'installation anonyme fonctionne, donc les serveurs de
@@ -237,7 +237,7 @@ jeton change le rendu de tous les écrans.
 > reste visible et intentionnelle, écrivez la dépendance à la main :
 >
 > ```json
-> "@ai5d/design-system": "github:Kaaramo/ai5d-digital-design-system#v0.2.1"
+> "@ai5d/design-system": "github:Kaaramo/ai5d-digital-design-system#v0.8.0"
 > ```
 >
 > puis `pnpm install`. Vérifié le 5 septembre 2026 avec pnpm 10.24.
