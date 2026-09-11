@@ -97,4 +97,14 @@ export {
   ZoneEnChargement,
 } from './Squelette';
 export type { ProprietesSquelette } from './Squelette';
+
+/**
+ * Le seuil post-authentification. Le systeme rend l ecran ; le produit pilote la navigation et
+ * donne sa marque : c est la meme separation que pour la coquille.
+ */
+export { SigneAnime } from './SigneAnime';
+export type { ProprietesSigneAnime } from './SigneAnime';
+
+export { GabaritSeuil } from './GabaritSeuil';
+export type { ProprietesGabaritSeuil } from './GabaritSeuil';
 export type { ProprietesPastille, TonSemantique } from './Pastille';
