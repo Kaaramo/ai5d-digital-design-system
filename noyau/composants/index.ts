@@ -81,4 +81,20 @@ export { Logotype } from './Logotype';
 export type { ProprietesLogotype, VarianteLogotype } from './Logotype';
 
 export { Pastille } from './Pastille';
+
+/**
+ * Les formes de l attente. Le systeme donne les formes, le produit compose ses pages :
+ * lui seul connait la structure de ses ecrans.
+ */
+export {
+  Squelette,
+  SqueletteCartes,
+  SqueletteEnTete,
+  SqueletteFormulaire,
+  SqueletteIndicateurs,
+  SqueletteListe,
+  SqueletteTableau,
+  ZoneEnChargement,
+} from './Squelette';
+export type { ProprietesSquelette } from './Squelette';
 export type { ProprietesPastille, TonSemantique } from './Pastille';
