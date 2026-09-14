@@ -13,6 +13,7 @@ const ATTENDUS = [
   'Carte',
   'CarteAction',
   'Champ',
+  'CoquilleRail',
   'Embleme',
   'GabaritApp',
   'GabaritAuth',
@@ -20,15 +21,17 @@ const ATTENDUS = [
   'GabaritSeuil',
   'GrilleCartes',
   'Icone',
+  'LiensRail',
   'Logotype',
   'OngletsRubrique',
   'Pastille',
+  'RechargeAuRetour',
   'SigneAnime',
   'Squelette',
 ] as const;
 
 describe('index des composants', () => {
-  it('exporte les dix-neuf composants du noyau', () => {
+  it('exporte les vingt-deux composants du noyau', () => {
     for (const nom of ATTENDUS) {
       expect(composants, `${nom} n'est pas exporte`).toHaveProperty(nom);
       expect(typeof composants[nom], `${nom} n'est pas un composant`).toBe('function');

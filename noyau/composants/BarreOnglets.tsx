@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Icone } from './Icone';
+import type { ComposantLien } from './LiensRail';
 import { TABLETTE } from '../paliers';
 
 /**
@@ -33,6 +34,17 @@ import { TABLETTE } from '../paliers';
  *
  * Le composant ne tronque pas et ne lève pas : il rend fidèlement ce qu'on lui donne. La
  * règle est écrite ici et dans PALIERS.md, et c'est au produit de la tenir.
+ *
+ * ── ELLE NE RECHARGE PLUS LE DOCUMENT ───────────────────────────────────────
+ * Ses onglets étaient des `<a href>` nus : chaque changement de rubrique sur un téléphone
+ * redemandait la page entière, polices comprises, et l'écran clignotait. Le rail de Compte, lui,
+ * passait par le lien du routeur. Depuis le sprint 17, la barre reçoit le même composant `Lien`
+ * que `LiensRail`, et les deux navigations se comportent enfin de la même façon.
+ *
+ * ── L'ÉTAT ACTIF A UN FOND ──────────────────────────────────────────────────
+ * Il ne passait que par la couleur du texte et la graisse, et en thème sombre la différence
+ * entre l'onglet courant et ses voisins se lisait mal. Il prend `--surface-selection`, le jeton de
+ * rôle réglé par thème, comme la pastille active du rail.
  */
 
 export interface Onglet {
@@ -55,6 +67,11 @@ export interface ProprietesBarreOnglets {
   onChoisir?: ((id: string) => void) | undefined;
   /** Le nom de la navigation pour les lecteurs d'écran. */
   etiquette?: string | undefined;
+  /**
+   * Le composant de lien du produit, pour les onglets qui ont un `href`. `a` par défaut.
+   * Avec le lien du routeur, changer d'onglet ne recharge plus le document.
+   */
+  Lien?: ComposantLien | undefined;
   className?: string | undefined;
   style?: CSSProperties | undefined;
 }
@@ -99,6 +116,7 @@ const STYLE_BARRE = `
   text-decoration: none;
 }
 .ai5d-onglets__item[aria-current] {
+  background: var(--surface-selection);
   color: var(--action);
   font-weight: var(--graisse-semi);
 }
@@ -117,6 +135,7 @@ export function BarreOnglets({
   actif,
   onChoisir,
   etiquette = 'Navigation principale',
+  Lien,
   className,
   style,
 }: ProprietesBarreOnglets) {
@@ -156,10 +175,24 @@ export function BarreOnglets({
             >
               {contenu}
             </button>
-          ) : (
+          ) : Lien === undefined ? (
             <a key={onglet.id} href={onglet.href} {...communs}>
               {contenu}
             </a>
+          ) : (
+            /*
+              Le lien du produit ne reçoit que ce que `ComposantLien` promet : l'adresse, la classe
+              et l'état courant. `data-onglet` reste sur le repli `a` seulement, parce qu'un
+              composant de lien quelconque n'a aucune obligation de le transmettre.
+            */
+            <Lien
+              key={onglet.id}
+              href={onglet.href}
+              className={communs.className}
+              aria-current={communs['aria-current']}
+            >
+              {contenu}
+            </Lien>
           );
         })}
       </nav>

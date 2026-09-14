@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
-import type { LucideIcon } from 'lucide-react';
+import { LARGEUR_RAIL_BUREAU, LARGEUR_RAIL_TABLETTE, type Rubrique } from './CoquilleRail';
 import { Logotype } from './Logotype';
 import { Icone } from './Icone';
 import { BarreOnglets, HAUTEUR_BARRE_ONGLETS } from './BarreOnglets';
@@ -35,19 +35,11 @@ import { LARGE, TABLETTE } from '../paliers';
  * couche écosystème, pas au noyau.
  */
 
-export interface Rubrique {
-  /** L'identifiant, comparé à `actif`. */
-  id: string;
-  libelle: string;
-  icone: LucideIcon;
-  /**
-   * L'adresse de la rubrique. **Requise**, contrairement à `Onglet` où elle est
-   * optionnelle : un onglet peut piloter un état local, une rubrique de portail est une
-   * page, et une page a une adresse. La rendre optionnelle autoriserait une navigation
-   * qui ne se copie pas, ne s'ouvre pas au clic du milieu, et disparaît sans JavaScript.
-   */
-  href: string;
-}
+/*
+  `Rubrique` et les deux largeurs du rail vivent desormais dans `CoquilleRail`, qui remplace ce
+  gabarit. Ils sont importes ici plutot que declares deux fois, le temps que ce fichier soit retire
+  (sprint 17, tache 7) : deux declarations d un meme type divergent a la premiere correction.
+*/
 
 export interface ProprietesGabaritPortail {
   /** Le nom du produit, à côté du logotype. « Compte », « Académie », « Lab ». */
@@ -62,12 +54,6 @@ export interface ProprietesGabaritPortail {
   className?: string | undefined;
   style?: CSSProperties | undefined;
 }
-
-/** La largeur du rail entre 768 et 1279 px. Voir l'en-tête de ce fichier. */
-export const LARGEUR_RAIL_TABLETTE = 240;
-
-/** La largeur du rail à partir de 1280 px. Charte, chapitre 07. */
-export const LARGEUR_RAIL_BUREAU = 280;
 
 const ID_STYLE = 'ai5d-gabarit-portail';
 
