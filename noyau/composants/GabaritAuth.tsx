@@ -65,8 +65,19 @@ const ID_STYLE = 'ai5d-gabarit-auth';
  * Les règles qui dépendent d'une requête média ne peuvent pas s'écrire en style en
  * ligne. On les injecte une fois, sous un identifiant stable, plutôt que d'imposer
  * Tailwind au consommateur.
+ *
+ * ── LE PANNEAU EN SOMBRE ────────────────────────────────────────────────────
+ * En clair, le panneau est en `--encre` sur une page en `--surface-1`, et il se voit. En sombre,
+ * `--encre` n'est redéfini nulle part : panneau et page mesuraient 1,05 de rapport de contraste,
+ * c'est-à-dire rien. L'écran avait l'air cassé, une moitié noire que l'œil ne distinguait pas de
+ * l'autre. Constaté au sprint 17.
+ *
+ * En sombre SEULEMENT, le panneau prend `--surface-3` et un filet `--bordure-forte` sur le bord
+ * qui touche le formulaire. Le clair ne bouge pas. Les trois sélecteurs de thème du système sont
+ * employés : la préférence de l'appareil, `data-theme` sombre, et `data-theme` clair qui annule la
+ * préférence.
  */
-const STYLE_GABARIT = `
+export const STYLE_GABARIT = `
 .ai5d-auth { display: flex; min-height: 100dvh; background: var(--surface-1); }
 .ai5d-auth__principal {
   display: flex; flex: 1 1 0; min-width: 0; flex-direction: column;
@@ -95,6 +106,17 @@ const STYLE_GABARIT = `
     display: flex; flex-direction: column; justify-content: space-between;
     flex-shrink: 0; width: ${PART_PANNEAU}; max-width: ${LARGEUR_MAX_PANNEAU}px;
     padding: var(--espace-16); background: var(--encre); color: var(--blanc);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .ai5d-auth__panneau {
+      background: var(--surface-3);
+      border-left: 1px solid var(--bordure-forte);
+    }
+  }
+  :root[data-theme='dark'] .ai5d-auth__panneau {
+    background: var(--surface-3);
+    border-left: 1px solid var(--bordure-forte);
   }
 }
 `;

@@ -1,5 +1,5 @@
 /**
- * Les trente-cinq composants de base du noyau.
+ * Les trente-quatre composants de base du noyau.
  *
  * Ils ne dépendent d'aucun framework de style : leurs styles passent par les variables
  * CSS du noyau, de sorte qu'un projet qui n'utiliserait pas Tailwind les rend
@@ -8,8 +8,8 @@
  *
  * Trois d'entre eux forment la coquille d'application mobile : `GabaritApp`,
  * `BarreOnglets` et `CarteAction`. `CoquilleRail` porte la coquille des écrans à rubriques,
- * avec `LiensRail` pour sa navigation et `RechargeAuRetour` pour la garde du retour arrière ;
- * elle remplace `GabaritPortail`, retiré à la fin du sprint 17. Ils sont dans le noyau et non
+ * avec `LiensRail` pour sa navigation et `RechargeAuRetour` pour la garde du retour arrière.
+ * Elle a remplacé `GabaritPortail`, retiré au sprint 17 sans avoir servi. Ils sont dans le noyau et non
  * dans l'écosystème parce qu'ils ne lisent ni la session ni les droits : c'est le produit qui
  * leur donne son contenu, et sa navigation en emplacements.
  *
@@ -97,9 +97,6 @@ export type {
   EnteteDocument,
   Section,
 } from './document';
-
-export { GabaritPortail } from './GabaritPortail';
-export type { ProprietesGabaritPortail } from './GabaritPortail';
 
 export { CONTENEUR_DEUX_COLONNES, CONTENEUR_TROIS_COLONNES, GrilleCartes } from './GrilleCartes';
 export type { ProprietesGrilleCartes } from './GrilleCartes';

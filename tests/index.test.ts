@@ -26,7 +26,6 @@ const ATTENDUS = [
   'GabaritApp',
   'GabaritAuth',
   'GabaritDocument',
-  'GabaritPortail',
   'GabaritSeuil',
   'GrilleCartes',
   'Icone',
@@ -44,7 +43,7 @@ const ATTENDUS = [
 ] as const;
 
 describe('index des composants', () => {
-  it('exporte les trente-cinq composants du noyau', () => {
+  it('exporte les trente-quatre composants du noyau', () => {
     for (const nom of ATTENDUS) {
       expect(composants, `${nom} n'est pas exporte`).toHaveProperty(nom);
       expect(typeof composants[nom], `${nom} n'est pas un composant`).toBe('function');

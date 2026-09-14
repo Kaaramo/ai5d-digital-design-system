@@ -263,8 +263,8 @@ describe('garde 6 - aucun espacement en dur', () => {
    * mecanique : un bandeau de 14 px de rembourrage devient plus haut a 16. Ils sont donc permis,
    * mais listes, et `exceptionsEspacementPerimees` refuse toute entree qui ne designe plus rien.
    *
-   * Plusieurs disparaitront avec la tache 7 du sprint 17 (`GabaritPortail` retire, `GabaritAuth`
-   * repris) : la garde de peremption obligera alors a les retirer d ici.
+   * L entree de `GabaritPortail` a disparu avec lui a la tache 7 du sprint 17 : c est la garde de
+   * peremption qui l a exige, et c est exactement ce qu elle est la pour faire.
    */
   const HORS_ECHELLE: Record<string, string[]> = {
     // Le rembourrage vertical du bandeau, et deux alignements optiques de l icone et du titre.
@@ -281,8 +281,6 @@ describe('garde 6 - aucun espacement en dur', () => {
     'noyau/composants/Champ.tsx': ['6px'],
     // La marge du panneau d authentification sur telephone.
     'noyau/composants/GabaritAuth.tsx': ['40px'],
-    // L ecart entre les lignes de la navigation du portail.
-    'noyau/composants/GabaritPortail.tsx': ['2px'],
     // Le trait actif qui recouvre la bordure : un chevauchement, pas un espacement.
     'noyau/composants/OngletsRubrique.tsx': ['-1px'],
     // Le controle segmente du theme : trois segments qui se touchent dans un groupe serre.

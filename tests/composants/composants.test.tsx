@@ -610,6 +610,27 @@ describe('GabaritAuth', () => {
     expect(screen.getByLabelText('Adresse professionnelle')).toBeInTheDocument();
   });
 
+  it('detache le panneau du fond en sombre, et seulement en sombre', () => {
+    /*
+      En sombre, `--encre` n est redefini nulle part : panneau et page mesuraient 1,05 de rapport de
+      contraste, c est-a-dire rien. Le panneau prend `--surface-3` et un filet sur le bord qui
+      touche le formulaire, sous les trois selecteurs de theme du systeme. Le clair ne bouge pas.
+    */
+    const { container } = render(<GabaritAuth>contenu</GabaritAuth>);
+    const style = container.querySelector('style')?.textContent ?? '';
+
+    const bureau = style.slice(style.indexOf(`@media (min-width: ${BASCULE_DEUX_COLONNES}px)`));
+    expect(bureau).toMatch(
+      /prefers-color-scheme: dark\)\s*\{\s*:root:not\(\[data-theme='light'\]\) \.ai5d-auth__panneau \{[^}]*--surface-3[^}]*border-left: 1px solid var\(--bordure-forte\)/,
+    );
+    expect(bureau).toMatch(
+      /:root\[data-theme='dark'\] \.ai5d-auth__panneau \{[^}]*--surface-3[^}]*--bordure-forte/,
+    );
+
+    // Le clair garde son encre, sans filet.
+    expect(bureau).toMatch(/\.ai5d-auth__panneau \{[^}]*background: var\(--encre\)/);
+  });
+
   it('masque le panneau aux lecteurs d ecran : il ne porte rien de neuf', () => {
     const { container } = render(<GabaritAuth phrase="Une phrase.">contenu</GabaritAuth>);
     expect(container.querySelector('aside')).toHaveAttribute('aria-hidden', 'true');
