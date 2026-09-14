@@ -1,5 +1,5 @@
 /**
- * Les trente composants de base du noyau.
+ * Les trente-quatre composants de base du noyau.
  *
  * Ils ne dépendent d'aucun framework de style : leurs styles passent par les variables
  * CSS du noyau, de sorte qu'un projet qui n'utiliserait pas Tailwind les rend
@@ -80,6 +80,23 @@ export { LiensRail, STYLE_LIENS_RAIL } from './LiensRail';
 export type { ComposantLien, ProprietesLiensRail } from './LiensRail';
 
 export { RechargeAuRetour } from './RechargeAuRetour';
+
+export { GabaritDocument, STYLE_DOCUMENT } from './GabaritDocument';
+export type { ProprietesGabaritDocument } from './GabaritDocument';
+export { SommaireDocument } from './SommaireDocument';
+export { BlocDocument } from './BlocDocument';
+export { DeplierDocument } from './DeplierDocument';
+export type {
+  Bloc,
+  BlocEncart,
+  BlocListe,
+  BlocParagraphe,
+  BlocSousTitre,
+  BlocTableau,
+  Document,
+  EnteteDocument,
+  Section,
+} from './document';
 
 export { GabaritPortail } from './GabaritPortail';
 export type { ProprietesGabaritPortail } from './GabaritPortail';

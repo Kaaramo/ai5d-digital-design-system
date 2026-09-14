@@ -8,6 +8,7 @@ const index = readFileSync(`${DOSSIER}/index.ts`, 'utf8');
 const ATTENDUS = [
   'Avatar',
   'Bandeau',
+  'BlocDocument',
   'BarreOnglets',
   'BoiteConfirmation',
   'BoiteMotif',
@@ -17,12 +18,14 @@ const ATTENDUS = [
   'Champ',
   'Chiffre',
   'CoquilleRail',
+  'DeplierDocument',
   'Embleme',
   'EnteteCarte',
   'EnteteRubrique',
   'EtatVide',
   'GabaritApp',
   'GabaritAuth',
+  'GabaritDocument',
   'GabaritPortail',
   'GabaritSeuil',
   'GrilleCartes',
@@ -34,12 +37,13 @@ const ATTENDUS = [
   'PastilleEtat',
   'RechargeAuRetour',
   'SigneAnime',
+  'SommaireDocument',
   'Squelette',
   'TempsRelatif',
 ] as const;
 
 describe('index des composants', () => {
-  it('exporte les trente composants du noyau', () => {
+  it('exporte les trente-quatre composants du noyau', () => {
     for (const nom of ATTENDUS) {
       expect(composants, `${nom} n'est pas exporte`).toHaveProperty(nom);
       expect(typeof composants[nom], `${nom} n'est pas un composant`).toBe('function');
