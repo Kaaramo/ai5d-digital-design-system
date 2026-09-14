@@ -1,0 +1,41 @@
+name: Qualité
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Lecture seule : la verification n ecrit rien, ni sur le depot, ni sur ses etiquettes.
+permissions:
+  contents: read
+
+# Le systeme n avait AUCUNE integration continue jusqu a la 1.0.0. Ses quatre commandes passaient sur
+# le poste de qui poussait, et nulle part ailleurs : une poussee faite sans les lancer arrivait
+# telle quelle dans chaque produit qui montait d etiquette. Sur le modele de celle de la plateforme.
+jobs:
+  qualite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # Verrouillee : le verrou fait foi, et une installation qui le reecrirait masquerait une
+      # dependance montee sans que personne l ait decide.
+      - run: pnpm install --frozen-lockfile
+
+      # L audit, REPORTE ET NON BLOQUANT, pour la meme raison que sur la plateforme : les
+      # vulnerabilites connues du jour sont dans l outillage de test (vitest, vite, esbuild), qui ne
+      # part pas avec le paquet. Une etape rouge des le premier jour pour une menace qui ne sort pas
+      # du poste serait desactivee, et une garde desactivee disparait. La montee de vitest la rendra
+      # bloquante : retirer alors `continue-on-error`.
+      - run: pnpm audit --audit-level high
+        continue-on-error: true
+
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm test

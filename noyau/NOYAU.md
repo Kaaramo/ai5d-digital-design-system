@@ -105,22 +105,89 @@ overlines.
 
 ---
 
-## 3. Les douze composants
+## 3. Les 34 composants
 
-| Composant      | Ce qu'il garantit                                                                                                                                                                                                                                                                                                      |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Logotype`     | Le « 5 » incliné à -5° et bleu, **dans toutes les variantes**. Interdit de la charte mère : ne jamais le redresser, ne jamais le recolorer                                                                                                                                                                             |
-| `Bouton`       | Quatre variantes, trois tailles, hauteur pilotée par la densité, plancher tactile respecté, `aria-busy` en chargement                                                                                                                                                                                                  |
-| `Champ`        | Libellé **toujours** lié par `htmlFor`, aide et erreur reliées par `aria-describedby`, erreur jamais portée par la seule couleur                                                                                                                                                                                       |
-| `Carte`        | Padding piloté par la densité. Rend un `<button>` quand elle est cliquable, jamais une `<div>` avec un gestionnaire de clic                                                                                                                                                                                            |
-| `Bandeau`      | Une icône **et** un texte. `role="alert"` pour attention et erreur, `role="status"` pour le reste                                                                                                                                                                                                                      |
-| `Pastille`     | Un état compact, qui contient toujours du texte                                                                                                                                                                                                                                                                        |
-| `Icone`        | Lucide, contour, épaisseur **1,75**. Décorative par défaut, accessible seulement si on lui donne un titre                                                                                                                                                                                                              |
-| `GabaritAuth`  | Le gabarit d'authentification. Colonne unique sous 1024 px, deux colonnes au-delà. Chaque valeur est mesurée                                                                                                                                                                                                           |
-| `GabaritApp`   | La coquille d'application : en-tête collant, contenu défilant, barre d'onglets. Il réserve la hauteur de la barre sous le contenu                                                                                                                                                                                      |
-| `BarreOnglets` | La navigation basse. Trois à cinq onglets, icône **et** mot, zone sûre réservée, disparaît à partir de 768 px                                                                                                                                                                                                          |
-| `CoquilleRail` | La coquille des écrans à rubriques. Rail de 240 px en tablette, 280 px sur bureau, barre basse sous 768 px ; mode `bureau-seulement` pour une console. La navigation arrive en emplacements, rendus par le produit avec `LiensRail` et `BarreOnglets`. Remplace `GabaritPortail`, retiré au sprint 17 sans avoir servi |
-| `CarteAction`  | Le motif « une carte, une action ». Pastille d'icône, titre, description, bouton qui **nomme sa destination**                                                                                                                                                                                                          |
+Neuf familles. Le nombre et les noms sont vérifiés par `tests/documentation.test.ts` : chaque fichier
+de `composants/` doit figurer ici, et le nombre de ce titre doit être celui des fichiers.
+
+### Marque
+
+| Composant  | Ce qu'il garantit                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Logotype` | Le « 5 » incliné à -5° et bleu, **dans toutes les variantes**. Interdit de la charte mère : ne jamais le redresser, ne jamais le recolorer |
+| `Embleme`  | L'emblème de compte, en cartouche ou nu. Le cartouche est celui du favicon, peint depuis des jetons                                        |
+| `Icone`    | Lucide, contour, épaisseur **1,75**. Décorative par défaut, accessible seulement si on lui donne un titre                                  |
+
+### Saisie et action
+
+| Composant | Ce qu'il garantit                                                                                                                |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `Bouton`  | Variantes, trois tailles, hauteur pilotée par la densité, plancher tactile respecté, `aria-busy` en chargement                   |
+| `Champ`   | Libellé **toujours** lié par `htmlFor`, aide et erreur reliées par `aria-describedby`, erreur jamais portée par la seule couleur |
+
+### États et signaux
+
+| Composant      | Ce qu'il garantit                                                                                 |
+| -------------- | ------------------------------------------------------------------------------------------------- |
+| `Pastille`     | Un état compact, qui contient toujours du texte                                                   |
+| `PastilleEtat` | Une `Pastille` précédée d'un point en `currentColor` : un état courant, et non une étiquette      |
+| `Bandeau`      | Une icône **et** un texte. `role="alert"` pour attention et erreur, `role="status"` pour le reste |
+| `TempsRelatif` | Un temps relatif calculé au client, la date absolue dans le HTML pour qui n'a pas de JavaScript   |
+| `Chiffre`      | Un chiffre, son libellé, et sa cible quand le produit en fixe une                                 |
+| `Avatar`       | La photo d'une personne, ou ses initiales. Une photo qui ne charge pas retombe sur les initiales  |
+
+### Contenu
+
+| Composant        | Ce qu'il garantit                                                                              |
+| ---------------- | ---------------------------------------------------------------------------------------------- |
+| `Carte`          | Padding piloté par la densité. Rend un `<button>` quand elle est cliquable, jamais une `<div>` |
+| `CarteAction`    | Le motif « une carte, une action » : bouton qui **nomme sa destination**                       |
+| `GrilleCartes`   | Une grille qui se règle sur la largeur disponible, par requête de conteneur                    |
+| `EnteteRubrique` | Icône encadrée, titre `h1`, intention alignée sur le titre, filet                              |
+| `EnteteCarte`    | Icône encadrée, titre `h2`, description, ton `danger` rare, emplacement à droite dans le flux  |
+| `EtatVide`       | Ce qui est vide, si c'est normal, et quoi faire : la commande dans son propre bloc             |
+
+### Coquilles
+
+| Composant      | Ce qu'il garantit                                                                                                                                                                                                 |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CoquilleRail` | La coquille des écrans à rubriques. Rail de 240 px en tablette, 280 px sur bureau, barre basse sous 768 px ; mode `bureau-seulement` pour une console. La navigation arrive en emplacements. Aucun import de Next |
+| `GabaritAuth`  | Le gabarit d'authentification. Colonne unique sous 1024 px, deux colonnes au-delà, panneau détaché du fond en sombre                                                                                              |
+| `GabaritApp`   | La coquille d'application : en-tête collant, contenu défilant, barre d'onglets. Il réserve la hauteur de la barre sous le contenu                                                                                 |
+| `GabaritSeuil` | L'écran qui occupe le chargement d'après connexion, avec la marque du produit en emplacement                                                                                                                      |
+
+### Navigation
+
+| Composant         | Ce qu'il garantit                                                                                                      |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `LiensRail`       | Les liens du rail. Reçoit la rubrique active et le lien du produit ; actif sur `--surface-selection`, `aria-current`   |
+| `BarreOnglets`    | La navigation basse. Trois à cinq onglets, icône **et** mot, zone sûre réservée, lien du produit, disparaît dès 768 px |
+| `OngletsRubrique` | Les sous-pages d'une rubrique. Des **liens**, jamais un `tablist` : la page change vraiment                            |
+| `SelecteurTheme`  | Clair, sombre, système, en groupe radio. Le cookie peut suivre la personne sur tout le domaine, avec `domaine`         |
+
+### Document
+
+| Composant          | Ce qu'il garantit                                                                                                            |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| `GabaritDocument`  | Bandeau, sommaire collé, sections numérotées. Sections fermées dans le HTML, visibles sur ordinateur par `::details-content` |
+| `SommaireDocument` | Les ancres du document, repliées sur téléphone, visibles sur ordinateur                                                      |
+| `BlocDocument`     | Cinq formes de bloc, pas une de plus. Un tableau défile dans son propre cadre, jamais la page                                |
+| `DeplierDocument`  | Pose l'état vrai des sections après l'hydratation : ouvertes sur ordinateur, la section visée sur téléphone                  |
+
+### Dialogues
+
+| Composant           | Ce qu'il garantit                                                                                 |
+| ------------------- | ------------------------------------------------------------------------------------------------- |
+| `BoiteConfirmation` | Un `<dialog>` natif. Document inerte, Échap annule, focus sur « Annuler » et rendu à l'ouverture  |
+| `BoiteMotif`        | Un motif obligatoire avant un geste d'exploitation. L'action est absente tant que le motif manque |
+
+### Attente et session
+
+| Composant          | Ce qu'il garantit                                                                                         |
+| ------------------ | --------------------------------------------------------------------------------------------------------- |
+| `Squelette`        | La forme de ce qui arrive, jamais celle de ce qui est déjà là                                             |
+| `SigneAnime`       | La marque entourée de deux anneaux contrarotatifs ; l'emplacement porte la taille de la marque            |
+| `RechargeAuRetour` | Redemande la page quand le navigateur la ressort de son cache : aucune identité visible après déconnexion |
 
 `GabaritAuth` est dans le noyau et non dans l'écosystème parce que tout produit peut avoir à
 afficher un écran de session expirée, même si le portail Compte porte l'essentiel des flux.

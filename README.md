@@ -2,7 +2,7 @@
 
 <img src="https://capsule-render.vercel.app/api?type=rect&color=0:051C2C,100:2251FF&height=200&section=header&text=AI5D%20Design%20System&fontSize=52&fontColor=ffffff&fontAlignY=42&animation=fadeIn&desc=Le%20syst%C3%A8me%20de%20design%20applicatif%20de%20l%27%C3%A9cosyst%C3%A8me%20AI5D&descSize=18&descAlignY=62" width="100%" alt="AI5D Design System" />
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1200&color=2251FF&center=true&vCenter=true&width=720&lines=M%C3%AAme+ADN.+Quatre+densit%C3%A9s.;La+marque+d%C3%A9cide%2C+le+syst%C3%A8me+ex%C3%A9cute.;44+contrastes+recalcul%C3%A9s+%C3%A0+chaque+build." alt="Positionnement" />
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1200&color=2251FF&center=true&vCenter=true&width=720&lines=M%C3%AAme+ADN.+Quatre+densit%C3%A9s.;La+marque+d%C3%A9cide%2C+le+syst%C3%A8me+ex%C3%A9cute.;Une+coquille%2C+tous+les+produits." alt="Positionnement" />
 
 <br/>
 
@@ -12,10 +12,9 @@
 ![Vitest](https://img.shields.io/badge/Vitest-051C2C?style=for-the-badge&logo=vitest&logoColor=white)
 ![pnpm](https://img.shields.io/badge/pnpm-051C2C?style=for-the-badge&logo=pnpm&logoColor=white)
 
-![Version](https://img.shields.io/badge/version-0.8.0-2251FF?style=flat-square&labelColor=051C2C)
-![Tests](https://img.shields.io/badge/tests-192%20passent-0E7C5A?style=flat-square&labelColor=051C2C)
-![Contraste](https://img.shields.io/badge/contraste-44%20paires%20v%C3%A9rifi%C3%A9es-0E7C5A?style=flat-square&labelColor=051C2C)
-![Polices](https://img.shields.io/badge/polices-134%20Ko%20en%20local-2251FF?style=flat-square&labelColor=051C2C)
+![Version](https://img.shields.io/badge/version-1.0.0-2251FF?style=flat-square&labelColor=051C2C)
+![Composants](https://img.shields.io/badge/composants-34-2251FF?style=flat-square&labelColor=051C2C)
+![Licence](https://img.shields.io/badge/licence-tous%20droits%20r%C3%A9serv%C3%A9s-051C2C?style=flat-square&labelColor=051C2C)
 
 </div>
 
@@ -23,16 +22,13 @@
 
 ## Le problème
 
-AI5D a une marque, et elle est bonne. Ce qui manquait, c'est la couche entre cette marque
-et chaque produit : **le document qui dit une fois pour toutes ce que la marque accorde à
-une interface applicative**, par opposition à une page de communication.
+AI5D a une marque, et elle est bonne. Ce qui manquait, c'est la couche entre cette marque et chaque
+produit : **ce que la marque accorde à une interface applicative**, par opposition à une page de
+communication.
 
-Faute de cette couche, chaque produit re-dérivait la charte du précédent en réargumentant
-les mêmes décisions pour un usage différent. L'Académie l'a fait la première. Le portail de
-compte l'a fait ensuite. Le Cercle et le Lab l'auraient fait à leur tour.
-
-Et cette dérivation avait déjà produit des écarts que personne n'avait décidés. En mesurant
-les contrastes, on en a trouvé quatre :
+Faute de cette couche, chaque produit re-dérivait la charte du précédent. L'Académie l'a fait la
+première, Compte ensuite. Et cette dérivation avait déjà produit des écarts que personne n'avait
+décidés. En mesurant les contrastes, on en a trouvé quatre :
 
 <div align="center">
 
@@ -49,8 +45,8 @@ Aucun de ces défauts n'était visible à la lecture. Tous étaient en productio
 
 ## La solution
 
-Un système de design **consommé**, jamais recopié. Un produit l'installe, choisit sa
-densité, et ne décide plus aucune couleur.
+Un système de design **consommé**, jamais recopié. Un produit l'installe, choisit sa densité, et ne
+décide plus aucune couleur, aucun espacement, aucune coquille.
 
 ```ts
 import '@ai5d/design-system/preset';
@@ -60,13 +56,38 @@ import '@ai5d/design-system/preset';
 <html lang="fr" data-densite="equilibre"></html>
 ```
 
-Deux lignes. C'est toute l'adoption.
+## Installation
+
+Le dépôt est **public**, et n'est pas publié sur un registre. On l'installe depuis Git, **épinglé à
+une étiquette**, jamais à une branche :
+
+```json
+"@ai5d/design-system": "github:Kaaramo/ai5d-digital-design-system#v1.0.0",
+"lucide-react": "^1.0.0"
+```
+
+puis `pnpm install`. Écrivez la dépendance à la main : `pnpm add` installe la bonne version mais
+retire l'étiquette du manifeste, et elle doit rester visible pour rester intentionnelle.
+
+**`lucide-react` est une dépendance de pair.** Le système ne l'embarque pas : deux copies de la
+bibliothèque d'icônes dans un même produit donneraient deux familles de tracés et un paquet deux
+fois plus lourd. Le produit la déclare, en `^1.0.0`.
+
+Le paquet livre du TypeScript et du JSX non transpilés. Sous Next.js :
+
+```ts
+// next.config.ts
+transpilePackages: ['@ai5d/design-system'],
+```
+
+L'épinglage est une règle et non une précaution. Sans lui, une correction de jeton arriverait dans
+un produit au prochain `pnpm install`, sans que personne l'ait décidé, et une correction de jeton
+change le rendu de tous les écrans.
 
 ## Les deux registres
 
-Ce ne sont pas deux marques. C'est une marque et deux problèmes de design : on **visite**
-un site trois minutes en position de jugement, on **habite** une application quarante
-minutes d'affilée.
+Ce ne sont pas deux marques. C'est une marque et deux problèmes de design : on **visite** un site
+trois minutes, on **habite** une application quarante minutes d'affilée.
 
 <div align="center">
 
@@ -83,8 +104,7 @@ minutes d'affilée.
 
 ## Les quatre densités
 
-Même palette, mêmes typographies, mêmes composants, même langage graphique. Seule varie la
-densité fonctionnelle.
+Même palette, mêmes typographies, mêmes composants. Seule varie la densité fonctionnelle.
 
 <div align="center">
 
@@ -97,10 +117,83 @@ densité fonctionnelle.
 
 </div>
 
-Deux règles les rendent inoffensives. **La densité change l'espace entre les choses, jamais
-la taille du texte** — sans quoi le profil compact devient illisible en six mois. Et **le
-plancher tactile de 44 px prime sur les quatre profils**, exprimé une seule fois en requête
-média plutôt qu'écran par écran.
+Deux règles les rendent inoffensives. **La densité change l'espace entre les choses, jamais la
+taille du texte**, sans quoi le profil compact devient illisible en six mois. Et **le plancher
+tactile de 44 px prime sur les quatre profils**, exprimé une seule fois en requête média.
+
+## Les 34 composants
+
+Neuf familles. Le détail de ce que chacun garantit est dans [`noyau/NOYAU.md`](noyau/NOYAU.md).
+
+<div align="center">
+
+| Famille                | Composants                                                                               |
+| :--------------------- | :--------------------------------------------------------------------------------------- |
+| **Marque**             | `Logotype` · `Embleme` · `Icone`                                                         |
+| **Saisie et action**   | `Bouton` · `Champ`                                                                       |
+| **États et signaux**   | `Pastille` · `PastilleEtat` · `Bandeau` · `TempsRelatif` · `Chiffre` · `Avatar`          |
+| **Contenu**            | `Carte` · `CarteAction` · `GrilleCartes` · `EnteteRubrique` · `EnteteCarte` · `EtatVide` |
+| **Coquilles**          | `CoquilleRail` · `GabaritAuth` · `GabaritApp` · `GabaritSeuil`                           |
+| **Navigation**         | `LiensRail` · `BarreOnglets` · `OngletsRubrique` · `SelecteurTheme`                      |
+| **Document**           | `GabaritDocument` · `SommaireDocument` · `BlocDocument` · `DeplierDocument`              |
+| **Dialogues**          | `BoiteConfirmation` · `BoiteMotif`                                                       |
+| **Attente et session** | `Squelette` · `SigneAnime` · `RechargeAuRetour`                                          |
+
+</div>
+
+```tsx
+import { CoquilleRail, LiensRail, BarreOnglets } from '@ai5d/design-system/composants';
+import { themeOuSysteme, attributTheme } from '@ai5d/design-system/theme';
+```
+
+**Le système ne connaît aucun cadriciel.** Aucun composant n'importe Next. La coquille reçoit sa
+navigation en emplacements : chaque produit écrit un module client d'une vingtaine de lignes qui lit
+son chemin et rend `LiensRail` et `BarreOnglets` avec son propre composant de lien. C'est la seule
+pièce de coquille qui reste dans un produit.
+
+Les composants ne dépendent d'aucun framework de style : leurs styles passent par les variables
+CSS, si bien qu'un projet sans Tailwind les rend correctement.
+
+## Les gardes
+
+Six vérifications livrées par le système, à brancher dans l'intégration continue de chaque produit.
+Elles remplacent la discipline humaine, celle qui a produit les quatre écarts du tableau plus haut.
+
+```ts
+import { decrire, verifierAucunEspacementEnDur } from '@ai5d/design-system/gardes';
+```
+
+| Garde                                | Ce qu'elle empêche                                                  |
+| :----------------------------------- | :------------------------------------------------------------------ |
+| `verifierAucuneCouleurEnDur`         | Qu'un écran décide une couleur dans son coin                        |
+| `verifierAucunJetonDeMarqueRedefini` | Qu'un produit dérive la marque en surchargeant `--marque-*`         |
+| `verifierPlancherTactile`            | Qu'un profil dense casse l'accessibilité tactile                    |
+| `verifierAucuneLargeurFixe`          | Qu'une largeur figée empêche une page de descendre sur un téléphone |
+| `verifierHauteurDeVueDynamique`      | Qu'un `100vh` se fasse couper par la barre d'adresse mobile         |
+| `verifierAucunEspacementEnDur`       | Qu'un espacement en pixels ignore l'échelle et les densités         |
+
+La dernière admet une liste de valeurs **hors échelle**, nommées fichier par fichier : un écart de
+2 px qu'aucun jeton n'offre est une décision de dessin, pas une faute. Une valeur que l'échelle
+offre, elle, n'a aucune excuse, et une exception qui ne désigne plus rien est refusée.
+
+Le système se les applique d'abord à lui-même. Et le contraste de chaque jeton sémantique est
+recalculé à chaque exécution des tests, contre toutes les surfaces où il a le droit d'apparaître.
+
+## Trois règles qui ne se voient pas dans le code
+
+**Le deuxième consommateur.** Un composant monte dans le système quand un deuxième produit en a
+besoin, pas avant. `GabaritPortail` a été écrit avant tout usage réel, avec une forme fausse, et
+aucun produit ne l'a employé : il a été retiré en `1.0.0`. La coquille à rail qui le remplace est
+celle de Compte, montée le jour où AI5D Portail en a demandé une.
+
+**Le fond est peint par le produit.** Le système peint le fond de ses coquilles, pas celui du
+`body`. Un produit pose `background: var(--surface-1)` sur son `body`, une fois. Compte l'a appris
+à ses dépens, décision 022 : des pages sans coquille restaient sur le blanc du navigateur, et le
+texte clair du thème sombre y devenait illisible.
+
+**L'écosystème vit dans le SDK.** Les composants qui lisent la session ou les droits (menu de
+compte, sélecteur d'organisation, accès refusé) n'appartiennent pas à ce dépôt. Ils vivent dans
+`@ai5d/auth/react`, qui les construit sur les composants d'ici. Voir la décision 004.
 
 ## Comment c'est construit
 
@@ -112,156 +205,47 @@ flowchart TD
 
     subgraph Systeme["ai5d-digital-design-system"]
         direction TB
-        Noyau["<b>noyau/</b><br/>jetons · polices · paliers<br/>11 composants<br/>iconographie · voix"]
+        Noyau["<b>noyau/</b><br/>jetons · polices · paliers · thème<br/>composants · voix"]
         Densites["<b>densites/</b><br/>4 profils · plancher tactile"]
-        Eco["<b>ecosysteme/</b><br/>lockups · courriels · écrans système"]
-        Noyau --- Densites --- Eco
+        Gardes["<b>gardes/</b><br/>6 vérifications distribuées"]
+        Noyau --- Densites --- Gardes
     end
 
-    Systeme --> Academie["AI5D Académie<br/><i>aere</i>"]
-    Systeme --> Compte["AI5D Compte<br/><i>equilibre</i>"]
-    Systeme --> Cercle["AI5D Cercle<br/><i>modere</i>"]
-    Systeme --> Lab["AI5D Lab<br/><i>compact</i>"]
+    Systeme --> SDK["@ai5d/auth/react<br/><i>la couche écosystème</i>"]
+    Systeme --> Compte["AI5D Compte"]
+    Systeme --> Portail["AI5D Portail"]
+    SDK --> Compte
+    SDK --> Portail
 
     style Marque fill:#051C2C,color:#fff,stroke:#2251FF,stroke-width:2px
     style Noyau fill:#2251FF,color:#fff,stroke:none
     style Densites fill:#1B44DB,color:#fff,stroke:none
-    style Eco fill:#42536b,color:#fff,stroke:none,stroke-dasharray:4
-    style Academie fill:#0E7C5A,color:#fff,stroke:none
+    style Gardes fill:#1B44DB,color:#fff,stroke:none
+    style SDK fill:#42536b,color:#fff,stroke:none
     style Compte fill:#0E7C5A,color:#fff,stroke:none
-    style Cercle fill:#42536b,color:#fff,stroke:none
-    style Lab fill:#42536b,color:#fff,stroke:none
+    style Portail fill:#0E7C5A,color:#fff,stroke:none
 ```
 
-La relation à la marque est **à sens unique**. Le noyau importe les six jetons de marque
-depuis leur source institutionnelle et ne les redéfinit jamais. Un test relit la source à
-chaque exécution et échoue si la copie a dérivé.
-
-Les trois couches n'ont pas le même rythme de vie, et c'est la raison du découpage : les
-écarts constatés venaient de ce que le noyau et les libertés étaient mélangés dans un même
-document. **Quand tout se discute, tout dérive.**
-
-<details>
-<summary><b>Ce que porte chaque couche, et à quel rythme elle change</b></summary>
-
-<br/>
-
-| Couche        | Contenu                                                                  | Change                                      |
-| :------------ | :----------------------------------------------------------------------- | :------------------------------------------ |
-| `noyau/`      | Jetons, polices, paliers, 11 composants, iconographie, voix, mode sombre | Presque jamais. Le toucher est un événement |
-| `densites/`   | Quatre profils, un tableau, aucune prose                                 | Seulement si un produit s'ajoute            |
-| `ecosysteme/` | Lockups produit, composants inter-produits, courriels, écrans système    | Au rythme des produits                      |
-
-Une brique d'écosystème ne se construit **que quand un deuxième produit la demande**. C'est
-la règle de gouvernance du dépôt, et elle explique pourquoi cette couche est encore vide.
-
-</details>
-
-## Les gardes
-
-Cinq vérifications livrées par le système, exécutées par **chaque projet consommateur**
-dans son intégration continue. Elles remplacent la discipline humaine — celle qui a produit
-les quatre écarts du tableau plus haut.
-
-```ts
-import { decrire, verifierAucuneCouleurEnDur } from '@ai5d/design-system/gardes';
-```
-
-| Garde                                | Ce qu'elle empêche                                                  |
-| :----------------------------------- | :------------------------------------------------------------------ |
-| `verifierAucuneCouleurEnDur`         | Qu'un écran décide une couleur dans son coin                        |
-| `verifierAucunJetonDeMarqueRedefini` | Qu'un produit dérive la marque en surchargeant `--marque-*`         |
-| `verifierPlancherTactile`            | Qu'un profil dense casse l'accessibilité tactile                    |
-| `verifierAucuneLargeurFixe`          | Qu'une largeur figée empêche une page de descendre sur un téléphone |
-| `verifierHauteurDeVueDynamique`      | Qu'un `100vh` se fasse couper par la barre d'URL mobile             |
-
-Plus une sixième, propre au système : **le contraste de chaque jeton sémantique est
-recalculé à chaque exécution des tests**, contre toutes les surfaces où il a le droit
-d'apparaître, et le build échoue sous 4,5. Quarante-quatre paires, en clair et en sombre. C'est ce
-test qui aurait attrapé les quatre défauts des années plus tôt.
-
-## Les dix-neuf composants
-
-```tsx
-import { GabaritApp, BarreOnglets, CarteAction } from '@ai5d/design-system/composants';
-import { GabaritAuth, Logotype, Bouton, Champ } from '@ai5d/design-system/composants';
-```
-
-<details>
-<summary><b>Ce que chacun garantit</b></summary>
-
-<br/>
-
-| Composant         | Garantie                                                                                                                                                             |
-| :---------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Logotype`        | Le « 5 » incliné à -5° et bleu, **dans toutes les variantes**. Interdit de la charte mère : ne jamais le redresser, ne jamais le recolorer. Suit le thème par défaut |
-| `Bouton`          | Six variantes, trois tailles, hauteur pilotée par la densité, plancher tactile respecté, `aria-busy` en chargement                                                   |
-| `Champ`           | Libellé **toujours** lié par `htmlFor`, aide et erreur reliées par `aria-describedby`, erreur jamais portée par la seule couleur                                     |
-| `Carte`           | Padding piloté par la densité. Rend un `<button>` quand elle est cliquable, jamais une `<div>` avec un gestionnaire de clic                                          |
-| `Bandeau`         | Une icône **et** un texte. `role="alert"` pour attention et erreur, `role="status"` pour le reste                                                                    |
-| `Pastille`        | Un état compact, qui contient toujours du texte                                                                                                                      |
-| `Icone`           | Lucide, contour, épaisseur **1,75**. Décorative par défaut, accessible seulement si on lui donne un titre                                                            |
-| `GabaritAuth`     | Le gabarit d'authentification. Colonne unique sous 1024 px, deux colonnes au-delà. Chaque valeur est mesurée                                                         |
-| `GabaritApp`      | La coquille d'application : en-tête collant, contenu défilant, barre d'onglets. Il **réserve la hauteur de la barre sous le contenu**                                |
-| `BarreOnglets`    | La navigation basse. Trois à cinq onglets, icône **et** mot, zone sûre réservée, disparaît à partir de 768 px                                                        |
-| `CarteAction`     | Le motif « une carte, une action ». Pastille d'icône, titre, description, bouton qui **nomme sa destination**                                                        |
-| `OngletsRubrique` | Les sous-pages d'une rubrique. Des **liens**, jamais un `tablist` : la page change vraiment. État actif porté par la couleur, la graisse **et** le trait             |
-| `Avatar`          | La photo d'une personne, ou ses initiales. Une photo qui ne charge pas retombe sur les initiales, jamais sur un carré gris                                           |
-
-Les composants ne dépendent d'aucun framework de style : leurs styles passent par les
-variables CSS, si bien qu'un projet sans Tailwind les rend correctement.
-
-</details>
-
-## Installation
-
-Le dépôt est **public** et n'est pas publié sur un registre. On l'installe depuis Git,
-**épinglé à une étiquette** :
-
-```bash
-pnpm add "@ai5d/design-system@github:Kaaramo/ai5d-digital-design-system#v0.8.0"
-```
-
-Aucun jeton, aucune configuration : l'installation anonyme fonctionne, donc les serveurs de
-construction et de déploiement l'obtiennent comme votre poste. C'est la raison d'être de
-l'ouverture du dépôt : la couche technique n'est pas un secret, et la garder fermée coûtait
-un jeton à configurer dans chaque produit.
-
-L'épinglage, lui, reste une règle. Sans lui, une correction de jeton arriverait dans un
-produit au prochain `pnpm install`, sans que personne ne l'ait décidé, et une correction de
-jeton change le rendu de tous les écrans.
-
-> **Attention à une subtilité de pnpm.** La commande ci-dessus installe bien la bonne
-> version, mais pnpm **retire l'étiquette du `package.json`** en y écrivant l'URL seule. Le
-> verrou garde le bon commit, donc la construction reste reproductible. Pour que l'étiquette
-> reste visible et intentionnelle, écrivez la dépendance à la main :
->
-> ```json
-> "@ai5d/design-system": "github:Kaaramo/ai5d-digital-design-system#v0.8.0"
-> ```
->
-> puis `pnpm install`. Vérifié le 5 septembre 2026 avec pnpm 10.24.
-
-Le paquet livre du TypeScript et du JSX non transpilés, pour que le consommateur applique
-sa propre cible. Sous Next.js :
-
-```ts
-// next.config.ts
-transpilePackages: ['@ai5d/design-system'],
-```
+La relation à la marque est **à sens unique**. Le noyau importe les six jetons de marque depuis leur
+source institutionnelle et ne les redéfinit jamais. Un test relit la source à chaque exécution et
+échoue si la copie a dérivé.
 
 ## Commandes du dépôt
 
 ```bash
-pnpm test          # 192 tests, dont 44 mesures de contraste
-pnpm typecheck     # TypeScript strict, zéro any
+pnpm test          # tests, dont les mesures de contraste et la vérité de cette documentation
+pnpm typecheck     # TypeScript strict
 pnpm lint          # zéro erreur, zéro avertissement
 pnpm format:check  # Prettier
 
-pnpm polices       # récupère les 3 woff2, sous-ensemble latin
+pnpm polices       # récupère les woff2, sous-ensemble latin
 pnpm marque        # synchronise les 6 jetons depuis AI5D_Brand_2026
 pnpm specimens     # engendre specimens/composants.html
 ```
+
+Les nombres de tests ne sont pas écrits ici. Ils l'étaient, et ils étaient faux cinq versions plus
+tard : un nombre écrit à la main vieillit, un nombre lu vieillit avec son sujet. La version et le
+nombre de composants de ce README sont, eux, vérifiés par un test.
 
 <details>
 <summary><b>Structure du dépôt</b></summary>
@@ -272,100 +256,54 @@ pnpm specimens     # engendre specimens/composants.html
 ai5d-digital-design-system/
 ├── noyau/
 │   ├── NOYAU.md              le document du noyau
-│   ├── marque.css            généré — les 6 jetons de marque, préfixés
-│   ├── jetons.css            surfaces, texte, sémantiques, typo, géométrie
+│   ├── marque.css            généré : les 6 jetons de marque, préfixés
+│   ├── jetons.css            surfaces, texte, sémantiques, typographie, géométrie
 │   ├── paliers.css           marges, zones sûres, règles universelles du mobile
-│   ├── paliers.ts            les 6 constantes de largeur, auDela et enDeca
-│   ├── PALIERS.md            la doctrine mobile et ses 7 règles
+│   ├── paliers.ts            les constantes de largeur
+│   ├── theme.ts              clair, sombre, système, et le cookie qui les retient
 │   ├── ai5d.preset.css       bloc @theme Tailwind v4
-│   ├── formulations.md       le répertoire des formulations de référence
-│   ├── polices/              3 woff2 — Fraunces et Inter variables
-│   └── composants/           les 11 composants + index
-├── densites/
-│   ├── DENSITES.md
-│   └── profils.css           4 sélecteurs, 6 variables, plancher tactile
-├── gardes/                   les 5 vérifications distribuées
-├── outils/                   contraste WCAG · analyseur de jetons
-├── tests/                    248 tests
-├── specimens/                la preuve visuelle, 4 densités × 3 thèmes
-├── docs/
-│   ├── superpowers/specs/    la spécification
-│   ├── superpowers/plans/    le plan d'exécution
-│   ├── decisions/            une décision par arbitrage écarté
-│   └── preuves/              sorties de commandes et captures
-└── _build/                   récupération des polices, synchro, spécimens
+│   ├── formulations.md       les formulations de référence
+│   ├── polices/              woff2 locaux
+│   └── composants/           les composants et leur index
+├── densites/                 4 profils, plancher tactile
+├── gardes/                   les 6 vérifications distribuées
+├── outils/                   contraste WCAG, analyseur de jetons
+├── tests/
+├── specimens/                la preuve visuelle
+├── docs/decisions/           une décision par arbitrage écarté
+└── _build/                   polices, synchronisation, spécimens
 ```
 
 </details>
 
 ## Stack
 
-<div align="center">
-
-<img src="https://skillicons.dev/icons?i=ts,react,tailwind,vitest,nodejs,git" alt="Stack" />
-
-</div>
-
-TypeScript strict · React 19 · Tailwind v4 en CSS-first · Vitest et Testing Library ·
-Lucide · pnpm · Node 24. Les polices sont servies **en local, en woff2, sous-ensemble
-latin** — jamais depuis un CDN : une page d'authentification ne doit émettre aucune requête
-vers un tiers.
-
-## État
-
-**Lots 1 à 3 livrés** — noyau, densités, composants, gardes. La couche écosystème attend
-ses consommateurs.
-
-<details>
-<summary><b>Ce qui reste, et son déclencheur</b></summary>
-
-<br/>
-
-| Lot    | Contenu                                                    | Déclencheur                                              |
-| :----- | :--------------------------------------------------------- | :------------------------------------------------------- |
-| **L4** | Traçage des 36 SVG de marque, lockups `compte` et `cercle` | Quand un produit aura besoin de son jeu de logos complet |
-| **L5** | 5 composants inter-produits, 5 écrans système              | Sprint 03 du portail de compte                           |
-| **L6** | Gabarit de courriel transactionnel                         | Sprint 01 du portail de compte                           |
-| **L7** | Migration de l'Académie                                    | Après validation des lots 1 à 3                          |
-
-Les 28 SVG de marque qui contiennent du `<text>` dépendent aujourd'hui d'une police
-distante : dans un courriel ou un export PDF hors ligne, le wordmark AI5D se rend en Arial.
-Le traçage du lot 4 est un livrable, pas un raffinement.
-
-</details>
-
-<details>
-<summary><b>Ce qui n'est pas prouvé</b></summary>
-
-<br/>
-
-- L'absence d'appel réseau au chargement n'est vérifiée qu'au niveau du fichier `polices.css`,
-  pas dans l'onglet Réseau d'un navigateur.
-- Le rendu n'a été vu que sur Chrome, à une seule largeur.
-- Les quatre valeurs de densité sont dérivées de la charte Académie par raisonnement, et ne
-  sont éprouvées sur aucun écran de produit réel.
-
-Une liste honnête de ce qui reste à prouver vaut mieux qu'une conclusion trop large.
-
-</details>
+TypeScript strict · React 19 · Tailwind v4 en CSS · Vitest et Testing Library · Lucide en dépendance
+de pair · pnpm · Node 24. Les polices sont servies **en local** et jamais depuis un CDN : une page
+d'authentification ne doit émettre aucune requête vers un tiers.
 
 ## Documents
 
-| Document                                         | Ce qu'il porte                                                                    |
-| :----------------------------------------------- | :-------------------------------------------------------------------------------- |
-| [`noyau/NOYAU.md`](noyau/NOYAU.md)               | Les jetons avec leurs contrastes mesurés, la typographie, les composants, la voix |
-| [`noyau/PALIERS.md`](noyau/PALIERS.md)           | Mobile d'abord : les paliers, les 7 règles, la coquille d'application             |
-| [`densites/DENSITES.md`](densites/DENSITES.md)   | Le tableau et ses deux règles                                                     |
-| [`noyau/formulations.md`](noyau/formulations.md) | Les formulations de référence — anti-énumération, verrouillage, accès refusé      |
-| [`CHANGELOG.md`](CHANGELOG.md)                   | Une entrée par changement de jeton, avec sa raison                                |
-| [`docs/decisions/`](docs/decisions/)             | Les arbitrages, avec l'option écartée et pourquoi                                 |
+| Document                                         | Ce qu'il porte                                                             |
+| :----------------------------------------------- | :------------------------------------------------------------------------- |
+| [`noyau/NOYAU.md`](noyau/NOYAU.md)               | Les jetons et leurs contrastes, la typographie, les 34 composants, la voix |
+| [`noyau/PALIERS.md`](noyau/PALIERS.md)           | Mobile d'abord : les paliers, les règles, la coquille d'application        |
+| [`noyau/formulations.md`](noyau/formulations.md) | Les formulations de référence                                              |
+| [`CHANGELOG.md`](CHANGELOG.md)                   | Une entrée par changement, et le guide de migration vers `1.0.0`           |
+| [`docs/decisions/`](docs/decisions/)             | Les arbitrages, avec l'option écartée et pourquoi                          |
+
+## Licence
+
+Tous droits réservés, voir [`LICENSE`](LICENSE). Le dépôt est public pour que les produits et leurs
+serveurs de construction l'installent sans jeton ; il n'est pas ouvert à la réutilisation. C'est la
+même décision que pour `ai5d-auth`.
 
 ---
 
 <div align="center">
 
 <sub>Le registre institutionnel reste sous l'autorité de <code>AI5D_Brand_2026</code>.<br/>
-Ce dépôt ne décide que de l'applicatif — et il ne décide rien que la marque lui interdise.</sub>
+Ce dépôt ne décide que de l'applicatif, et il ne décide rien que la marque lui interdise.</sub>
 
 <img src="https://capsule-render.vercel.app/api?type=rect&color=0:2251FF,100:051C2C&height=100&section=footer" width="100%" alt="" />
 

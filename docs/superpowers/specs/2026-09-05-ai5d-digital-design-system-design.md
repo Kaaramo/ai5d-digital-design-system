@@ -1,5 +1,12 @@
 # SPEC — AI5D Digital Design System
 
+> **Note du 14 septembre 2026, version 1.0.0.** Ce texte est conservé tel qu'il a été écrit. Deux de
+> ses choix ont été remplacés depuis, et le dire vaut mieux que de le réécrire :
+> la coquille à rail et sa navigation en emplacements, voir
+> [`docs/decisions/003-la-coquille-monte.md`](../../decisions/003-la-coquille-monte.md) ;
+> la couche écosystème, qui ne vit pas dans ce dépôt mais dans `@ai5d/auth/react`, voir
+> [`docs/decisions/004-l-ecosysteme-vit-dans-le-sdk.md`](../../decisions/004-l-ecosysteme-vit-dans-le-sdk.md).
+
 **Projet :** `ai5d-digital-design-system`
 **Dépôt :** `github.com/Kaaramo/ai5d-digital-design-system` (privé)
 **Dossier local :** `F:i5d-design-system`

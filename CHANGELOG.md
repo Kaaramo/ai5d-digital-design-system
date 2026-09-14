@@ -7,6 +7,65 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 1.0.0 · 14 septembre 2026
+
+### Guide de migration
+
+Pour tout produit qui monte depuis `0.8.x`. Le tableau dit ce qui change, et le geste qu'il demande.
+
+| Changement                      | Geste du produit                                                                               |
+| ------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `GabaritPortail` retiré         | Passer à `CoquilleRail`, et écrire son module de navigation avec `LiensRail` et `BarreOnglets` |
+| `Rubrique` déplacé              | Rien, si l'import passe par `@ai5d/design-system/composants`                                   |
+| lucide en dépendance de pair    | Déclarer `lucide-react` en `^1.0.0` dans le produit                                            |
+| `BarreOnglets` accepte `Lien`   | Facultatif : passer le lien du cadriciel pour ne plus recharger le document                    |
+| Jeton `--surface-selection`     | Aucun                                                                                          |
+| Panneau sombre de `GabaritAuth` | Aucun                                                                                          |
+
+Un produit qui montait ses propres copies des pièces ci-dessous peut les retirer et importer
+celles du système : leurs interfaces sont celles de Compte, inchangées, sauf `SelecteurTheme` dont
+la propriété de départ s'appelle désormais `theme`.
+
+### La coquille à rail monte
+
+`CoquilleRail` remplace les deux coquilles que Compte portait en copies divergentes, le portail et la
+console. Deux modes, `complet` et `bureau-seulement`. Aucun import de Next : la navigation arrive en
+emplacements, rendus par un module client du produit. `LiensRail` rend le rail ; `BarreOnglets`
+reçoit le même composant de lien, et changer de rubrique sur un téléphone ne recharge plus le
+document. Voir la décision 003.
+
+### Les briques de page, les dialogues, le document, le thème
+
+- Six briques de page : `EnteteRubrique`, `EnteteCarte`, `EtatVide`, `PastilleEtat`, `TempsRelatif`,
+  `Chiffre`. `TempsRelatif` prend `--lettrage-overline` au lieu de `0.08em`.
+- `RechargeAuRetour`, la garde du retour arrière, montée par défaut par la coquille.
+- `BoiteConfirmation` et `BoiteMotif`, sur `<dialog>` natif : document inerte, Échap qui annule,
+  focus rendu à l'ouverture.
+- `GabaritDocument`, `SommaireDocument`, `BlocDocument`, `DeplierDocument`, et les types de document.
+- `noyau/theme.ts`, exposé par `@ai5d/design-system/theme`, et `SelecteurTheme`, dont le cookie peut
+  suivre la personne sur tout le domaine avec `domaine`.
+
+### Ce qui change à l'écran, et seulement cela
+
+Trois différences, voulues :
+
+1. le panneau de `GabaritAuth` se détache du fond en sombre (`--surface-3` et un filet
+   `--bordure-forte`), là où il mesurait 1,05 de contraste ;
+2. le lettrage du temps relatif, `0.06em` au lieu de `0.08em` ;
+3. l'état actif de la barre basse et du sélecteur de thème, qui prend `--surface-selection`.
+
+Aucune valeur de jeton existante ne change. Le seul jeton ajouté est `--surface-selection`.
+
+### Hygiène
+
+- Une sixième garde, `verifierAucunEspacementEnDur`, et sa liste de valeurs hors échelle nommées.
+  Dix-sept littéraux qui avaient leur jeton exact ont été convertis sans qu'aucun pixel bouge.
+- Le README est réécrit, et `tests/documentation.test.ts` confronte sa version, son nombre de
+  composants et ses gardes au code.
+- Intégration continue, licence (tous droits réservés, comme `ai5d-auth`), leçons, décisions 003 et 004.
+
+---
+
 ## 0.8.1 — 11 septembre 2026
 
 ### `SigneAnime` : l'emplacement de la marque porte sa taille
