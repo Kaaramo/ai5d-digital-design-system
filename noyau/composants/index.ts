@@ -1,5 +1,5 @@
 /**
- * Les vingt-huit composants de base du noyau.
+ * Les trente composants de base du noyau.
  *
  * Ils ne dépendent d'aucun framework de style : leurs styles passent par les variables
  * CSS du noyau, de sorte qu'un projet qui n'utiliserait pas Tailwind les rend
@@ -28,6 +28,9 @@ export type { ProprietesAvatar } from './Avatar';
 
 export { Bandeau } from './Bandeau';
 export type { ProprietesBandeau } from './Bandeau';
+
+export { BoiteConfirmation } from './BoiteConfirmation';
+export { BoiteMotif } from './BoiteMotif';
 
 export { BarreOnglets, HAUTEUR_BARRE_ONGLETS, ONGLETS_MAX, ONGLETS_MIN } from './BarreOnglets';
 export type { Onglet, ProprietesBarreOnglets } from './BarreOnglets';

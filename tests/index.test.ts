@@ -9,6 +9,8 @@ const ATTENDUS = [
   'Avatar',
   'Bandeau',
   'BarreOnglets',
+  'BoiteConfirmation',
+  'BoiteMotif',
   'Bouton',
   'Carte',
   'CarteAction',
@@ -37,7 +39,7 @@ const ATTENDUS = [
 ] as const;
 
 describe('index des composants', () => {
-  it('exporte les vingt-huit composants du noyau', () => {
+  it('exporte les trente composants du noyau', () => {
     for (const nom of ATTENDUS) {
       expect(composants, `${nom} n'est pas exporte`).toHaveProperty(nom);
       expect(typeof composants[nom], `${nom} n'est pas un composant`).toBe('function');
