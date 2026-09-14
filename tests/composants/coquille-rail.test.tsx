@@ -124,7 +124,10 @@ describe('CoquilleRail, la structure', () => {
         <p>Le contenu</p>
       </CoquilleRail>,
     );
-    expect(container.querySelector('.ai5d-coquille-rail__colonne')).not.toHaveAttribute('style');
+    // React laisse un `style=""` vide apres un nouveau rendu : c est la PROPRIETE qui compte.
+    expect(
+      (container.querySelector('.ai5d-coquille-rail__colonne') as HTMLElement).style.maxWidth,
+    ).toBe('');
   });
 
   it('porte la reserve basse en mode complet seulement', () => {
@@ -145,7 +148,11 @@ describe('CoquilleRail, la structure', () => {
         <p>Le contenu</p>
       </CoquilleRail>,
     );
-    expect(container.querySelector('[data-coquille="rail"]')).not.toHaveAttribute('style');
+    expect(
+      (container.querySelector('[data-coquille="rail"]') as HTMLElement).style.getPropertyValue(
+        '--reserve-barre',
+      ),
+    ).toBe('');
   });
 
   it('declare ses deux largeurs une fois, et les emploie aux deux paliers', () => {

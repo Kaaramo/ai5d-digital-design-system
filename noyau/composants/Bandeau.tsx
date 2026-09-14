@@ -58,7 +58,7 @@ export function Bandeau({
   const styleBandeau: CSSProperties = {
     display: 'flex',
     alignItems: 'flex-start',
-    gap: '12px',
+    gap: 'var(--espace-3)',
     padding: '14px var(--espace-4)',
     background: couleurs.fond,
     color: 'var(--texte)',

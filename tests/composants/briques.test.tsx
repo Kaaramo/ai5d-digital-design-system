@@ -108,8 +108,12 @@ describe('PastilleEtat', () => {
     const { container } = render(<PastilleEtat ton="attention">Inactive</PastilleEtat>);
     const point = container.querySelector('[aria-hidden="true"]');
     expect(point).toBeInTheDocument();
-    // `currentColor` : le point ne peut pas diverger de la pastille qui le porte.
-    expect(point).toHaveStyle({ background: 'currentColor' });
+    // `currentColor` : le point ne peut pas diverger de la pastille qui le porte. Verifie sur le
+    // code : le jsdom du systeme abandonne cette declaration sans le dire, et `toHaveStyle` ne voit
+    // alors qu un style vide.
+    expect(readFileSync('noyau/composants/PastilleEtat.tsx', 'utf8')).toContain(
+      "background: 'currentColor'",
+    );
   });
 });
 

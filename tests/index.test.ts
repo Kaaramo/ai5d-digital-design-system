@@ -124,15 +124,43 @@ describe('la frontiere serveur / client', () => {
     trouvait aucun fichier, et le test qui suit — celui qui vérifie qu'elle trouve quelque
     chose — est précisément ce qui l'a montré.
   */
-  const HOOKS = /use(State|Effect|Ref|Memo|Callback|Id|Reducer|Context|LayoutEffect)\s*\(/;
+  /*
+    UN CROCHET MAISON EST UN CROCHET.
+
+    La liste nommait les crochets de React. `BoiteConfirmation` appelle `useDialogueModal`, qui en
+    appelle deux : la garde n y voyait aucun crochet, et exigeait qu elle retire une directive dont
+    elle a besoin. Toute fonction qui commence par `use` et une capitale est un crochet, c est la
+    convention que React impose lui-meme.
+
+    Le parametre de type optionnel couvre `useState<Theme>(` : sans lui, `SelecteurTheme` passait
+    pour un composant sans etat, et la garde exigeait qu il retire sa directive.
+  */
+  const HOOKS = /use[A-Z]\w*\s*(<[^>]*>)?\s*\(/;
+
+  /*
+    LES COMMENTAIRES SONT RETIRES AVANT LA RECHERCHE.
+
+    Avec un motif large, le commentaire de `CoquilleRail` qui explique pourquoi elle NE lit PAS
+    `usePathname()` suffisait a la declarer cliente. Un commentaire a le droit de citer ce qu il
+    ecarte ; la garde lit le code.
+  */
+  function code(source: string): string {
+    return source
+      .replace(/\{\/\*[\s\S]*?\*\/\}/g, '')
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/^\s*\/\/.*$/gm, '');
+  }
 
   const fichiers = readdirSync(DOSSIER)
     .filter((f) => f.endsWith('.tsx'))
-    .map((f) => ({ nom: f, source: readFileSync(`${DOSSIER}/${f}`, 'utf8') }));
+    .map((f) => {
+      const source = readFileSync(`${DOSSIER}/${f}`, 'utf8');
+      return { nom: f, source, crochet: HOOKS.test(code(source)) };
+    });
 
   it('tout composant qui emploie un hook declare use client', () => {
-    for (const { nom, source } of fichiers) {
-      if (!HOOKS.test(source)) continue;
+    for (const { nom, source, crochet } of fichiers) {
+      if (!crochet) continue;
       expect(source.startsWith("'use client';"), `${nom} emploie un hook sans la directive`).toBe(
         true,
       );
@@ -142,7 +170,7 @@ describe('la frontiere serveur / client', () => {
   it('la garde porte sur quelque chose : au moins un composant emploie un hook', () => {
     // Sans ce test, le precedent passerait a vide le jour ou l expression reguliere cesse
     // de reconnaitre les hooks.
-    expect(fichiers.filter(({ source }) => HOOKS.test(source)).length).toBeGreaterThan(0);
+    expect(fichiers.filter(({ crochet }) => crochet).length).toBeGreaterThan(0);
   });
 
   it('les composants SANS etat restent utilisables par un composant serveur', () => {
@@ -153,8 +181,8 @@ describe('la frontiere serveur / client', () => {
       `Icone`, `Carte`, `Bandeau` et les gabarits sont rendus par des composants serveur dans
       le portail. La directive les en empecherait.
     */
-    for (const { nom, source } of fichiers) {
-      if (HOOKS.test(source)) continue;
+    for (const { nom, source, crochet } of fichiers) {
+      if (crochet) continue;
       expect(
         source.startsWith("'use client';"),
         `${nom} declare use client sans en avoir besoin`,
