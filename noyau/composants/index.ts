@@ -1,5 +1,5 @@
 /**
- * Les vingt-deux composants de base du noyau.
+ * Les vingt-huit composants de base du noyau.
  *
  * Ils ne dépendent d'aucun framework de style : leurs styles passent par les variables
  * CSS du noyau, de sorte qu'un projet qui n'utiliserait pas Tailwind les rend
@@ -36,6 +36,8 @@ export { Bouton } from './Bouton';
 export type { ProprietesBouton, TailleBouton, VarianteBouton } from './Bouton';
 
 export { Carte } from './Carte';
+
+export { Chiffre } from './Chiffre';
 export type { ProprietesCarte } from './Carte';
 
 export { CarteAction, TAILLE_PASTILLE_ICONE } from './CarteAction';
@@ -85,6 +87,13 @@ export type { ProprietesGrilleCartes } from './GrilleCartes';
 export { Champ, TAILLE_ICONE_CHAMP } from './Champ';
 export type { ProprietesChamp } from './Champ';
 
+export { EnteteCarte } from './EnteteCarte';
+export type { TonEnteteCarte } from './EnteteCarte';
+
+export { EnteteRubrique, TAILLE_CADRE_RUBRIQUE } from './EnteteRubrique';
+
+export { EtatVide } from './EtatVide';
+
 export { EPAISSEUR_TRAIT, Icone } from './Icone';
 export type { ProprietesIcone, TailleIcone } from './Icone';
 
@@ -95,6 +104,9 @@ export { Logotype } from './Logotype';
 export type { ProprietesLogotype, VarianteLogotype } from './Logotype';
 
 export { Pastille } from './Pastille';
+export { PastilleEtat } from './PastilleEtat';
+
+export { formaterTempsRelatif, TempsRelatif } from './TempsRelatif';
 
 /**
  * Les formes de l attente. Le systeme donne les formes, le produit compose ses pages :
