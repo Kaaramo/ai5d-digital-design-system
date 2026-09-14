@@ -77,7 +77,7 @@ const STYLE_CARTE = `
 .ai5d-carte-action__tete {
   display: flex; align-items: flex-start; justify-content: space-between;
   gap: var(--espace-3);
-  margin-bottom: 16px;
+  margin-bottom: var(--espace-4);
 }
 .ai5d-carte-action__pastille {
   display: flex; align-items: center; justify-content: center;

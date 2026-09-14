@@ -81,6 +81,11 @@
   --info: var(--action);
   --info-fond: #eaefff;
 
+  /* La pastille de la rubrique active. Aucun jeton existant ne tient dans les DEUX themes :
+     --info-fond fait 5,50 contre le rail en clair et 0,59 en sombre ; --surface-3 fait 5,05 en
+     sombre et 0,00 en clair. D'ou un jeton de ROLE, qui prend l'un ou l'autre selon le theme. */
+  --surface-selection: var(--info-fond);
+
   /* -----------------------------------------------------------------------
      Typographie. Fraunces signe, Inter travaille, JetBrains Mono identifie.
      Fraunces ne compose JAMAIS un paragraphe.
@@ -231,6 +236,7 @@
     --texte-sur-action: var(--encre);
     --info: var(--action-sur-sombre);
     --info-fond: #14203a;
+    --surface-selection: var(--surface-3);
 
     /* L'action s'eclaircit : c'est le seul jeton dont la valeur change entre les
        deux themes. Voir la note sur --action-sur-sombre plus haut. */
@@ -268,6 +274,7 @@
   --texte-sur-action: var(--encre);
   --info: var(--action-sur-sombre);
   --info-fond: #14203a;
+  --surface-selection: var(--surface-3);
 
   --action: var(--action-sur-sombre);
   --action-survol: #8ba1ff;
@@ -299,6 +306,7 @@
   --texte-sur-erreur: var(--blanc);
   --info: var(--action);
   --info-fond: #eaefff;
+  --surface-selection: var(--info-fond);
 
   --elevation-1: 0 1px 2px rgba(5, 28, 44, 0.06);
   --elevation-2: 0 4px 12px rgba(5, 28, 44, 0.08);

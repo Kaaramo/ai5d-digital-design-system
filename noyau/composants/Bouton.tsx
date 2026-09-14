@@ -193,7 +193,7 @@ const STYLE_BOUTON = `
 .ai5d-bouton__points {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--espace-1);
 }
 .ai5d-bouton__point {
   width: 4px;
@@ -256,7 +256,7 @@ export function Bouton({
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '8px',
+    gap: 'var(--espace-2)',
     height: HAUTEURS[taille],
     // Le plancher tactile s'applique deja sur --hauteur-controle ; on le rappelle
     // ici pour la taille sm, qui soustrait 8 px.

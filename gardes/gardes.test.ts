@@ -4,10 +4,12 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import {
   decrire,
+  exceptionsEspacementPerimees,
   JETONS_DE_MARQUE,
   PLANCHER_LARGEUR,
   PLANCHER_TACTILE,
   verifierAucuneCouleurEnDur,
+  verifierAucunEspacementEnDur,
   verifierAucuneLargeurFixe,
   verifierAucunJetonDeMarqueRedefini,
   verifierHauteurDeVueDynamique,
@@ -246,6 +248,106 @@ describe('garde 5 - hauteur de vue dynamique', () => {
     const racine = depotTemporaire();
     writeFileSync(join(racine, 'ecran.css'), '.a { width: 50vw; }\n.b { font-size: 4vmin; }\n');
     expect(verifierHauteurDeVueDynamique(racine)).toHaveLength(0);
+  });
+});
+
+describe('garde 6 - aucun espacement en dur', () => {
+  /**
+   * LES LITTERAUX HORS ECHELLE DU DEPOT, NOMMES UN PAR UN.
+   *
+   * Releve le 14 septembre 2026 : trente-deux litteraux d espacement dans les composants. Les
+   * dix-sept qui avaient leur jeton exact ont ete convertis, sans qu aucun pixel ne bouge : les
+   * profils de densite ne redefinissent pas l echelle. Restent ceux-ci, que l echelle n offre pas.
+   *
+   * Les convertir changerait le rendu, et c est une decision de dessin, pas une correction
+   * mecanique : un bandeau de 14 px de rembourrage devient plus haut a 16. Ils sont donc permis,
+   * mais listes, et `exceptionsEspacementPerimees` refuse toute entree qui ne designe plus rien.
+   *
+   * Plusieurs disparaitront avec la tache 7 du sprint 17 (`GabaritPortail` retire, `GabaritAuth`
+   * repris) : la garde de peremption obligera alors a les retirer d ici.
+   */
+  const HORS_ECHELLE: Record<string, string[]> = {
+    // Le rembourrage vertical du bandeau, et deux alignements optiques de l icone et du titre.
+    'noyau/composants/Bandeau.tsx': ['14px', '1px', '2px'],
+    // L ecart entre l icone et le libelle d un onglet de la barre basse, serre par la hauteur.
+    'noyau/composants/BarreOnglets.tsx': ['3px'],
+    // Le rembourrage horizontal du bouton : entre 16 et 24, ni l un ni l autre ne tient.
+    'noyau/composants/Bouton.tsx': ['20px'],
+    // Le surtitre colle au titre, et la respiration avant l action.
+    'noyau/composants/CarteAction.tsx': ['6px', '20px'],
+    // L etiquette colle a son champ.
+    'noyau/composants/Champ.tsx': ['6px'],
+    // La marge du panneau d authentification sur telephone.
+    'noyau/composants/GabaritAuth.tsx': ['40px'],
+    // L ecart entre les lignes de la navigation du portail.
+    'noyau/composants/GabaritPortail.tsx': ['2px'],
+    // Le trait actif qui recouvre la bordure : un chevauchement, pas un espacement.
+    'noyau/composants/OngletsRubrique.tsx': ['-1px'],
+    // La pastille : sa hauteur est celle d une ligne de texte, pas celle d un bloc.
+    'noyau/composants/Pastille.tsx': ['2px', '10px'],
+  };
+
+  it('ne releve aucune infraction dans le depot lui-meme', () => {
+    const infractions = verifierAucunEspacementEnDur('.', {
+      exceptions: EXCEPTIONS_DU_DEPOT,
+      horsEchelle: HORS_ECHELLE,
+    });
+    expect(infractions.length, `
+${decrire(infractions)}`).toBe(0);
+  });
+
+  it('ne garde aucune exception perimee', () => {
+    expect(exceptionsEspacementPerimees('.', HORS_ECHELLE)).toEqual([]);
+  });
+
+  it('releve un espacement en pixels, en CSS comme en objet de style', () => {
+    const racine = depotTemporaire();
+    writeFileSync(join(racine, 'Ecran.tsx'), "const s = { paddingTop: '12px' };
+.a { gap: 8px; }
+");
+    const infractions = verifierAucunEspacementEnDur(racine);
+    expect(infractions).toHaveLength(2);
+    expect(infractions[0]?.regle).toBe('aucun-espacement-en-dur');
+  });
+
+  it('laisse passer une remise a zero', () => {
+    const racine = depotTemporaire();
+    writeFileSync(join(racine, 'Ecran.tsx'), '.a { padding: 0px; margin: 0; }
+');
+    expect(verifierAucunEspacementEnDur(racine)).toEqual([]);
+  });
+
+  it('ne prend pas un trait pour un espacement', () => {
+    // Un motif qui chercherait `top` n importe ou refuserait `border-top`. Le plan du sprint 17
+    // proposait exactement ce motif : il aurait releve les bordures des composants comme des fautes.
+    const racine = depotTemporaire();
+    writeFileSync(
+      join(racine, 'Ecran.tsx'),
+      '.a { border-top: 1px solid red; border-bottom: 2px solid; outline-offset: 2px; }
+',
+    );
+    expect(verifierAucunEspacementEnDur(racine)).toEqual([]);
+  });
+
+  it('refuse d excuser une valeur que l echelle offre', () => {
+    // 16 px a son jeton : le declarer hors echelle serait un contournement nomme.
+    const racine = depotTemporaire();
+    writeFileSync(join(racine, 'Ecran.tsx'), '.a { gap: 16px; }
+');
+    const infractions = verifierAucunEspacementEnDur(racine, {
+      horsEchelle: { 'Ecran.tsx': ['16px'] },
+    });
+    expect(infractions).toHaveLength(1);
+    expect(exceptionsEspacementPerimees(racine, { 'Ecran.tsx': ['16px'] })).toHaveLength(1);
+  });
+
+  it('signale une exception qui ne designe plus rien', () => {
+    const racine = depotTemporaire();
+    writeFileSync(join(racine, 'Ecran.tsx'), '.a { gap: var(--espace-3); }
+');
+    expect(
+      exceptionsEspacementPerimees(racine, { 'Ecran.tsx': ['14px'], 'Disparu.tsx': ['2px'] }),
+    ).toHaveLength(2);
   });
 });
 

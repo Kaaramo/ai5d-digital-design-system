@@ -89,7 +89,7 @@ const STYLE_BARRE = `
   gap: 3px;
   height: ${HAUTEUR_BARRE_ONGLETS}px;
   min-height: var(--cible-tactile);
-  padding: 0 4px;
+  padding: 0 var(--espace-1);
   background: transparent; border: 0; cursor: pointer;
   color: var(--texte-faible);
   font-family: var(--police-corps);

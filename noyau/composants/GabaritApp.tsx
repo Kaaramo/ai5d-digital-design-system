@@ -58,13 +58,13 @@ const STYLE_APP = `
 }
 .ai5d-app__entete {
   position: sticky; top: 0; z-index: 30;
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--espace-3);
   height: calc(${HAUTEUR_ENTETE}px + var(--zone-sure-haute, 0px));
   padding: var(--zone-sure-haute, 0px) var(--marge-page) 0;
   background: var(--surface-2);
   border-bottom: 1px solid var(--bordure);
 }
-.ai5d-app__actions { display: flex; align-items: center; gap: 8px; }
+.ai5d-app__actions { display: flex; align-items: center; gap: var(--espace-2); }
 .ai5d-app__contenu {
   flex: 1 1 auto; min-width: 0;
   width: 100%;

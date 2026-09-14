@@ -59,7 +59,7 @@ export function Bandeau({
     display: 'flex',
     alignItems: 'flex-start',
     gap: '12px',
-    padding: '14px 16px',
+    padding: '14px var(--espace-4)',
     background: couleurs.fond,
     color: 'var(--texte)',
     border: `1px solid ${couleurs.texte}`,

@@ -249,6 +249,110 @@ export function verifierHauteurDeVueDynamique(
   );
 }
 
+/**
+ * Garde 6 - aucun espacement en pixels.
+ *
+ * Les cinq gardes voyaient les couleurs, les jetons de marque, le plancher tactile, les
+ * largeurs figees et la hauteur de vue. Aucune ne voyait un espacement. Releve le 14 septembre
+ * 2026, a l ecriture de cette garde : une trentaine de litteraux dans les composants du
+ * systeme, la ou le plan du sprint 17 en annoncait quatre. Un espacement en dur ignore
+ * l echelle et les profils de densite, et rien ne le signalait.
+ *
+ * ── CE QUI EST EXAMINE ──────────────────────────────────────────────────────
+ * Les proprietes d espacement, en CSS comme en objet de style : `padding`, `margin` et leurs
+ * cotes, `gap`, `row-gap`, `column-gap`, `inset`, et `top` `right` `bottom` `left` quand ils
+ * sont la propriete elle-meme. `border-top: 1px` n est PAS un espacement : c est un trait, et un
+ * motif qui chercherait `top` n importe ou le refuserait a tort.
+ *
+ * ── DEUX SORTES DE LITTERAL, UNE SEULE REGLE ────────────────────────────────
+ * `0px` est permis : c est une remise a zero, pas une mesure.
+ *
+ * Tout autre litteral est une infraction, SAUF s il figure dans `horsEchelle`. Cette liste est
+ * faite pour les valeurs que l echelle n offre pas (14 px, 20 px, un demi-pixel d alignement
+ * optique) : les convertir changerait le rendu, et c est une decision de dessin, pas une
+ * correction mecanique. Elles restent donc permises, mais NOMMEES, fichier par fichier.
+ *
+ * Une valeur que l echelle offre (4, 8, 12, 16, 24, 32, 48, 64) n a aucune excuse : le jeton
+ * existe. Elle ne peut pas figurer dans `horsEchelle`, et la garde le refuse.
+ */
+export interface OptionsEspacement extends OptionsGarde {
+  /** Les litteraux hors echelle admis, par fichier relatif : `{ 'noyau/composants/Bandeau.tsx': ['14px'] }`. */
+  horsEchelle?: Record<string, string[]>;
+}
+
+/** Les valeurs que l echelle d espacement offre. Un litteral egal a l une d elles est un contournement. */
+export const VALEURS_DE_L_ECHELLE = [4, 8, 12, 16, 24, 32, 48, 64];
+
+const PROPRIETE_ESPACEMENT =
+  /(?:^|[\s{;'"(,])(?:padding|margin|gap|row-?gap|column-?gap|inset|top|right|bottom|left)(?:-?(?:top|right|bottom|left|block|inline)(?:-?(?:start|end))?|Top|Right|Bottom|Left|Block|Inline)?['"]?\s*:\s*([^;,}\n]+)/gi;
+
+export function verifierAucunEspacementEnDur(
+  racine: string,
+  options: OptionsEspacement = {},
+): Infraction[] {
+  const horsEchelle = options.horsEchelle ?? {};
+  const infractions: Infraction[] = [];
+
+  for (const fichier of fichiersExamines(racine, options)) {
+    const admis = horsEchelle[fichier] ?? [];
+    const lignes = readFileSync(join(racine, fichier), 'utf8').split(/\r?\n/);
+
+    lignes.forEach((ligne, index) => {
+      const utile = sansCommentaire(ligne);
+      for (const trouve of utile.matchAll(PROPRIETE_ESPACEMENT)) {
+        for (const litteral of (trouve[1] ?? '').match(/-?\d+(?:\.\d+)?px/g) ?? []) {
+          if (/^-?0px$/.test(litteral)) continue;
+          const valeur = Math.abs(Number.parseFloat(litteral));
+          const surEchelle = VALEURS_DE_L_ECHELLE.includes(valeur);
+          if (!surEchelle && admis.includes(litteral)) continue;
+
+          infractions.push({
+            fichier,
+            ligne: index + 1,
+            extrait: `${litteral}${surEchelle ? ' (le jeton existe)' : ' (hors echelle, non declare)'} · ${ligne.trim().slice(0, 90)}`,
+            regle: 'aucun-espacement-en-dur',
+          });
+        }
+      }
+    });
+  }
+
+  return infractions;
+}
+
+/**
+ * Les exceptions declarees qui ne correspondent plus a rien.
+ *
+ * Une liste d exceptions pourrit : un composant disparait ou se corrige, et l exception reste,
+ * prete a couvrir le prochain litteral qui tombera sur la meme valeur. Celle-ci rend chaque
+ * entree qui ne designe plus aucun litteral present, ou qui designe une valeur de l echelle.
+ */
+export function exceptionsEspacementPerimees(
+  racine: string,
+  horsEchelle: Record<string, string[]>,
+): string[] {
+  const perimees: string[] = [];
+
+  for (const [fichier, valeurs] of Object.entries(horsEchelle)) {
+    let source = '';
+    try {
+      source = readFileSync(join(racine, fichier), 'utf8');
+    } catch {
+      perimees.push(`${fichier} : le fichier n existe plus`);
+      continue;
+    }
+    for (const valeur of valeurs) {
+      if (VALEURS_DE_L_ECHELLE.includes(Math.abs(Number.parseFloat(valeur)))) {
+        perimees.push(`${fichier} : ${valeur} est sur l echelle, le jeton existe`);
+      } else if (!source.includes(valeur)) {
+        perimees.push(`${fichier} : ${valeur} n y figure plus`);
+      }
+    }
+  }
+
+  return perimees;
+}
+
 /** Met en forme une liste d'infractions pour un message d'erreur lisible. */
 export function decrire(infractions: Infraction[]): string {
   if (infractions.length === 0) return 'Aucune infraction.';

@@ -70,7 +70,7 @@ const STYLE_GABARIT = `
 .ai5d-auth { display: flex; min-height: 100dvh; background: var(--surface-1); }
 .ai5d-auth__principal {
   display: flex; flex: 1 1 0; min-width: 0; flex-direction: column;
-  padding: 40px 16px;
+  padding: 40px var(--espace-4);
 }
 .ai5d-auth__colonne {
   display: flex; flex: 1 1 auto; flex-direction: column;
@@ -80,21 +80,21 @@ const STYLE_GABARIT = `
 .ai5d-auth__contenu { display: flex; flex: 1 1 auto; flex-direction: column; justify-content: center; }
 .ai5d-auth__panneau { display: none; }
 
-@media (min-width: 640px) { .ai5d-auth__principal { padding-left: 32px; padding-right: 32px; } }
+@media (min-width: 640px) { .ai5d-auth__principal { padding-left: var(--espace-8); padding-right: var(--espace-8); } }
 
 @media (min-width: 768px) {
-  .ai5d-auth__principal { justify-content: center; padding-top: 64px; padding-bottom: 64px; }
+  .ai5d-auth__principal { justify-content: center; padding-top: var(--espace-16); padding-bottom: var(--espace-16); }
   .ai5d-auth__contenu { display: block; flex: none; }
 }
 
 @media (min-width: ${BASCULE_DEUX_COLONNES}px) {
-  .ai5d-auth__principal { padding-left: 48px; padding-right: 48px; }
+  .ai5d-auth__principal { padding-left: var(--espace-12); padding-right: var(--espace-12); }
   .ai5d-auth__colonne { flex: none; }
   .ai5d-auth__marque-mobile { display: none; }
   .ai5d-auth__panneau {
     display: flex; flex-direction: column; justify-content: space-between;
     flex-shrink: 0; width: ${PART_PANNEAU}; max-width: ${LARGEUR_MAX_PANNEAU}px;
-    padding: 64px; background: var(--encre); color: var(--blanc);
+    padding: var(--espace-16); background: var(--encre); color: var(--blanc);
   }
 }
 `;
