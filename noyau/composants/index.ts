@@ -1,5 +1,5 @@
 /**
- * Les trente-quatre composants de base du noyau.
+ * Les trente-cinq composants de base du noyau.
  *
  * Ils ne dépendent d'aucun framework de style : leurs styles passent par les variables
  * CSS du noyau, de sorte qu'un projet qui n'utiliserait pas Tailwind les rend
@@ -148,6 +148,9 @@ export type { ProprietesSquelette } from './Squelette';
  * Le seuil post-authentification. Le systeme rend l ecran ; le produit pilote la navigation et
  * donne sa marque : c est la meme separation que pour la coquille.
  */
+export { memoriserTheme, SelecteurTheme, STYLE_SELECTEUR_THEME } from './SelecteurTheme';
+export type { ProprietesSelecteurTheme } from './SelecteurTheme';
+
 export { SigneAnime } from './SigneAnime';
 export type { ProprietesSigneAnime } from './SigneAnime';
 

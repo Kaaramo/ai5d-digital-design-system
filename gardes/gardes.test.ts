@@ -285,6 +285,8 @@ describe('garde 6 - aucun espacement en dur', () => {
     'noyau/composants/GabaritPortail.tsx': ['2px'],
     // Le trait actif qui recouvre la bordure : un chevauchement, pas un espacement.
     'noyau/composants/OngletsRubrique.tsx': ['-1px'],
+    // Le controle segmente du theme : trois segments qui se touchent dans un groupe serre.
+    'noyau/composants/SelecteurTheme.tsx': ['2px', '3px'],
     // La pastille : sa hauteur est celle d une ligne de texte, pas celle d un bloc.
     'noyau/composants/Pastille.tsx': ['2px', '10px'],
   };

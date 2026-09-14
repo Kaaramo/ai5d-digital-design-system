@@ -13,7 +13,8 @@
     "./densites/profils.css": "./densites/profils.css",
     "./composants": "./noyau/composants/index.ts",
     "./gardes": "./gardes/index.ts",
-    "./paliers": "./noyau/paliers.ts"
+    "./paliers": "./noyau/paliers.ts",
+    "./theme": "./noyau/theme.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
