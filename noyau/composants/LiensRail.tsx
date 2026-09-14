@@ -1,4 +1,4 @@
-import type { ComponentType, ReactNode } from 'react';
+import type { ComponentProps, ComponentType, ReactNode } from 'react';
 import type { Rubrique } from './CoquilleRail';
 import { Icone } from './Icone';
 
@@ -104,7 +104,7 @@ export const STYLE_LIENS_RAIL = `
 `;
 
 /** Le repli quand le produit ne fournit pas de composant de lien. */
-function LienDocument({ children, ...proprietes }: Parameters<ComposantLien>[0]) {
+function LienDocument({ children, ...proprietes }: ComponentProps<ComposantLien>) {
   return <a {...proprietes}>{children}</a>;
 }
 

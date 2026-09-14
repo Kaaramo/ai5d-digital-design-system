@@ -275,6 +275,8 @@ describe('garde 6 - aucun espacement en dur', () => {
     'noyau/composants/Bouton.tsx': ['20px'],
     // Le surtitre colle au titre, et la respiration avant l action.
     'noyau/composants/CarteAction.tsx': ['6px', '20px'],
+    // Le titre et sa description, serres : un en-tete de carte, pas deux paragraphes.
+    'noyau/composants/EnteteCarte.tsx': ['2px'],
     // L etiquette colle a son champ.
     'noyau/composants/Champ.tsx': ['6px'],
     // La marge du panneau d authentification sur telephone.
@@ -292,8 +294,11 @@ describe('garde 6 - aucun espacement en dur', () => {
       exceptions: EXCEPTIONS_DU_DEPOT,
       horsEchelle: HORS_ECHELLE,
     });
-    expect(infractions.length, `
-${decrire(infractions)}`).toBe(0);
+    expect(
+      infractions.length,
+      `
+${decrire(infractions)}`,
+    ).toBe(0);
   });
 
   it('ne garde aucune exception perimee', () => {
@@ -302,9 +307,10 @@ ${decrire(infractions)}`).toBe(0);
 
   it('releve un espacement en pixels, en CSS comme en objet de style', () => {
     const racine = depotTemporaire();
-    writeFileSync(join(racine, 'Ecran.tsx'), "const s = { paddingTop: '12px' };
-.a { gap: 8px; }
-");
+    writeFileSync(
+      join(racine, 'Ecran.tsx'),
+      "const s = { paddingTop: '12px' };\n.a { gap: 8px; }\n",
+    );
     const infractions = verifierAucunEspacementEnDur(racine);
     expect(infractions).toHaveLength(2);
     expect(infractions[0]?.regle).toBe('aucun-espacement-en-dur');
@@ -312,8 +318,7 @@ ${decrire(infractions)}`).toBe(0);
 
   it('laisse passer une remise a zero', () => {
     const racine = depotTemporaire();
-    writeFileSync(join(racine, 'Ecran.tsx'), '.a { padding: 0px; margin: 0; }
-');
+    writeFileSync(join(racine, 'Ecran.tsx'), '.a { padding: 0px; margin: 0; }\n');
     expect(verifierAucunEspacementEnDur(racine)).toEqual([]);
   });
 
@@ -323,8 +328,7 @@ ${decrire(infractions)}`).toBe(0);
     const racine = depotTemporaire();
     writeFileSync(
       join(racine, 'Ecran.tsx'),
-      '.a { border-top: 1px solid red; border-bottom: 2px solid; outline-offset: 2px; }
-',
+      '.a { border-top: 1px solid red; border-bottom: 2px solid; outline-offset: 2px; }\n',
     );
     expect(verifierAucunEspacementEnDur(racine)).toEqual([]);
   });
@@ -332,8 +336,7 @@ ${decrire(infractions)}`).toBe(0);
   it('refuse d excuser une valeur que l echelle offre', () => {
     // 16 px a son jeton : le declarer hors echelle serait un contournement nomme.
     const racine = depotTemporaire();
-    writeFileSync(join(racine, 'Ecran.tsx'), '.a { gap: 16px; }
-');
+    writeFileSync(join(racine, 'Ecran.tsx'), '.a { gap: 16px; }\n');
     const infractions = verifierAucunEspacementEnDur(racine, {
       horsEchelle: { 'Ecran.tsx': ['16px'] },
     });
@@ -343,8 +346,7 @@ ${decrire(infractions)}`).toBe(0);
 
   it('signale une exception qui ne designe plus rien', () => {
     const racine = depotTemporaire();
-    writeFileSync(join(racine, 'Ecran.tsx'), '.a { gap: var(--espace-3); }
-');
+    writeFileSync(join(racine, 'Ecran.tsx'), '.a { gap: var(--espace-3); }\n');
     expect(
       exceptionsEspacementPerimees(racine, { 'Ecran.tsx': ['14px'], 'Disparu.tsx': ['2px'] }),
     ).toHaveLength(2);
