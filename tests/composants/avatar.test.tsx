@@ -35,6 +35,24 @@ describe('initiales', () => {
     expect(initiales('')).toBe('?');
     expect(initiales('   ')).toBe('?');
   });
+
+  it('garde l accent d une saisie decomposee', () => {
+    // « E » suivi de l'accent aigu combinant : sans recomposition, la premiere unite est « E ».
+    expect(initiales('E\u0301lodie Martin')).toBe('\u00C9M');
+  });
+
+  it('ne coupe jamais un caractere hors du plan de base', () => {
+    // `mot[0]` rendait la moitie haute d'une paire de substitution, un glyphe casse.
+    expect(initiales('\u{1D49C}wa Ndiaye')).toBe('\u{1D49C}N');
+  });
+
+  it('ne saute pas la particule d une personne, et ne coupe pas au trait d union', () => {
+    // Decision 004 : la table des trois fonctions. Une personne n'a pas de mot de liaison,
+    // et « Jean-Pierre Martin » se reconnait en JM, pas en JP.
+    expect(initiales('Jean de La Fontaine')).toBe('JD');
+    expect(initiales('Jean-Pierre Martin')).toBe('JM');
+    expect(initiales('Awa\u00A0Ndiaye')).toBe('AN');
+  });
 });
 
 describe('Avatar', () => {

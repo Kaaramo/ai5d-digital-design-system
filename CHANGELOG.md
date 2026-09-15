@@ -7,6 +7,17 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 1.0.1 · 15 septembre 2026
+
+Correctif. Aucune signature ne change, aucun jeton ne bouge.
+
+- `initiales` lit un caractère, et non une unité de code. Un nom qui commence par un caractère hors
+  du plan de base affichait la moitié d'une paire de substitution, donc un glyphe cassé. Un nom saisi
+  en forme décomposée perdait son accent : « Élodie » donnait « E ». Le nom est recomposé avant
+  lecture. Trouvé en comparant les trois fonctions `initiales` de l'écosystème, décision 004.
+
+---
+
 ## 1.0.0 · 14 septembre 2026
 
 ### Guide de migration

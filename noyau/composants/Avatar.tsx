@@ -95,9 +95,15 @@ export interface ProprietesAvatar {
  * Les deux PREMIERS mots, jamais le premier et le dernier. « Marie Claire Dupont » donne
  * « MC » et non « MD » : c'est le prénom composé qui est le nom d'usage, et l'inverse
  * afficherait des initiales que personne ne reconnaît comme les siennes.
+ *
+ * Une lettre est un caractère, pas une unité de code, depuis la version 1.0.1. `mot[0]` coupait
+ * en deux un caractère hors du plan de base et affichait un glyphe cassé ; il perdait aussi
+ * l'accent d'une saisie décomposée, « E » suivi de son accent combinant. Le nom est donc
+ * recomposé (NFC) avant d'être lu caractère par caractère.
  */
 export function initiales(nom: string): string {
   const mots = nom
+    .normalize('NFC')
     .trim()
     .split(/\s+/)
     .filter((mot) => mot.length > 0);
@@ -106,7 +112,7 @@ export function initiales(nom: string): string {
 
   return mots
     .slice(0, 2)
-    .map((mot) => mot[0] ?? '')
+    .map((mot) => Array.from(mot)[0] ?? '')
     .join('')
     .toUpperCase();
 }
