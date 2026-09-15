@@ -66,8 +66,20 @@ une étiquette**, jamais à une branche :
 "lucide-react": "^1.0.0"
 ```
 
-puis `pnpm install`. Écrivez la dépendance à la main : `pnpm add` installe la bonne version mais
-retire l'étiquette du manifeste, et elle doit rester visible pour rester intentionnelle.
+puis `pnpm install`, ou directement :
+
+```bash
+pnpm add github:Kaaramo/ai5d-digital-design-system#v1.0.1 lucide-react@^1.0.0
+```
+
+Vérifié avec pnpm 10.24 : `pnpm add` garde l'étiquette dans le manifeste. Elle doit y rester
+visible, pour que la montée de version soit une décision.
+
+**Un produit branché sur les comptes AI5D installe aussi le SDK `@ai5d/auth`, dans la même
+commande.** Le guide « Démarrer un nouveau produit AI5D » du
+[README du SDK](https://github.com/Kaaramo/ai5d-auth#démarrer-un-nouveau-produit-ai5d) dit quoi
+transmettre à l'équipe, la variable à poser, et comment composer `CoquilleRail` avec ses rubriques
+et le thème partagé.
 
 **`lucide-react` est une dépendance de pair.** Le système ne l'embarque pas : deux copies de la
 bibliothèque d'icônes dans un même produit donneraient deux familles de tracés et un paquet deux
