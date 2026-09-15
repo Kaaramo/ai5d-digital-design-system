@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 const SOURCE = 'C:/Users/ksthe/Documents/AI5D_Brand_2026/tokens.css';
 const marque = readFileSync('noyau/marque.css', 'utf8');
@@ -44,8 +44,23 @@ describe('jetons de marque - forme', () => {
   });
 });
 
+/*
+  LA SOURCE DE MARQUE N EXISTE QUE SUR LE POSTE DU COMMANDITAIRE.
+
+  `AI5D_Brand_2026` est un depot local, prive, hors de ce depot. La premiere integration continue du
+  systeme, le 15 septembre 2026, est tombee sur ce seul test : `ENOENT` sur un chemin `C:/Users/...`
+  qu une machine Linux ne peut pas avoir. Le test etait juste ; il n avait jamais tourne ailleurs.
+
+  Il saute donc sur GitHub Actions, et SEULEMENT la, et seulement si la source est absente. Ailleurs,
+  une source manquante reste un echec : sur ce poste, meme lance avec `CI=true`, la derive se verifie.
+  C est `GITHUB_ACTIONS` et non `CI` qui decide, parce que les commandes de verification locales
+  posent elles aussi `CI=true`. Le test des valeurs connues, juste en dessous, tourne partout et fige
+  les six valeurs : sur la CI, c est lui qui garde la marque.
+*/
+const SOURCE_INACCESSIBLE_EN_CI = process.env.GITHUB_ACTIONS === 'true' && !existsSync(SOURCE);
+
 describe("jetons de marque - garde d'integrite", () => {
-  it("n'a pas derive de la source", () => {
+  it.skipIf(SOURCE_INACCESSIBLE_EN_CI)("n'a pas derive de la source", () => {
     const source = readFileSync(SOURCE, 'utf8');
     for (const [local, amont] of CORRESPONDANCE) {
       const localeValeur = valeur(marque, local);
