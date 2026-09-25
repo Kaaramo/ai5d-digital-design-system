@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Bandeau } from './Bandeau';
 import { Bouton } from './Bouton';
 import { Champ } from './Champ';
 import { ID_STYLE_BOITE, STYLE_BOITE, useDialogueModal } from './dialogue';
@@ -40,6 +41,7 @@ export function BoiteMotif({
   enCours,
   onAnnuler,
   onValider,
+  erreur,
 }: {
   phrase: string;
   consequence: string;
@@ -51,6 +53,11 @@ export function BoiteMotif({
   enCours: boolean;
   onAnnuler: () => void;
   onValider: (motif: string) => void;
+  /**
+   * Le refus du geste, rendu DANS la boîte. Hors d'elle, un dialogue modal le rendrait invisible :
+   * le document derrière est inerte. Constat de la console de Compte, sprint 19.
+   */
+  erreur?: string | undefined;
 }) {
   const [motif, setMotif] = useState('');
   const suffisant = motif.trim().length >= longueurMinimale;
@@ -104,6 +111,12 @@ export function BoiteMotif({
             aide={`${longueurMinimale} caractères au minimum. Le motif est consigné dans le journal.`}
           />
         </div>
+
+        {erreur === undefined ? null : (
+          <div style={{ marginTop: 'var(--espace-6)' }}>
+            <Bandeau ton="erreur">{erreur}</Bandeau>
+          </div>
+        )}
 
         <div
           style={{

@@ -324,3 +324,15 @@ describe('jetons - echelle d espacement (charte ch. 07)', () => {
     }
   });
 });
+
+describe('le schema de couleur du navigateur', () => {
+  it('suit le theme force et la preference du systeme', () => {
+    expect(brut).toMatch(/:root\s*\{[^}]*color-scheme:\s*light dark;/);
+    expect(brut).toMatch(/:root\[data-theme='dark'\]\s*\{[^}]*color-scheme:\s*dark;/);
+    expect(brut).toMatch(/:root\[data-theme='light'\]\s*\{[^}]*color-scheme:\s*light;/);
+  });
+
+  it('donne aux cases a cocher la couleur d action', () => {
+    expect(brut).toMatch(/accent-color:\s*var\(--action\);/);
+  });
+});

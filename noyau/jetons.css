@@ -16,6 +16,18 @@
 @import './marque.css';
 
 :root {
+  /*
+    LE SCHEMA DE COULEUR DU NAVIGATEUR SUIT LE THEME.
+
+    Sans lui, une liste deroulante ouverte, le calendrier d un champ date, une case a cocher et
+    les barres de defilement restent dessines en clair sur un ecran sombre : ce sont des
+    controles du NAVIGATEUR, que nos jetons n atteignent pas. Constat de la console de Compte,
+    25 septembre 2026. `light dark` laisse le navigateur suivre la preference du systeme quand
+    aucun theme n est force.
+  */
+  color-scheme: light dark;
+  accent-color: var(--action);
+
   /* -----------------------------------------------------------------------
      Alias des jetons de marque. Aucune valeur n'est ecrite ici : marque.css est
      le seul fichier du depot ou une couleur de marque apparait en clair.
@@ -251,6 +263,7 @@
 
 /* Le choix explicite du compte l'emporte sur la preference du systeme. */
 :root[data-theme='dark'] {
+  color-scheme: dark;
   --surface-1: #0b1620;
   --surface-2: #11212d;
   --surface-3: #172c3b;
@@ -285,6 +298,7 @@
 }
 
 :root[data-theme='light'] {
+  color-scheme: light;
   --surface-1: #faf7f2;
   --surface-2: var(--blanc);
   --surface-3: var(--blanc);

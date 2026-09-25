@@ -1,6 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import { Bandeau } from './Bandeau';
 import { Bouton } from './Bouton';
 import { ID_STYLE_BOITE, STYLE_BOITE, useDialogueModal } from './dialogue';
 
@@ -33,6 +34,7 @@ export function BoiteConfirmation({
   enCours,
   onAnnuler,
   onConfirmer,
+  erreur,
   children,
 }: {
   phrase: string;
@@ -42,6 +44,11 @@ export function BoiteConfirmation({
   enCours: boolean;
   onAnnuler: () => void;
   onConfirmer: () => void;
+  /**
+   * Le refus du geste, rendu DANS la boîte. Hors d'elle, un dialogue modal le rendrait invisible :
+   * le document derrière est inerte. Constat de la console de Compte, sprint 19.
+   */
+  erreur?: string | undefined;
   /** Un champ de saisie ou un sélecteur, quand la confirmation demande un choix. */
   children?: ReactNode;
 }) {
@@ -77,6 +84,12 @@ export function BoiteConfirmation({
 
         {children === undefined ? null : (
           <div style={{ marginTop: 'var(--espace-4)' }}>{children}</div>
+        )}
+
+        {erreur === undefined ? null : (
+          <div style={{ marginTop: 'var(--espace-6)' }}>
+            <Bandeau ton="erreur">{erreur}</Bandeau>
+          </div>
         )}
 
         <div

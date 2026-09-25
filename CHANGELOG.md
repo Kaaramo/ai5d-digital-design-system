@@ -7,6 +7,19 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 1.1.0 · 25 septembre 2026
+
+Ajouts compatibles. Aucune valeur de jeton ne change.
+
+- `BoiteMotif` et `BoiteConfirmation` acceptent `erreur`, rendue dans le dialogue. Un dialogue
+  modal rend le reste du document inerte : un message posé à côté de lui ne se lisait pas.
+  Constat de la console de Compte, sprint 19.
+- `color-scheme` suit le thème (`light dark` par défaut, `dark` ou `light` quand il est forcé),
+  et `accent-color` vaut `--action`. Les contrôles du navigateur (liste ouverte, calendrier, case
+  à cocher, défilement) passent enfin au sombre.
+
+---
+
 ## 1.0.1 · 15 septembre 2026
 
 Correctif. Aucune signature ne change, aucun jeton ne bouge.

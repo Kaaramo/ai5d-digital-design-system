@@ -172,3 +172,54 @@ describe('les dialogues, ce qu ils ne font pas', () => {
     expect(source).toMatch(/prefers-reduced-motion: reduce\)\s*\{[^}]*animation: none/);
   });
 });
+
+describe('l erreur dans la boite, sprint 19 de Compte', () => {
+  it('BoiteConfirmation rend l erreur dans le dialogue, en alerte', () => {
+    const { container } = render(
+      <BoiteConfirmation
+        phrase="Retirer cet accès."
+        action="Retirer"
+        enCours={false}
+        erreur="Ce compte n’existe plus."
+        onAnnuler={vi.fn()}
+        onConfirmer={vi.fn()}
+      />,
+    );
+    const alerte = container.querySelector('dialog [role="alert"]');
+    expect(alerte).not.toBeNull();
+    expect(alerte).toHaveTextContent('Ce compte n’existe plus.');
+  });
+
+  it('BoiteConfirmation sans erreur ne rend aucune alerte', () => {
+    const { container } = render(
+      <BoiteConfirmation
+        phrase="Retirer cet accès."
+        action="Retirer"
+        enCours={false}
+        onAnnuler={vi.fn()}
+        onConfirmer={vi.fn()}
+      />,
+    );
+    expect(container.querySelector('[role="alert"]')).toBeNull();
+  });
+
+  it('BoiteMotif garde le motif saisi quand une erreur arrive', () => {
+    const proprietes = {
+      phrase: 'Suspendre le compte.',
+      consequence: 'La personne ne pourra plus se connecter.',
+      libelleChamp: 'Motif',
+      action: 'Suspendre',
+      longueurMinimale: 5,
+      enCours: false,
+      onAnnuler: vi.fn(),
+      onValider: vi.fn(),
+    };
+    const { rerender, container } = render(<BoiteMotif {...proprietes} />);
+    fireEvent.change(screen.getByLabelText('Motif'), { target: { value: 'compte compromis' } });
+    rerender(<BoiteMotif {...proprietes} erreur="La suspension n’a pas abouti." />);
+    expect(screen.getByLabelText('Motif')).toHaveValue('compte compromis');
+    expect(container.querySelector('dialog [role="alert"]')).toHaveTextContent(
+      'La suspension n’a pas abouti.',
+    );
+  });
+});
