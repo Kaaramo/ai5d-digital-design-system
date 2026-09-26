@@ -185,3 +185,67 @@ describe('SelecteurTheme', () => {
     expect(STYLE_SELECTEUR_THEME).not.toContain('--info-fond');
   });
 });
+
+describe('SelecteurTheme au doigt, et en libelles (1.2.0)', () => {
+  afterEach(() => {
+    document.documentElement.removeAttribute('data-theme');
+  });
+
+  const css = STYLE_SELECTEUR_THEME.replace(/\s+/g, ' ');
+
+  it('donne a chaque segment 44 px au doigt, et rien de plus a la souris', () => {
+    expect(css).toContain(
+      '@media (pointer: coarse) { .ai5d-theme__segment { min-width: var(--cible-tactile); min-height: var(--cible-tactile); } }',
+    );
+    expect(css).toContain('width: 32px; height: 32px;');
+  });
+
+  it('garde le survol aux pointeurs fins, et pose l appui sans transition', () => {
+    expect(
+      STYLE_SELECTEUR_THEME.replace(/@media \(hover: hover\) \{[\s\S]*?\n\}/, ''),
+    ).not.toContain(':hover');
+    expect(css).toContain(
+      '.ai5d-theme__segment:active { background: var(--surface-selection); transition: none; }',
+    );
+  });
+
+  it('en libelles, ecrit les trois mots, et le nom visible est le nom accessible', () => {
+    render(<SelecteurTheme theme="sombre" libellesVisibles />);
+    const groupe = screen.getByRole('radiogroup', { name: 'Thème de l’interface' });
+    expect(groupe).toHaveAttribute('data-libelles');
+
+    const segments = screen.getAllByRole('radio');
+    expect(segments.map((segment) => segment.textContent)).toEqual(['Clair', 'Sombre', 'Système']);
+    for (const segment of segments) {
+      expect(segment).not.toHaveAttribute('aria-label');
+      expect(segment).not.toHaveAttribute('title');
+    }
+    expect(screen.getByRole('radio', { name: 'Sombre' })).toHaveAttribute('aria-checked', 'true');
+  });
+
+  it('en icones, garde le nom par aria-label et title, comme en 1.1.0', () => {
+    render(<SelecteurTheme theme="clair" />);
+    expect(screen.getByRole('radiogroup')).not.toHaveAttribute('data-libelles');
+    for (const segment of screen.getAllByRole('radio')) {
+      expect(segment).toHaveAttribute('aria-label');
+      expect(segment).toHaveAttribute('title');
+    }
+  });
+
+  it('occupe toute la largeur, retire l icone sous 17rem, et graisse le segment coche', () => {
+    expect(css).toContain(
+      '.ai5d-theme[data-libelles] { display: flex; width: 100%; container-type: inline-size; }',
+    );
+    expect(css).toContain(
+      '@container (max-width: 17rem) { .ai5d-theme[data-libelles] .ai5d-theme__icone { display: none; } }',
+    );
+    expect(css).toContain(
+      ".ai5d-theme[data-libelles] .ai5d-theme__segment[aria-checked='true'] { font-weight: var(--graisse-semi); }",
+    );
+  });
+
+  it('pose la classe de l icone en mode libelles, pour la requete de conteneur', () => {
+    const { container } = render(<SelecteurTheme theme="systeme" libellesVisibles />);
+    expect(container.querySelectorAll('svg.ai5d-theme__icone')).toHaveLength(3);
+  });
+});

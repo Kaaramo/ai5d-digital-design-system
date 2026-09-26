@@ -113,7 +113,7 @@ SPEC et user stories : `docs/superpowers/specs/version-1.2.0-espace-participant/
 - [x] T5 · Le ton `neutre` · écrite, non testée
 - [x] T6 · `OngletsRubrique` : lien du produit, six onglets, fondu, attente, décision 007 · écrite, non testée
 - [x] T7 · `CoquilleRail` : pied de contenu et pied compact · écrite, non testée
-- [ ] T8 · `SelecteurTheme` : 44 px au doigt, libellés visibles
+- [x] T8 · `SelecteurTheme` : 44 px au doigt, libellés visibles · écrite, non testée
 - [ ] T9 · `TitreSection` et `ListeDefinitions`
 - [ ] T10 · `LigneLien` et `ListeLignes`
 - [ ] T11 · `ValeurCopiable`

@@ -30,9 +30,19 @@ import { Icone } from './Icone';
  * `role="radiogroup"` avec trois `role="radio"` : un lecteur d'écran annonce « 2 sur 3 ». Trois
  * boutons indépendants auraient laissé croire à trois actions sans rapport.
  *
- * ── LA CIBLE TACTILE EST PORTÉE PAR LE GROUPE ───────────────────────────────
- * Des segments de 32 px, dans un groupe qui en fait 40 de haut : c'est la règle des contrôles
- * segmentés, on vise le groupe, et les trois se touchent.
+ * ── AU DOIGT, CHAQUE SEGMENT FAIT 44 PX, EN v1.2.0 ──────────────────────────
+ * Des segments de 32 px, dans un groupe de 40 : le commentaire qui les justifiait disait « on vise le
+ * groupe ». C'était faux : chaque segment est une cible distincte, et le groupe lui-même était sous le
+ * plancher. Sous `(pointer: coarse)`, chaque segment prend 44 px au moins, et le groupe 52. À la
+ * souris, rien ne change.
+ *
+ * ── LES LIBELLÉS VISIBLES, EN v1.2.0 ────────────────────────────────────────
+ * Avec `libellesVisibles`, « Clair », « Sombre », « Système » s'écrivent à côté de l'icône et le groupe
+ * occupe toute la largeur : c'est la forme d'un pied de page de téléphone. Le nom visible devient le
+ * nom accessible, sans `aria-label` ni `title`, pour qu'une commande vocale qui entend « Sombre »
+ * trouve « Sombre ». Sous 17rem de largeur disponible, l'icône se retire et le mot reste : un mot seul
+ * se lit, une icône seule s'apprend. Le segment coché prend la graisse semi-grasse en plus de sa
+ * couleur.
  *
  * ── LE SEGMENT ACTIF A ENFIN UN FOND EN SOMBRE ──────────────────────────────
  * Il prenait `--info-fond`, qui se détache en clair et disparaît en sombre : le choix courant ne se
@@ -65,14 +75,38 @@ export const STYLE_SELECTEUR_THEME = `
   transition: background var(--duree-courte) var(--courbe-sortie),
               color var(--duree-courte) var(--courbe-sortie);
 }
-.ai5d-theme__segment:hover { background: var(--surface-1); color: var(--texte-fort); }
+@media (hover: hover) {
+  .ai5d-theme__segment:hover { background: var(--surface-1); color: var(--texte-fort); }
+}
 .ai5d-theme__segment[aria-checked='true'] {
   background: var(--surface-selection);
   color: var(--action);
 }
+.ai5d-theme__segment:active { background: var(--surface-selection); transition: none; }
 .ai5d-theme__segment:focus-visible {
   outline: 2px solid var(--action);
   outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+  .ai5d-theme__segment { min-width: var(--cible-tactile); min-height: var(--cible-tactile); }
+}
+
+.ai5d-theme[data-libelles] {
+  display: flex; width: 100%;
+  container-type: inline-size;
+}
+.ai5d-theme[data-libelles] .ai5d-theme__segment {
+  flex: 1 1 0; width: auto; min-width: 0;
+  gap: var(--espace-1); padding: 0 var(--espace-2);
+  font-family: var(--police-corps); font-size: var(--taille-sm);
+  font-weight: var(--graisse-moyenne); white-space: nowrap;
+}
+.ai5d-theme[data-libelles] .ai5d-theme__segment[aria-checked='true'] {
+  font-weight: var(--graisse-semi);
+}
+@container (max-width: 17rem) {
+  .ai5d-theme[data-libelles] .ai5d-theme__icone { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -113,9 +147,18 @@ export interface ProprietesSelecteurTheme {
    * préproduction, absent en local, où un domaine ne se pose pas sur `localhost`.
    */
   domaine?: string | undefined;
+  /**
+   * Écrit « Clair », « Sombre », « Système » à côté de l'icône, et occupe toute la largeur
+   * disponible. Faux par défaut : le pied du rail de Compte garde ses icônes.
+   */
+  libellesVisibles?: boolean | undefined;
 }
 
-export function SelecteurTheme({ theme: themeInitial, domaine }: ProprietesSelecteurTheme) {
+export function SelecteurTheme({
+  theme: themeInitial,
+  domaine,
+  libellesVisibles = false,
+}: ProprietesSelecteurTheme) {
   const [theme, setTheme] = useState<Theme>(themeInitial);
 
   function choisir(suivant: Theme): void {
@@ -131,20 +174,33 @@ export function SelecteurTheme({ theme: themeInitial, domaine }: ProprietesSelec
     <>
       <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_SELECTEUR_THEME }} />
 
-      <div className="ai5d-theme" role="radiogroup" aria-label="Thème de l’interface">
+      <div
+        className="ai5d-theme"
+        role="radiogroup"
+        aria-label="Thème de l’interface"
+        data-libelles={libellesVisibles ? '' : undefined}
+      >
         {THEMES.map((valeur) => (
           <button
             key={valeur}
             type="button"
             role="radio"
             aria-checked={theme === valeur}
-            // Le libellé n'est pas à l'écran : sans lui, le bouton n'aurait pas de nom.
-            aria-label={LIBELLE_THEME[valeur]}
-            title={LIBELLE_THEME[valeur]}
+            // En mode icônes, le libellé n'est pas à l'écran : sans lui, le bouton n'aurait pas de
+            // nom. En mode libellés, le nom visible EST le nom accessible.
+            aria-label={libellesVisibles ? undefined : LIBELLE_THEME[valeur]}
+            title={libellesVisibles ? undefined : LIBELLE_THEME[valeur]}
             onClick={() => choisir(valeur)}
             className="ai5d-theme__segment"
           >
-            <Icone nom={ICONE_DU_THEME[valeur]} taille={16} />
+            {libellesVisibles ? (
+              <>
+                <Icone nom={ICONE_DU_THEME[valeur]} taille={16} className="ai5d-theme__icone" />
+                <span>{LIBELLE_THEME[valeur]}</span>
+              </>
+            ) : (
+              <Icone nom={ICONE_DU_THEME[valeur]} taille={16} />
+            )}
           </button>
         ))}
       </div>
