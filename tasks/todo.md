@@ -122,5 +122,5 @@ SPEC et user stories : `docs/superpowers/specs/version-1.2.0-espace-participant/
 - [x] T14 · Journal, guide de montée, README, NOYAU, formulations, version, décision 009 · vérifiée
 - [x] T15 · Les spécimens · vérifiée
 - [x] T16 · Vérification d'un bloc, gardes vues échouer, mesure « après », captures, navigateurs, montée de Compte, preuves · vérifiée, preuves dans docs/preuves/1.2.0/
-- [ ] T17 · Relecture du lot contre la SPEC
+- [x] T17 · Relecture du lot contre la SPEC · faite, trois constats corrigés, six différés (docs/preuves/1.2.0/relecture.md)
 - [ ] T18 · Points du §0.8 tranchés par Karamo, accord explicite, étiquette `v1.2.0` et poussée

@@ -11,6 +11,7 @@
 | Les captures, à la souris et au doigt, en clair et en sombre, et leurs mesures | [`captures.md`](captures.md) |
 | Le fondu et l'onglet initial, moteur par moteur | [`navigateurs.md`](navigateurs.md) |
 | La montée de Compte, sans une ligne changée dans Compte | [`montee-compte.md`](montee-compte.md) |
+| La relecture indépendante, ses constats et leur traitement | [`relecture.md`](relecture.md) |
 
 ## Écarts avec la SPEC
 
