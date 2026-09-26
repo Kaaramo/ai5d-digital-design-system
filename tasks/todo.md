@@ -116,7 +116,7 @@ SPEC et user stories : `docs/superpowers/specs/version-1.2.0-espace-participant/
 - [x] T8 · `SelecteurTheme` : 44 px au doigt, libellés visibles · écrite, non testée
 - [x] T9 · `TitreSection` et `ListeDefinitions` · écrite, non testée
 - [x] T10 · `LigneLien` et `ListeLignes` · écrite, non testée
-- [ ] T11 · `ValeurCopiable`
+- [x] T11 · `ValeurCopiable` · écrite, non testée
 - [ ] T12 · La recette `LOGOTYPE` et l'export `./logotype`, décision 008
 - [ ] T13 · L'index
 - [ ] T14 · Journal, guide de montée, README, NOYAU, formulations, version, décision 009
