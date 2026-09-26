@@ -56,7 +56,7 @@ const ID_STYLE = 'ai5d-valeur-copiable';
   26 septembre 2026 ; en colonne, le champ reprend donc sa hauteur naturelle.
 */
 export const STYLE_COPIABLE = `
-.ai5d-copiable { container-type: inline-size; display: flex; flex-direction: column; gap: var(--espace-2); }
+.ai5d-copiable { container-type: inline-size; inline-size: 100%; display: flex; flex-direction: column; gap: var(--espace-2); }
 .ai5d-copiable__rangee { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--espace-2); }
 .ai5d-copiable__champ { flex: 1 1 16rem; min-width: 0; }
 .ai5d-copiable__echec {

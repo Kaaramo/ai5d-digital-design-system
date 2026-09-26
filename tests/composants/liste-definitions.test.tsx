@@ -48,7 +48,7 @@ describe('ListeDefinitions (1.2.0)', () => {
 
     expect(CONTENEUR_DEFINITIONS_DEUX_COLONNES).toBe(480);
     const css = feuille();
-    expect(css).toContain('.ai5d-definitions { container-type: inline-size; }');
+    expect(css).toContain('.ai5d-definitions { container-type: inline-size; inline-size: 100%; }');
     expect(css).toContain('grid-template-columns: minmax(0, 1fr);');
     expect(css).toContain(
       "@container (min-width: 480px) { .ai5d-definitions[data-colonnes='2'] .ai5d-definitions__liste { grid-template-columns: repeat(2, minmax(0, 1fr)); } }",
@@ -71,5 +71,17 @@ describe('ListeDefinitions (1.2.0)', () => {
     expect(
       readFileSync('noyau/composants/ListeDefinitions.tsx', 'utf8').startsWith("'use client';"),
     ).toBe(false);
+  });
+
+  it('occupe la largeur de son parent, meme dans une colonne centree', () => {
+    /*
+      Relecture de la 1.2.0, mesure dans Chromium : un conteneur interroge n a pas de largeur propre,
+      et dans une colonne flex centree (un etat vide, un seuil) il tombait a 0 px. Le composant
+      disparaissait. jsdom ne mesure rien : la regle se garde par sa forme.
+    */
+    render(<ListeDefinitions elements={FAITS} />);
+    expect(feuille()).toContain(
+      '.ai5d-definitions { container-type: inline-size; inline-size: 100%; }',
+    );
   });
 });

@@ -166,6 +166,16 @@ describe('ValeurCopiable (1.2.0)', () => {
     expect(css).not.toMatch(/@media \(min-width/);
   });
 
+  it('occupe la largeur de son parent, meme dans une colonne centree', () => {
+    // Relecture de la 1.2.0 : un conteneur interroge tombait a 0 px dans une colonne flex centree.
+    rendre();
+    const css = (document.getElementById('ai5d-valeur-copiable')?.innerHTML ?? '').replace(
+      /\s+/g,
+      ' ',
+    );
+    expect(css).toContain('.ai5d-copiable { container-type: inline-size; inline-size: 100%;');
+  });
+
   it('empile sans vide : en colonne, la base du champ redevient sa hauteur naturelle', () => {
     /*
       Vu a la capture au doigt, le 26 septembre 2026 : en colonne, `flex: 1 1 16rem`, pense pour une

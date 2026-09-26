@@ -28,7 +28,7 @@ décident plus aucune couleur. Deux d’entre eux traversent ces histoires.
 qui répond ou qui ne répond pas.
 
 **Aïssatou Camara** est responsable de la relation client chez Orange Guinée. Son entreprise envoie
-vingt-cinq collaborateurs à « Claude pour les entreprises », trois jours de présentiel à Conakry, du
+vingt-cinq collaborateurs à « IA générative et relation client », trois jours de présentiel à Conakry, du
 13 au 15 octobre 2026. Elle lit tout sur un téléphone Android de 390 pixels, dans des taxis, sur un
 réseau qui passe de la 4G à presque rien au rond-point de Bambeto. Le soir, son téléphone est en
 thème sombre.

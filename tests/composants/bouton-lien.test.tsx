@@ -204,6 +204,45 @@ describe('Bouton avec une adresse : un lien, avec les classes et les etats d un 
     expect(clic).not.toHaveBeenCalled();
   });
 
+  it('desactive : ni tabIndex ni gestionnaire du produit, meme ceux qu un clic ne declenche pas', async () => {
+    /*
+      Relecture de la 1.2.0 : seul onClick etait retire. Un tabIndex rendait le lien « indisponible »
+      atteignable au clavier, et un onKeyDown s y declenchait.
+    */
+    const clavier = vi.fn();
+    const pointeur = vi.fn();
+    const capture = vi.fn();
+    render(
+      <>
+        <Bouton
+          href="/formations"
+          disabled
+          tabIndex={0}
+          onKeyDown={clavier}
+          onPointerDown={pointeur}
+          onClickCapture={capture}
+        >
+          Voir ma formation
+        </Bouton>
+        <button type="button">Suivant</button>
+      </>,
+    );
+    const lien = screen.getByText('Voir ma formation').closest('a');
+    expect(lien).not.toHaveAttribute('tabindex');
+
+    await userEvent.tab();
+    expect(screen.getByRole('button', { name: 'Suivant' })).toHaveFocus();
+
+    if (lien !== null) {
+      fireEvent.keyDown(lien, { key: 'Enter' });
+      fireEvent.pointerDown(lien);
+      fireEvent.click(lien);
+    }
+    expect(clavier).not.toHaveBeenCalled();
+    expect(pointeur).not.toHaveBeenCalled();
+    expect(capture).not.toHaveBeenCalled();
+  });
+
   it('en chargement : aucune adresse, occupe, pleine opacite, trois points, libelle de chargement', () => {
     const { container } = render(
       <Bouton href="/formations" chargement libelleChargement="Ouverture de la formation">

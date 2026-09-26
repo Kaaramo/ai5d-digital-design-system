@@ -39,7 +39,7 @@ export const CONTENEUR_DEFINITIONS_DEUX_COLONNES = 480;
 const ID_STYLE = 'ai5d-definitions';
 
 export const STYLE_DEFINITIONS = `
-.ai5d-definitions { container-type: inline-size; }
+.ai5d-definitions { container-type: inline-size; inline-size: 100%; }
 .ai5d-definitions__liste {
   display: grid; grid-template-columns: minmax(0, 1fr);
   row-gap: var(--espace-4); column-gap: var(--espace-6);

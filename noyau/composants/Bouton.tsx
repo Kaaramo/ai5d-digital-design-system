@@ -415,7 +415,9 @@ function BoutonAction({
  * Inactif, désactivé ou en chargement, il perd son adresse : un lien sans `href` ne navigue pas, ne
  * prend pas le focus, et `role="link"` avec `aria-disabled` le fait annoncer « lien, indisponible ».
  * Le `onClick` du produit ne lui est pas transmis : un `<a>` sans adresse reçoit encore les clics, là
- * où un `<button disabled>` les refuse.
+ * où un `<button disabled>` les refuse. Ni `tabIndex` ni aucun autre gestionnaire `on…` : la relecture
+ * de la 1.2.0 a montré qu'un `tabIndex` rendait le lien « indisponible » atteignable au clavier, et
+ * qu'un `onKeyDown` s'y déclenchait.
  */
 function BoutonLien({
   variante = 'primaire',
@@ -440,11 +442,14 @@ function BoutonLien({
   const feuille = <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_BOUTON }} />;
 
   if (disabled === true || chargement) {
+    const inerte = Object.fromEntries(
+      Object.entries(reste).filter(([nom]) => nom !== 'tabIndex' && !/^on[A-Z]/.test(nom)),
+    );
     return (
       <>
         {feuille}
         <a
-          {...reste}
+          {...inerte}
           role="link"
           aria-disabled="true"
           aria-busy={chargement || undefined}

@@ -224,6 +224,46 @@ describe('garde 3 - plancher tactile', () => {
     expect(verifierPlancherTactile(chemin)).toEqual([]);
   });
 
+  it('ne se laisse pas rassurer par un commentaire qui cite la bonne forme', () => {
+    /*
+      Relecture de la 1.2.0 : la recherche du bloc lisait la feuille brute. Un commentaire qui citait
+      la forme correcte suffisait a faire passer un plancher qui ne s appliquait pas.
+    */
+    const racine = depotTemporaire();
+    const chemin = join(racine, 'profils.css');
+    writeFileSync(
+      chemin,
+      [
+        '@media (pointer: coarse) {',
+        '  /* Forme attendue : max(var(--hauteur-controle-profil), 44px)',
+        '     et max(var(--ligne-liste-profil), 44px) */',
+        '  :root {',
+        '    --hauteur-controle: 40px;',
+        '    --ligne-liste: 40px;',
+        '  }',
+        '}',
+        '',
+      ].join('\n'),
+    );
+    const infractions = verifierPlancherTactile(chemin);
+    expect(infractions.map((i) => i.extrait)).toEqual([
+      "--hauteur-controle n'est pas releve a 44px sur pointeur grossier",
+      "--ligne-liste n'est pas releve a 44px sur pointeur grossier",
+    ]);
+  });
+
+  it('ne trouve pas la requete dans un commentaire', () => {
+    const racine = depotTemporaire();
+    const chemin = join(racine, 'profils.css');
+    writeFileSync(
+      chemin,
+      "/* @media (pointer: coarse) { } */\n[data-densite='compact'] { --hauteur-controle-profil: 40px; }\n",
+    );
+    expect(verifierPlancherTactile(chemin).map((i) => i.extrait)).toEqual([
+      'requete @media (pointer: coarse) absente',
+    ]);
+  });
+
   it('fixe le plancher a 44 px, valeur non negociable', () => {
     expect(PLANCHER_TACTILE).toBe(44);
   });

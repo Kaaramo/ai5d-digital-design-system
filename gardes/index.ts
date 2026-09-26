@@ -168,6 +168,14 @@ export interface DeclarationAutoReferente {
 }
 
 /**
+ * La feuille sans ses commentaires, chaque caractère d'un commentaire remplacé par une espace et
+ * chaque saut de ligne gardé : les positions et les numéros de ligne restent ceux du fichier.
+ */
+function viderCommentaires(css: string): string {
+  return css.replace(/\/\*[\s\S]*?\*\//g, (commentaire) => commentaire.replace(/[^\n]/g, ' '));
+}
+
+/**
  * Les déclarations `--x: …var(--x)…` d'une feuille, valeur de repli comprise.
  *
  * Pour le navigateur, une propriété personnalisée qui dépend d'elle-même est invalide au moment du
@@ -179,9 +187,7 @@ export interface DeclarationAutoReferente {
  * citer la forme fautive, et le numéro rapporté doit rester celui du fichier.
  */
 export function declarationsAutoReferentes(css: string): DeclarationAutoReferente[] {
-  const sansCommentaires = css.replace(/\/\*[\s\S]*?\*\//g, (commentaire) =>
-    commentaire.replace(/[^\n]/g, ' '),
-  );
+  const sansCommentaires = viderCommentaires(css);
 
   const trouvees: DeclarationAutoReferente[] = [];
   sansCommentaires.split('\n').forEach((ligne, index) => {
@@ -220,7 +226,13 @@ export function verifierPlancherTactile(cheminProfils: string): Infraction[] {
     regle,
   }));
 
-  const debut = css.indexOf('@media (pointer: coarse)');
+  /*
+    Toute la garde lit la feuille sans ses commentaires, et pas seulement la recherche des cycles :
+    un commentaire qui citait la bonne forme suffisait a faire passer un plancher qui ne s appliquait
+    pas (relecture de la 1.2.0). Le vidage garde les positions, donc les numeros de ligne.
+  */
+  const lue = viderCommentaires(css);
+  const debut = lue.indexOf('@media (pointer: coarse)');
   if (debut === -1) {
     infractions.push({
       fichier: cheminProfils,
@@ -231,8 +243,8 @@ export function verifierPlancherTactile(cheminProfils: string): Infraction[] {
     return infractions;
   }
 
-  const ligneRequete = css.slice(0, debut).split('\n').length;
-  const bloc = /@media \(pointer: coarse\)\s*\{([\s\S]*?)\n\}/.exec(css)?.[1] ?? '';
+  const ligneRequete = lue.slice(0, debut).split('\n').length;
+  const bloc = /@media \(pointer: coarse\)\s*\{([\s\S]*?)\n\}/.exec(lue)?.[1] ?? '';
   for (const variable of ['--hauteur-controle', '--ligne-liste']) {
     if (!bloc.includes(`max(var(${variable}-profil), ${PLANCHER_TACTILE}px)`)) {
       infractions.push({
