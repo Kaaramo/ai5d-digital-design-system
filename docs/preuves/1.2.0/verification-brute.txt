@@ -1,0 +1,78 @@
+
+> @ai5d/design-system@1.2.0 typecheck C:\Users\ksthe\Documents\ai5d-design-system
+> tsc --noEmit
+
+
+> @ai5d/design-system@1.2.0 lint C:\Users\ksthe\Documents\ai5d-design-system
+> eslint .
+
+
+> @ai5d/design-system@1.2.0 format:check C:\Users\ksthe\Documents\ai5d-design-system
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> @ai5d/design-system@1.2.0 test C:\Users\ksthe\Documents\ai5d-design-system
+> vitest run
+
+
+ RUN  v2.1.9 C:/Users/ksthe/Documents/ai5d-design-system
+
+ ✓ tests/jetons.test.ts (101 tests) 163ms
+ ✓ gardes/gardes.test.ts (40 tests) 534ms
+ ✓ tests/composants/coquille-rail.test.tsx (25 tests) 1507ms
+   ✓ CoquilleRail, les deux modes > en mode complet, rend la barre compacte et la barre basse, et aucun refus 371ms
+ ✓ tests/composants/bouton-lien.test.tsx (35 tests) 1412ms
+   ✓ Bouton sans adresse : exactement le bouton de la 1.1.0 > cas 1 : {} 321ms
+ ✓ tests/composants/document.test.tsx (26 tests) 1664ms
+   ✓ GabaritDocument, le bandeau > rend le surtitre, le titre et l intention du document 625ms
+ ✓ tests/composants/mobile.test.tsx (32 tests) 2779ms
+   ✓ BarreOnglets > rend un onglet par entree, avec son icone ET son mot 482ms
+   ✓ BarreOnglets > rend des boutons sans href, des liens avec 628ms
+ ✓ tests/composants/composants.test.tsx (93 tests) 3489ms
+ ✓ tests/densites.test.ts (28 tests) 90ms
+ ✓ tests/composants/onglets-rubrique.test.tsx (20 tests) 1787ms
+   ✓ OngletsRubrique > rend un lien par onglet, avec son adresse 661ms
+ ✓ tests/composants/avatar.test.tsx (21 tests) 585ms
+ ✓ tests/composants/theme.test.tsx (20 tests) 1125ms
+   ✓ SelecteurTheme > est un groupe radio de trois choix nommes, parti du theme recu 414ms
+ ✓ tests/composants/dialogues.test.tsx (14 tests) 1437ms
+   ✓ BoiteConfirmation > pose « Annuler » avant l action, et l action en ton danger par defaut 443ms
+ ✓ tests/index.test.ts (8 tests) 64ms
+ ✓ tests/composants/briques.test.tsx (18 tests) 1199ms
+   ✓ EnteteRubrique > rend le titre de la rubrique en h1, et son intention 754ms
+ ✓ tests/composants/valeur-copiable.test.tsx (12 tests) 1530ms
+   ✓ ValeurCopiable (1.2.0) > affiche la valeur en clair, dans un champ en lecture seule, lie a son libelle 306ms
+   ✓ ValeurCopiable (1.2.0) > prend Copier et Copie comme libelles par defaut 333ms
+ ✓ tests/composants/ligne-lien.test.tsx (13 tests) 761ms
+   ✓ LigneLien (1.2.0) > rend un seul element interactif : la ligne entiere est une cible 449ms
+ ✓ tests/composants/seuil.test.tsx (15 tests) 640ms
+   ✓ SigneAnime, la marque entouree de ses anneaux > rend la marque qu on lui donne, sans en connaitre aucune 384ms
+ ✓ tests/composants/squelette.test.tsx (16 tests) 1051ms
+ ✓ tests/non-regression.test.ts (15 tests) 68ms
+ ✓ tests/paliers.test.ts (14 tests) 25ms
+ ✓ tests/composants/liens-rail.test.tsx (10 tests) 791ms
+   ✓ LiensRail > marque la rubrique active, et elle seule 446ms
+ ✓ tests/documentation.test.ts (11 tests) 33ms
+ ✓ tests/polices.test.ts (13 tests) 37ms
+ ✓ tests/cycles.test.ts (36 tests) 63ms
+ ✓ tests/preset.test.ts (10 tests) 54ms
+ ✓ tests/marque.test.ts (6 tests) 62ms
+ ✓ tests/contraste.test.ts (16 tests) 70ms
+ ✓ tests/composants/grille-cartes.test.tsx (8 tests) 268ms
+ ✓ tests/composants/liste-definitions.test.tsx (5 tests) 287ms
+ ✓ tests/composants/titre-section.test.tsx (6 tests) 407ms
+   ✓ TitreSection (1.2.0) > rend le niveau demande 372ms
+ ✓ tests/independance.test.ts (5 tests) 46ms
+ ✓ tests/logotype.test.ts (7 tests) 33ms
+ ✓ tests/exports.test.ts (4 tests) 24ms
+ ✓ tests/composants/liste-lignes.test.tsx (3 tests) 540ms
+   ✓ ListeLignes (1.2.0) > rend une liste nommee, un element par ligne rendue, et aucun pour un enfant absent 480ms
+ ✓ tests/fumee.test.ts (3 tests) 10ms
+
+ Test Files  35 passed (35)
+      Tests  709 passed (709)
+   Start at  13:14:03
+   Duration  31.65s (transform 4.11s, setup 44.04s, collect 20.55s, tests 24.63s, environment 87.40s, prepare 12.37s)
+

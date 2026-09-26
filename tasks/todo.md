@@ -107,20 +107,20 @@ SPEC et user stories : `docs/superpowers/specs/version-1.2.0-espace-participant/
 « écrite, non testée » ; la tâche 16 vérifie tout d'un bloc.
 
 - [x] T1 · Le suivi, la mesure « avant » du plancher tactile · fait
-- [x] T2 · Le plancher tactile sans cycle : feuille, garde, résolveur, instantanés de 1.1.0, décision 005 · écrite, non testée
-- [x] T3 · Mesure, mouvement, durée longue, sélection, curseur, `COULEURS_NAVIGATEUR`, non-régression, décision 006 · écrite, non testée
-- [x] T4 · `lien.ts`, `ComposantLien` élargi, `Bouton` rendu en lien · écrite, non testée
-- [x] T5 · Le ton `neutre` · écrite, non testée
-- [x] T6 · `OngletsRubrique` : lien du produit, six onglets, fondu, attente, décision 007 · écrite, non testée
-- [x] T7 · `CoquilleRail` : pied de contenu et pied compact · écrite, non testée
-- [x] T8 · `SelecteurTheme` : 44 px au doigt, libellés visibles · écrite, non testée
-- [x] T9 · `TitreSection` et `ListeDefinitions` · écrite, non testée
-- [x] T10 · `LigneLien` et `ListeLignes` · écrite, non testée
-- [x] T11 · `ValeurCopiable` · écrite, non testée
-- [x] T12 · La recette `LOGOTYPE` et l'export `./logotype`, décision 008 · écrite, non testée
-- [x] T13 · L'index · écrite, non testée
-- [x] T14 · Journal, guide de montée, README, NOYAU, formulations, version, décision 009 · écrite, non testée
-- [x] T15 · Les spécimens · écrite, non testée
-- [ ] T16 · Vérification d'un bloc, gardes vues échouer, mesure « après », captures, navigateurs, montée de Compte, preuves
+- [x] T2 · Le plancher tactile sans cycle : feuille, garde, résolveur, instantanés de 1.1.0, décision 005 · vérifiée
+- [x] T3 · Mesure, mouvement, durée longue, sélection, curseur, `COULEURS_NAVIGATEUR`, non-régression, décision 006 · vérifiée
+- [x] T4 · `lien.ts`, `ComposantLien` élargi, `Bouton` rendu en lien · vérifiée
+- [x] T5 · Le ton `neutre` · vérifiée
+- [x] T6 · `OngletsRubrique` : lien du produit, six onglets, fondu, attente, décision 007 · vérifiée
+- [x] T7 · `CoquilleRail` : pied de contenu et pied compact · vérifiée
+- [x] T8 · `SelecteurTheme` : 44 px au doigt, libellés visibles · vérifiée
+- [x] T9 · `TitreSection` et `ListeDefinitions` · vérifiée
+- [x] T10 · `LigneLien` et `ListeLignes` · vérifiée
+- [x] T11 · `ValeurCopiable` · vérifiée
+- [x] T12 · La recette `LOGOTYPE` et l'export `./logotype`, décision 008 · vérifiée
+- [x] T13 · L'index · vérifiée
+- [x] T14 · Journal, guide de montée, README, NOYAU, formulations, version, décision 009 · vérifiée
+- [x] T15 · Les spécimens · vérifiée
+- [x] T16 · Vérification d'un bloc, gardes vues échouer, mesure « après », captures, navigateurs, montée de Compte, preuves · vérifiée, preuves dans docs/preuves/1.2.0/
 - [ ] T17 · Relecture du lot contre la SPEC
 - [ ] T18 · Points du §0.8 tranchés par Karamo, accord explicite, étiquette `v1.2.0` et poussée

@@ -71,3 +71,33 @@ produits, aurait fait échouer celui qui corrigeait la feuille chez lui.
 
 **Une règle CSS qui produit une valeur se teste par sa valeur** (un résolveur à chaque exécution, puis
 une mesure dans un vrai navigateur), jamais par sa seule forme.
+
+### Une sonde de types se fait chez le consommateur, avec ses options
+
+L'écart E2 du plan avait conclu que le `Link` de Next restait assignable au `ComposantLien` élargi. La
+sonde avait été faite dans ce dépôt, où Next n'est pas installé. Dans Compte, sous
+`exactOptionalPropertyTypes`, six vérifications de types échouaient : Next redéclare trois
+gestionnaires sans `| undefined`. Seule la montée d'essai de Compte, avant publication, l'a montré.
+
+**Un type public qui doit accepter le composant d'un cadriciel se vérifie contre les vrais types de ce
+cadriciel, avec les options du consommateur** (une réplique fidèle dans les tests, et la montée d'un
+produit réel avant toute étiquette), jamais par un raisonnement dans le dépôt qui ne l'installe pas.
+
+### Une base flexible change de sens quand la rangée s'empile
+
+`ValeurCopiable` donnait au champ `flex: 1 1 16rem`, pensé pour une rangée. Sous 24rem, la rangée
+passe en colonne, et la même base devient une hauteur de 256 px : un vide de 180 px entre le champ et
+son bouton, au doigt. jsdom ne calcule aucune mise en page ; seule la capture l'a montré.
+
+**Toute règle qui fait basculer `flex-direction` revoit les `flex-basis` des enfants dans le même
+bloc**, et une pièce qui s'empile se regarde au doigt avant d'être déclarée faite.
+
+### Une page de preuve doit tenir au plancher qu'elle prouve
+
+La page des spécimens débordait à 320 px (414 px, 400 déjà en 1.1.0), par son propre en-tête. En
+émulation mobile, Chromium élargit alors le viewport de mise en page et décale le viewport visuel :
+les captures d'élément tombaient ailleurs que sur leur cible, pendant que les mesures numériques
+restaient justes.
+
+**Une capture qui prouve un rendu au téléphone se fait sur une page qui ne déborde pas elle-même**, et
+on vérifie `scrollWidth` et `visualViewport.offsetTop` avant de croire ce que montre l'image.
