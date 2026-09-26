@@ -7,6 +7,110 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 1.2.0 · 26 septembre 2026
+
+Ce que l'espace participant du Portail demandait, et le correctif d'un défaut que tous les produits
+portaient sur téléphone. Aucune valeur de jeton ne change : `tests/non-regression.test.ts` le prouve
+contre un instantané de la 1.1.0.
+
+### Ce qui change à l'écran, sans une ligne de code dans le produit
+
+1. **Au doigt, les contrôles retrouvent leur hauteur.** `--hauteur-controle` et `--ligne-liste` se
+   lisaient elles-mêmes sous `(pointer: coarse)` et devenaient invalides : sur téléphone, tous les
+   boutons valaient 44 px et un squelette de champ 21 px. En `equilibre`, un bouton `md` refait 48 px,
+   un `lg` 56 px, un champ 48 px. Le test et la garde exigeaient la forme fautive ; ils la refusent.
+   Décision 005.
+2. **La sélection de texte** prend les couleurs du bouton primaire, et le curseur de saisie le bleu
+   d'action.
+3. **Au doigt, le sélecteur de thème** a des segments de 44 px.
+4. **Au doigt, un bouton touché** ne garde plus sa couleur de survol.
+5. **Les onglets de rubrique** montrent un fondu au bord qui cache un onglet, et seulement là ;
+   l'onglet actif est amené dans la vue au premier affichage, là où le navigateur le sait. Constaté le
+   26 septembre 2026 : Chromium fait les deux, WebKit le fondu seul, Firefox aucun des deux et y garde
+   le rendu de la 1.1.0. Décision 007.
+
+### Ajouts
+
+- `Bouton` rendu en lien : `href`, `Lien`, `download`, `target`. `ComposantLien` accepte tous les
+  attributs d'un lien.
+- Le ton `neutre` : « rien à signaler », pour `Pastille`, `PastilleEtat`, `Bandeau`.
+- `OngletsRubrique` : `Lien`, jusqu'à six onglets, l'état d'attente.
+- `CoquilleRail` : `piedContenu` et `piedCompact`.
+- `SelecteurTheme` : `libellesVisibles`.
+- Cinq composants : `TitreSection`, `LigneLien`, `ListeLignes`, `ListeDefinitions`, `ValeurCopiable`.
+- `--mesure-texte`, `--mouvement-retour`, `--mouvement-entree`, `--mouvement-sortie`.
+- `COULEURS_NAVIGATEUR` par `@ai5d/design-system/theme` ; `LOGOTYPE` par
+  `@ai5d/design-system/logotype`.
+- Le protocole d'attente d'un lien, `data-en-attente` sur le lien ou l'un de ses descendants
+  (`ATTRIBUT_EN_ATTENTE`), et la mention du nouvel onglet (`MENTION_NOUVEL_ONGLET`).
+
+### Règle réécrite
+
+La durée longue sert aussi le moment signature unique d'un produit, déclaré dans son `DESIGN.md`.
+Décision 006.
+
+### Compatibilité
+
+Aucune propriété retirée, aucune variante renommée. `ProprietesBouton` devient une union
+(`ProprietesBoutonAction | ProprietesBoutonLien`), `TonSemantique` gagne `neutre` : un produit qui
+étend le premier ou énumère le second dans un `Record` devra le traiter ; aucun ne le fait dans
+Compte, le Portail ou le SDK (constaté le 26 septembre 2026).
+
+`ComposantLien` accepte tous les attributs d'un `<a>`, et `Link` de Next reste assignable tel quel. Un
+composant de lien écrit par un produit doit transmettre tout ce qu'il reçoit ; typé sur l'ancienne
+forme étroite, avec `'aria-current'?: 'page'`, il ne compile plus (constaté par `tsc`) : il se type
+par `ComponentProps<ComposantLien>`. Aucun produit n'est concerné, tous passent `Link`.
+
+`densites/profils.css` déclare deux propriétés de plus, les sources `--hauteur-controle-profil` et
+`--ligne-liste-profil`. Un produit qui aurait écrit son propre profil déclare ces deux sources, et non
+plus `--hauteur-controle` ni `--ligne-liste`.
+
+`verifierPlancherTactile` exige désormais la forme corrigée et refuse toute propriété qui se lit
+elle-même : un produit qui la lance sur la feuille installée passe.
+
+### Guide de montée
+
+#### Pour tout produit
+
+1. Remplacer l'étiquette dans le manifeste :
+   `"@ai5d/design-system": "github:Kaaramo/ai5d-digital-design-system#v1.2.0"`, puis `pnpm install`.
+2. Si le produit a écrit son propre composant de lien pour `LiensRail`, `BarreOnglets` ou
+   `GabaritDocument`, vérifier qu'il transmet **tous** les attributs reçus au `<a>` (`...reste`) et
+   qu'il est typé par `ComponentProps<ComposantLien>` ; `Link` de Next le fait déjà.
+3. Relancer sa vérification d'un bloc.
+4. Regarder à l'écran, au doigt, les cinq différences ci-dessus : c'est tout ce qui change sans code.
+
+Aucune adoption n'est obligatoire : chaque ajout est facultatif.
+
+#### AI5D Portail, de 1.0.1 à 1.2.0
+
+La montée traverse aussi la 1.1.0 : `BoiteMotif` et `BoiteConfirmation` acceptent `erreur`, et le
+schéma de couleur du navigateur suit le thème (contrôles natifs sombres en sombre). Tout le reste est
+ce que le sprint P09 consomme ; les écarts entre son contrat et cette version sont au §17 de la SPEC
+de la 1.2.0.
+
+#### AI5D Compte, de 1.1.0 à 1.2.0
+
+| Ce que Compte fait aujourd'hui                                                                                                  | Ce que la 1.2.0 permet                                                                                                       | Obligatoire |
+| ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `RetourPortail.tsx:24` et `LienInvalide.tsx:56` naviguent par `window.location.assign` depuis un `<button>`                     | `<Bouton href="/" pleineLargeur>Revenir au portail</Bouton>` : un composant serveur de plus, un vrai lien                    | Non         |
+| `OngletsPortail.tsx:95` rend les onglets sans lien du routeur : chaque sous-page recharge le document                           | `Lien={Link}`                                                                                                                | Non         |
+| « SANS ACCÈS » en texte, faute de ton (`CarteProduit.tsx:26`)                                                                   | Ton `neutre` ; l'arbitrage « des lignes, pas des badges » de sa charte reste le sien                                         | Non         |
+| Douze titres en Fraunces écrits à la main (`EnteteEcran.tsx:65`, `LienInvalide.tsx:33`, `CarteProduit.tsx:136`, et neuf autres) | `TitreSection` ; les copies disparaissent                                                                                    | Non         |
+| `LigneCompte.tsx:24-34`, un `Link` stylé en ligne, sans états                                                                   | `LigneLien` dans une `ListeLignes bordsExterieurs={false}`                                                                   | Non         |
+| `<dl>` de la fiche de compte écrit à la main (`app/admin/comptes/[id]/page.tsx:83-110`)                                         | `ListeDefinitions`                                                                                                           | Non         |
+| `CopierValeur.tsx:16`                                                                                                           | `ValeurCopiable`, avec `messageEchec` « Sélectionnez la clé ci-dessus pour la copier. »                                      | Non         |
+| « AI5D » en Fraunces à l'encre dans l'en-tête des courriels (`emails/Coquille.tsx:44-53`)                                       | Composer selon `LOGOTYPE`, couleurs dans `emails/jetons.ts` : « AI » et « D » en Inter 700 à l'encre, « 5 » en bleu d'action | Non         |
+| Le thème est inatteignable sous 768 px (`PiedDuRail.tsx:106`)                                                                   | `piedCompact` avec `SelecteurTheme libellesVisibles`                                                                         | Non         |
+| Transitions écrites à la main (`Gestion.tsx:51`)                                                                                | `--mouvement-sortie`                                                                                                         | Non         |
+
+#### Le SDK `@ai5d/auth`
+
+Rien n'est requis : il déclare le système en dépendance de pair `*`. `AccesRefuse.tsx:126-131` pourra
+passer à `Bouton href` dans une version du SDK, qui montera alors sa dépendance de développement.
+
+---
+
 ## 1.1.0 · 25 septembre 2026
 
 Ajouts compatibles. Aucune valeur de jeton ne change.

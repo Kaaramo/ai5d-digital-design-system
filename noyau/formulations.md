@@ -40,6 +40,18 @@ Les règles de voix sont dans [`NOYAU.md`](NOYAU.md), section 5.
 | Hors ligne               | « Vous êtes hors ligne. Vos saisies sont conservées. »             |
 | Information indisponible | « Nous ne pouvons pas afficher cette information pour le moment. » |
 | Maintenance              | « Le service est en maintenance. Il revient à 14 h. »              |
+| Copie impossible         | « Sélectionnez {ce qu’il faut copier} ci-dessus pour la copier. »  |
 
 **Assumer l'absence.** « Nous ne pouvons pas afficher cette information » plutôt qu'une
 valeur inventée ou un tiret. Vaut pour l'interface comme pour les courriels.
+
+**Nommer le geste manuel.** Quand une copie échoue, on dit ce qu'il faut sélectionner, et la valeur
+reste visible, déjà sélectionnée : « Sélectionnez l’adresse ci-dessus pour la copier. » dans le
+Portail, « Sélectionnez la clé ci-dessus pour la copier. » dans Compte. Jamais une copie annoncée qui
+n'a pas eu lieu. Les libellés par défaut du bouton sont « Copier » et « Copié ».
+
+## Liens
+
+| Situation                       | Formulation                                               | La règle derrière                                                                                                  |
+| ------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Lien qui ouvre un nouvel onglet | « (s’ouvre dans un nouvel onglet) », lue après le libellé | On prévient avant que le contexte change ; le système l'ajoute seul à tout lien sortant de `Bouton` et `LigneLien` |

@@ -74,11 +74,18 @@ les trois surfaces sombres et sur l'encre.
 Réussite et erreur portent toujours aussi un mot ou une icône : près d'un homme sur douze
 ne distingue pas correctement le rouge du vert.
 
+**Le ton `neutre`, depuis la 1.2.0.** Il dit « rien à signaler » : un état au repos, qui ne demande
+aucun geste et n'annonce aucune réussite (« Inscription confirmée », « Formation terminée », « Sans
+accès », « Remplacée »). Il ne dit **jamais** un état qui attend un geste (c'est `attention`) ni un
+échec (c'est `erreur`). Texte `--texte-faible` sur `--surface-chaude` : 4,53 en clair, 5,79 en sombre.
+Comme les quatre autres, il porte toujours un mot : le composant n'existe pas sans texte.
+
 ### 1.4 La garde de contraste
 
-`tests/jetons.test.ts` recalcule **44 paires** de contraste à chaque exécution, en clair et
-en sombre, et échoue sous 4,5. C'est ce test qui aurait attrapé, dès le premier jour, les
-quatre défauts trouvés le 5 septembre 2026.
+`tests/jetons.test.ts` recalcule à chaque exécution chaque paire de contraste que le système déclare,
+en clair et en sombre, et échoue sous 4,5. Le nombre de paires se lit dans ce test et nulle part
+ailleurs : écrit ici, il avait déjà vieilli une fois. C'est ce test qui aurait attrapé, dès le premier
+jour, les quatre défauts trouvés le 5 septembre 2026.
 
 ---
 
@@ -103,9 +110,35 @@ overlines.
 
 Échelle : 12 · 14 · 16 · 18 · 22 · 30 · 48 · 56 px.
 
+**La mesure d'un texte.** `--mesure-texte` vaut `65ch` : la longueur de ligne d'un texte courant long
+(programme, annonce, politique). Au-delà de soixante-cinq signes, l'œil perd le début de la ligne
+suivante. Elle s'emploie en `max-width` sur un bloc de texte, jamais sur une colonne entière : une
+phrase courte d'en-tête garde sa propre borne.
+
 ---
 
-## 3. Les 34 composants
+## 2 bis. Le mouvement
+
+Trois durées, deux courbes, et depuis la 1.2.0 trois jetons qui nomment un mouvement par son **rôle**.
+La durée et la courbe qu'ils portent peuvent changer sans qu'un seul appel change.
+
+| Jeton                | Valeur                                      | Rôle                                   |
+| -------------------- | ------------------------------------------- | -------------------------------------- |
+| `--mouvement-retour` | `var(--duree-courte) var(--courbe-sortie)`  | Un état répond : survol, appui relâché |
+| `--mouvement-entree` | `var(--duree-moyenne) var(--courbe-entree)` | Quelque chose arrive                   |
+| `--mouvement-sortie` | `var(--duree-courte) var(--courbe-sortie)`  | Quelque chose part                     |
+
+Sous `prefers-reduced-motion`, leurs durées tombent à 100 ms d'elles-mêmes ; ce qui se déplace reste à
+supprimer par chaque feuille. Les composants antérieurs à la 1.2.0 ne sont pas migrés.
+
+**La durée longue** (800 ms, 0 ms sous mouvement réduit) suit une règle réécrite en 1.2.0,
+décision 006 :
+
+> La durée longue sert deux choses, et deux seulement : une confirmation qui engage la sécurité du compte, et le moment signature unique d’un produit, déclaré par son nom dans le DESIGN.md de ce produit. Jamais un ornement, jamais deux moments dans un même produit.
+
+---
+
+## 3. Les 39 composants
 
 Neuf familles. Le nombre et les noms sont vérifiés par `tests/documentation.test.ts` : chaque fichier
 de `composants/` doit figurer ici, et le nombre de ce titre doit être celui des fichiers.
@@ -120,16 +153,17 @@ de `composants/` doit figurer ici, et le nombre de ce titre doit être celui des
 
 ### Saisie et action
 
-| Composant | Ce qu'il garantit                                                                                                                |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `Bouton`  | Variantes, trois tailles, hauteur pilotée par la densité, plancher tactile respecté, `aria-busy` en chargement                   |
-| `Champ`   | Libellé **toujours** lié par `htmlFor`, aide et erreur reliées par `aria-describedby`, erreur jamais portée par la seule couleur |
+| Composant        | Ce qu'il garantit                                                                                                                                                    |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Bouton`         | Variantes, trois tailles, hauteur pilotée par la densité, plancher tactile respecté, `aria-busy` en chargement. Avec `href`, un vrai lien aux mêmes classes et états |
+| `Champ`          | Libellé **toujours** lié par `htmlFor`, aide et erreur reliées par `aria-describedby`, erreur jamais portée par la seule couleur                                     |
+| `ValeurCopiable` | Une valeur en clair, copiée d'un geste. Si la copie échoue, la valeur est sélectionnée et le geste manuel nommé : jamais une copie annoncée qui n'a pas eu lieu      |
 
 ### États et signaux
 
 | Composant      | Ce qu'il garantit                                                                                 |
 | -------------- | ------------------------------------------------------------------------------------------------- |
-| `Pastille`     | Un état compact, qui contient toujours du texte                                                   |
+| `Pastille`     | Un état compact, qui contient toujours du texte. Cinq tons, dont `neutre`, « rien à signaler »    |
 | `PastilleEtat` | Une `Pastille` précédée d'un point en `currentColor` : un état courant, et non une étiquette      |
 | `Bandeau`      | Une icône **et** un texte. `role="alert"` pour attention et erreur, `role="status"` pour le reste |
 | `TempsRelatif` | Un temps relatif calculé au client, la date absolue dans le HTML pour qui n'a pas de JavaScript   |
@@ -138,32 +172,36 @@ de `composants/` doit figurer ici, et le nombre de ce titre doit être celui des
 
 ### Contenu
 
-| Composant        | Ce qu'il garantit                                                                              |
-| ---------------- | ---------------------------------------------------------------------------------------------- |
-| `Carte`          | Padding piloté par la densité. Rend un `<button>` quand elle est cliquable, jamais une `<div>` |
-| `CarteAction`    | Le motif « une carte, une action » : bouton qui **nomme sa destination**                       |
-| `GrilleCartes`   | Une grille qui se règle sur la largeur disponible, par requête de conteneur                    |
-| `EnteteRubrique` | Icône encadrée, titre `h1`, intention alignée sur le titre, filet                              |
-| `EnteteCarte`    | Icône encadrée, titre `h2`, description, ton `danger` rare, emplacement à droite dans le flux  |
-| `EtatVide`       | Ce qui est vide, si c'est normal, et quoi faire : la commande dans son propre bloc             |
+| Composant          | Ce qu'il garantit                                                                                                             |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| `Carte`            | Padding piloté par la densité. Rend un `<button>` quand elle est cliquable, jamais une `<div>`                                |
+| `CarteAction`      | Le motif « une carte, une action » : bouton qui **nomme sa destination**                                                      |
+| `GrilleCartes`     | Une grille qui se règle sur la largeur disponible, par requête de conteneur                                                   |
+| `EnteteRubrique`   | Icône encadrée, titre `h1`, intention alignée sur le titre, filet                                                             |
+| `EnteteCarte`      | Icône encadrée, titre `h2`, description, ton `danger` rare, emplacement à droite dans le flux                                 |
+| `EtatVide`         | Ce qui est vide, si c'est normal, et quoi faire : la commande dans son propre bloc                                            |
+| `TitreSection`     | Le niveau (plan du document) et la taille (écran) séparés et obligatoires ; Fraunces 400, jamais de faux gras, jamais tronqué |
+| `ListeDefinitions` | Un `<dl>` de libellés et de valeurs ; deux colonnes dès 480 px de conteneur, une sinon                                        |
 
 ### Coquilles
 
-| Composant      | Ce qu'il garantit                                                                                                                                                                                                 |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `CoquilleRail` | La coquille des écrans à rubriques. Rail de 240 px en tablette, 280 px sur bureau, barre basse sous 768 px ; mode `bureau-seulement` pour une console. La navigation arrive en emplacements. Aucun import de Next |
-| `GabaritAuth`  | Le gabarit d'authentification. Colonne unique sous 1024 px, deux colonnes au-delà, panneau détaché du fond en sombre                                                                                              |
-| `GabaritApp`   | La coquille d'application : en-tête collant, contenu défilant, barre d'onglets. Il réserve la hauteur de la barre sous le contenu                                                                                 |
-| `GabaritSeuil` | L'écran qui occupe le chargement d'après connexion, avec la marque du produit en emplacement                                                                                                                      |
+| Composant      | Ce qu'il garantit                                                                                                                                                                                                                                                                    |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `CoquilleRail` | La coquille des écrans à rubriques. Rail de 240 px en tablette, 280 px sur bureau, barre basse sous 768 px ; mode `bureau-seulement` pour une console. La navigation arrive en emplacements. Aucun import de Next. Un pied de contenu après `<main>`, et un pied compact sous 768 px |
+| `GabaritAuth`  | Le gabarit d'authentification. Colonne unique sous 1024 px, deux colonnes au-delà, panneau détaché du fond en sombre                                                                                                                                                                 |
+| `GabaritApp`   | La coquille d'application : en-tête collant, contenu défilant, barre d'onglets. Il réserve la hauteur de la barre sous le contenu                                                                                                                                                    |
+| `GabaritSeuil` | L'écran qui occupe le chargement d'après connexion, avec la marque du produit en emplacement                                                                                                                                                                                         |
 
 ### Navigation
 
-| Composant         | Ce qu'il garantit                                                                                                      |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `LiensRail`       | Les liens du rail. Reçoit la rubrique active et le lien du produit ; actif sur `--surface-selection`, `aria-current`   |
-| `BarreOnglets`    | La navigation basse. Trois à cinq onglets, icône **et** mot, zone sûre réservée, lien du produit, disparaît dès 768 px |
-| `OngletsRubrique` | Les sous-pages d'une rubrique. Des **liens**, jamais un `tablist` : la page change vraiment                            |
-| `SelecteurTheme`  | Clair, sombre, système, en groupe radio. Le cookie peut suivre la personne sur tout le domaine, avec `domaine`         |
+| Composant         | Ce qu'il garantit                                                                                                                 |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `LiensRail`       | Les liens du rail. Reçoit la rubrique active et le lien du produit ; actif sur `--surface-selection`, `aria-current`              |
+| `BarreOnglets`    | La navigation basse. Trois à cinq onglets, icône **et** mot, zone sûre réservée, lien du produit, disparaît dès 768 px            |
+| `OngletsRubrique` | Les sous-pages d'une rubrique, deux à six. Des **liens**, jamais un `tablist` ; un fondu au bord qui cache un onglet, sans script |
+| `SelecteurTheme`  | Clair, sombre, système, en groupe radio. 44 px au doigt, libellés visibles sur demande, cookie partagé sur le domaine             |
+| `LigneLien`       | Une ligne entière, un seul lien. Hauteur `--ligne-liste`, appui immédiat, attente visible ; ni chevron ni routeur pour un fichier |
+| `ListeLignes`     | Une `<ul role="list">`, un filet entre les lignes, et aux bords sur demande                                                       |
 
 ### Document
 
@@ -261,6 +299,11 @@ Traité dès le premier écran, jamais ajouté après. Trois états : préféren
 explicite clair, choix explicite sombre — **le choix du compte l'emporte sur la préférence
 du système**.
 
+**Le navigateur suit.** `color-scheme` et `accent-color` depuis la 1.1.0 ; `caret-color` et la
+sélection de texte, aux couleurs du bouton primaire, depuis la 1.2.0. La barre d'adresse d'un
+téléphone se colore par `<meta name="theme-color">`, qui n'accepte pas de variable : ses deux valeurs,
+celles de `--surface-1`, s'importent par `COULEURS_NAVIGATEUR` depuis `@ai5d/design-system/theme`.
+
 Trois règles. Les ombres disparaissent et `--elevation-*` vaut `none` : sur fond sombre une
 ombre portée ne se voit pas, et la simuler produit du gris sale. La hiérarchie y naît d'une
 surface plus claire. Le bleu s'éclaircit — seul jeton dont la valeur change entre les deux
@@ -280,3 +323,7 @@ import '@ai5d/design-system/preset';
 
 Le préréglage tire derrière lui les polices, les jetons de marque, les jetons du noyau et
 les profils de densité. Le profil se choisit dans [`../densites/DENSITES.md`](../densites/DENSITES.md).
+
+Hors d'une page, dans un PDF, une image de partage ou un courriel, le logotype se compose selon
+`LOGOTYPE`, exporté par `@ai5d/design-system/logotype` : la recette, sans les couleurs, que chaque
+format porte lui-même.

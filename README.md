@@ -12,9 +12,8 @@
 ![Vitest](https://img.shields.io/badge/Vitest-051C2C?style=for-the-badge&logo=vitest&logoColor=white)
 ![pnpm](https://img.shields.io/badge/pnpm-051C2C?style=for-the-badge&logo=pnpm&logoColor=white)
 
-![Version](https://img.shields.io/badge/version-1.1.0-2251FF?style=flat-square&labelColor=051C2C)
-![Composants](https://img.shields.io/badge/composants-34-2251FF?style=flat-square&labelColor=051C2C)
-![Licence](https://img.shields.io/badge/licence-tous%20droits%20r%C3%A9serv%C3%A9s-051C2C?style=flat-square&labelColor=051C2C)
+![Version](https://img.shields.io/badge/version-1.2.0-2251FF?style=flat-square&labelColor=051C2C)
+![Composants](https://img.shields.io/badge/composants-39-2251FF?style=flat-square&labelColor=051C2C)
 
 </div>
 
@@ -62,14 +61,14 @@ Le dépôt est **public**, et n'est pas publié sur un registre. On l'installe d
 une étiquette**, jamais à une branche :
 
 ```json
-"@ai5d/design-system": "github:Kaaramo/ai5d-digital-design-system#v1.1.0",
+"@ai5d/design-system": "github:Kaaramo/ai5d-digital-design-system#v1.2.0",
 "lucide-react": "^1.0.0"
 ```
 
 puis `pnpm install`, ou directement :
 
 ```bash
-pnpm add github:Kaaramo/ai5d-digital-design-system#v1.1.0 lucide-react@^1.0.0
+pnpm add github:Kaaramo/ai5d-digital-design-system#v1.2.0 lucide-react@^1.0.0
 ```
 
 Vérifié avec pnpm 10.24 : `pnpm add` garde l'étiquette dans le manifeste. Elle doit y rester
@@ -133,38 +132,31 @@ Deux règles les rendent inoffensives. **La densité change l'espace entre les c
 taille du texte**, sans quoi le profil compact devient illisible en six mois. Et **le plancher
 tactile de 44 px prime sur les quatre profils**, exprimé une seule fois en requête média.
 
-## Les 34 composants
+## Les 39 composants
 
 Neuf familles. Le détail de ce que chacun garantit est dans [`noyau/NOYAU.md`](noyau/NOYAU.md).
 
 <div align="center">
 
-| Famille                | Composants                                                                               |
-| :--------------------- | :--------------------------------------------------------------------------------------- |
-| **Marque**             | `Logotype` · `Embleme` · `Icone`                                                         |
-| **Saisie et action**   | `Bouton` · `Champ`                                                                       |
-| **États et signaux**   | `Pastille` · `PastilleEtat` · `Bandeau` · `TempsRelatif` · `Chiffre` · `Avatar`          |
-| **Contenu**            | `Carte` · `CarteAction` · `GrilleCartes` · `EnteteRubrique` · `EnteteCarte` · `EtatVide` |
-| **Coquilles**          | `CoquilleRail` · `GabaritAuth` · `GabaritApp` · `GabaritSeuil`                           |
-| **Navigation**         | `LiensRail` · `BarreOnglets` · `OngletsRubrique` · `SelecteurTheme`                      |
-| **Document**           | `GabaritDocument` · `SommaireDocument` · `BlocDocument` · `DeplierDocument`              |
-| **Dialogues**          | `BoiteConfirmation` · `BoiteMotif`                                                       |
-| **Attente et session** | `Squelette` · `SigneAnime` · `RechargeAuRetour`                                          |
+| Famille                | Composants                                                                                                                     |
+| :--------------------- | :----------------------------------------------------------------------------------------------------------------------------- |
+| **Marque**             | `Logotype` · `Embleme` · `Icone`                                                                                               |
+| **Saisie et action**   | `Bouton` · `Champ` · `ValeurCopiable`                                                                                          |
+| **États et signaux**   | `Pastille` · `PastilleEtat` · `Bandeau` · `TempsRelatif` · `Chiffre` · `Avatar`                                                |
+| **Contenu**            | `Carte` · `CarteAction` · `GrilleCartes` · `EnteteRubrique` · `EnteteCarte` · `EtatVide` · `TitreSection` · `ListeDefinitions` |
+| **Coquilles**          | `CoquilleRail` · `GabaritAuth` · `GabaritApp` · `GabaritSeuil`                                                                 |
+| **Navigation**         | `LiensRail` · `BarreOnglets` · `OngletsRubrique` · `SelecteurTheme` · `LigneLien` · `ListeLignes`                              |
+| **Document**           | `GabaritDocument` · `SommaireDocument` · `BlocDocument` · `DeplierDocument`                                                    |
+| **Dialogues**          | `BoiteConfirmation` · `BoiteMotif`                                                                                             |
+| **Attente et session** | `Squelette` · `SigneAnime` · `RechargeAuRetour`                                                                                |
 
 </div>
 
 ```tsx
 import { CoquilleRail, LiensRail, BarreOnglets } from '@ai5d/design-system/composants';
-import { themeOuSysteme, attributTheme } from '@ai5d/design-system/theme';
+import { themeOuSysteme, attributTheme, COULEURS_NAVIGATEUR } from '@ai5d/design-system/theme';
+import { LOGOTYPE } from '@ai5d/design-system/logotype';
 ```
-
-**Le système ne connaît aucun cadriciel.** Aucun composant n'importe Next. La coquille reçoit sa
-navigation en emplacements : chaque produit écrit un module client d'une vingtaine de lignes qui lit
-son chemin et rend `LiensRail` et `BarreOnglets` avec son propre composant de lien. C'est la seule
-pièce de coquille qui reste dans un produit.
-
-Les composants ne dépendent d'aucun framework de style : leurs styles passent par les variables
-CSS, si bien qu'un projet sans Tailwind les rend correctement.
 
 ## Les gardes
 
@@ -273,6 +265,8 @@ ai5d-digital-design-system/
 │   ├── paliers.css           marges, zones sûres, règles universelles du mobile
 │   ├── paliers.ts            les constantes de largeur
 │   ├── theme.ts              clair, sombre, système, et le cookie qui les retient
+│   ├── couleurs-navigateur.ts les deux couleurs de <meta name="theme-color">
+│   ├── logotype.ts           la recette du logotype hors d'une page
 │   ├── ai5d.preset.css       bloc @theme Tailwind v4
 │   ├── formulations.md       les formulations de référence
 │   ├── polices/              woff2 locaux
@@ -296,13 +290,13 @@ d'authentification ne doit émettre aucune requête vers un tiers.
 
 ## Documents
 
-| Document                                         | Ce qu'il porte                                                             |
-| :----------------------------------------------- | :------------------------------------------------------------------------- |
-| [`noyau/NOYAU.md`](noyau/NOYAU.md)               | Les jetons et leurs contrastes, la typographie, les 34 composants, la voix |
-| [`noyau/PALIERS.md`](noyau/PALIERS.md)           | Mobile d'abord : les paliers, les règles, la coquille d'application        |
-| [`noyau/formulations.md`](noyau/formulations.md) | Les formulations de référence                                              |
-| [`CHANGELOG.md`](CHANGELOG.md)                   | Une entrée par changement, et le guide de migration vers `1.0.0`           |
-| [`docs/decisions/`](docs/decisions/)             | Les arbitrages, avec l'option écartée et pourquoi                          |
+| Document                                         | Ce qu'il porte                                                                                   |
+| :----------------------------------------------- | :----------------------------------------------------------------------------------------------- |
+| [`noyau/NOYAU.md`](noyau/NOYAU.md)               | Les jetons et leurs contrastes, la typographie, les 39 composants, la voix                       |
+| [`noyau/PALIERS.md`](noyau/PALIERS.md)           | Mobile d'abord : les paliers, les règles, la coquille d'application                              |
+| [`noyau/formulations.md`](noyau/formulations.md) | Les formulations de référence                                                                    |
+| [`CHANGELOG.md`](CHANGELOG.md)                   | Une entrée par changement, le guide de migration vers `1.0.0` et le guide de montée vers `1.2.0` |
+| [`docs/decisions/`](docs/decisions/)             | Les arbitrages, avec l'option écartée et pourquoi                                                |
 
 ## Licence
 
