@@ -3,7 +3,13 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
-import type { AnchorHTMLAttributes, ComponentProps, ReactNode } from 'react';
+import type {
+  AnchorHTMLAttributes,
+  ComponentProps,
+  MouseEventHandler,
+  ReactNode,
+  TouchEventHandler,
+} from 'react';
 import { Bouton, type ProprietesBoutonAction } from '../../noyau/composants/Bouton';
 import type { ComposantLien } from '../../noyau/composants/LiensRail';
 import {
@@ -321,6 +327,38 @@ describe('lien.ts', () => {
 });
 
 describe('ComposantLien accepte tous les attributs d un lien (SPEC 1.2.0, §5.0.3)', () => {
+  it('le Link de Next reste assignable sous exactOptionalPropertyTypes', () => {
+    /*
+      Trouve par la montee de Compte, le 26 septembre 2026 : Next redeclare href, onClick,
+      onMouseEnter et onTouchStart SANS `| undefined` (next/dist/client/link.d.ts, 16.3.5). Sous
+      exactOptionalPropertyTypes, que Compte et le Portail activent, un ComposantLien qui aurait
+      promis les attributs d un <a> tels quels, gestionnaires compris, refusait Link. Cette replique
+      recopie la forme de Link ; le jour ou elle ne compile plus, la directive ci-dessous n existe pas
+      et tsc echoue.
+    */
+    type ProprietesDeLinkNext = Omit<
+      AnchorHTMLAttributes<HTMLAnchorElement>,
+      'href' | 'onClick' | 'onMouseEnter' | 'onTouchStart'
+    > & {
+      href: string | { pathname: string };
+      as?: string;
+      replace?: boolean;
+      scroll?: boolean;
+      prefetch?: boolean | 'auto' | null;
+      onMouseEnter?: MouseEventHandler<HTMLAnchorElement>;
+      onTouchStart?: TouchEventHandler<HTMLAnchorElement>;
+      onClick?: MouseEventHandler<HTMLAnchorElement>;
+      children?: ReactNode | undefined;
+    };
+    const LinkDeNext = ({ href, children, ...reste }: ProprietesDeLinkNext) => (
+      <a href={typeof href === 'string' ? href : href.pathname} {...reste}>
+        {children}
+      </a>
+    );
+    const lien: ComposantLien = LinkDeNext;
+    expect(lien).toBe(LinkDeNext);
+  });
+
   it('un lien qui accepte les attributs d un a, comme Link de Next, reste assignable', () => {
     const LienLarge = ({
       children,

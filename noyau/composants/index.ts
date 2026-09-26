@@ -89,7 +89,7 @@ export {
 export type { ProprietesCoquilleRail, Rubrique } from './CoquilleRail';
 
 export { LiensRail, STYLE_LIENS_RAIL } from './LiensRail';
-export type { ComposantLien, ProprietesLiensRail } from './LiensRail';
+export type { ComposantLien, ProprietesLienProduit, ProprietesLiensRail } from './LiensRail';
 
 export { RechargeAuRetour } from './RechargeAuRetour';
 

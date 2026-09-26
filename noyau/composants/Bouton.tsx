@@ -509,7 +509,8 @@ function BoutonLien({
           href={href}
           target={target}
           rel={relSur(rel, target)}
-          onClick={onClick}
+          // Défini seulement : `Link` déclare `onClick` sans `| undefined` (voir `ComposantLien`).
+          {...(onClick === undefined ? {} : { onClick })}
         >
           {contenu}
         </Lien>

@@ -1,4 +1,10 @@
-import type { AnchorHTMLAttributes, ComponentProps, ComponentType, ReactNode } from 'react';
+import type {
+  AnchorHTMLAttributes,
+  ComponentProps,
+  ComponentType,
+  MouseEventHandler,
+  ReactNode,
+} from 'react';
 import type { Rubrique } from './CoquilleRail';
 import { Icone } from './Icone';
 
@@ -34,7 +40,8 @@ import { Icone } from './Icone';
 /**
  * Le composant de lien du produit. Celui de Next convient tel quel.
  *
- * Il reçoit TOUS les attributs d'un `<a>`, et il doit les transmettre : un bouton en lien lui passe
+ * Il reçoit les attributs d'un `<a>` (voir plus bas pour trois gestionnaires), et il doit les
+ * transmettre : un bouton en lien lui passe
  * `style`, `target`, `rel`, `aria-*` et `data-*`, et les perdre rendrait un lien sans hauteur ni
  * variante. Élargi en 1.2.0 ; jusque-là, il ne promettait que l'adresse, la classe et l'état courant.
  *
@@ -42,10 +49,24 @@ import { Icone } from './Icone';
  * lien admet aussi `true`, `step`, `location`… Un produit type le sien par
  * `ComponentProps<ComposantLien>`. Constaté par `tsc` le 26 septembre 2026 ; aucun produit n'était
  * concerné, tous passent `Link` tel quel.
+ *
+ * ── SAUF TROIS GESTIONNAIRES, ET POUR `Link` ────────────────────────────────
+ * Next redéclare `onClick`, `onMouseEnter` et `onTouchStart` SANS `| undefined`. Sous
+ * `exactOptionalPropertyTypes`, que Compte et le Portail activent, un type qui promettait les
+ * attributs d'un `<a>` tels quels refusait `Link` : trouvé par la montée de Compte, le 26 septembre
+ * 2026, avant toute publication. Le système ne transmet jamais `onMouseEnter` ni `onTouchStart`, qui
+ * sortent donc du type ; `onClick` y reste, sans `| undefined`, et le système ne le passe que défini.
  */
-export type ComposantLien = ComponentType<
-  AnchorHTMLAttributes<HTMLAnchorElement> & { href: string; children: ReactNode }
->;
+export type ProprietesLienProduit = Omit<
+  AnchorHTMLAttributes<HTMLAnchorElement>,
+  'href' | 'onClick' | 'onMouseEnter' | 'onTouchStart'
+> & {
+  href: string;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
+  children: ReactNode;
+};
+
+export type ComposantLien = ComponentType<ProprietesLienProduit>;
 
 export interface ProprietesLiensRail {
   rubriques: Rubrique[];

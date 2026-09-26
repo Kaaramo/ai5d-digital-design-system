@@ -31,8 +31,8 @@ contre un instantané de la 1.1.0.
 
 ### Ajouts
 
-- `Bouton` rendu en lien : `href`, `Lien`, `download`, `target`. `ComposantLien` accepte tous les
-  attributs d'un lien.
+- `Bouton` rendu en lien : `href`, `Lien`, `download`, `target`. `ComposantLien` accepte les
+  attributs d'un lien (`ProprietesLienProduit`), sauf `onMouseEnter` et `onTouchStart`.
 - Le ton `neutre` : « rien à signaler », pour `Pastille`, `PastilleEtat`, `Bandeau`.
 - `OngletsRubrique` : `Lien`, jusqu'à six onglets, l'état d'attente.
 - `CoquilleRail` : `piedContenu` et `piedCompact`.
@@ -56,10 +56,14 @@ Aucune propriété retirée, aucune variante renommée. `ProprietesBouton` devie
 étend le premier ou énumère le second dans un `Record` devra le traiter ; aucun ne le fait dans
 Compte, le Portail ou le SDK (constaté le 26 septembre 2026).
 
-`ComposantLien` accepte tous les attributs d'un `<a>`, et `Link` de Next reste assignable tel quel. Un
-composant de lien écrit par un produit doit transmettre tout ce qu'il reçoit ; typé sur l'ancienne
-forme étroite, avec `'aria-current'?: 'page'`, il ne compile plus (constaté par `tsc`) : il se type
-par `ComponentProps<ComposantLien>`. Aucun produit n'est concerné, tous passent `Link`.
+`ComposantLien` accepte les attributs d'un `<a>`, à trois gestionnaires près, et `Link` de Next reste
+assignable tel quel, y compris sous `exactOptionalPropertyTypes`. Next redéclare `onClick`,
+`onMouseEnter` et `onTouchStart` sans `| undefined` : le type les retire ou les resserre
+(`ProprietesLienProduit`). Constaté en montant Compte avant publication : la première forme, qui
+promettait les attributs d'un `<a>` tels quels, faisait échouer six vérifications de types dans
+Compte. Un composant de lien écrit par un produit doit transmettre tout ce qu'il reçoit ; typé sur
+l'ancienne forme étroite, avec `'aria-current'?: 'page'`, il ne compile plus (constaté par `tsc`) : il
+se type par `ComponentProps<ComposantLien>`. Aucun produit n'est concerné, tous passent `Link`.
 
 `densites/profils.css` déclare deux propriétés de plus, les sources `--hauteur-controle-profil` et
 `--ligne-liste-profil`. Un produit qui aurait écrit son propre profil déclare ces deux sources, et non
