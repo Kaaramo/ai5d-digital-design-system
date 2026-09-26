@@ -56,3 +56,18 @@ Leçon payée dans Compte, et qui touche chaque produit consommateur : Next remp
 `'use client'` importé depuis un composant serveur par une référence, jamais par ses exports. Une
 constante importée ainsi vaut `undefined`, sans erreur. C'est pourquoi le thème s'expose par
 `@ai5d/design-system/theme`, un module sans directive, et non depuis le fichier de `SelecteurTheme`.
+
+---
+
+## Version 1.2.0
+
+### Un test qui recopie une forme protège aussi son défaut
+
+De la 0.1.0 à la 1.1.0, `tests/densites.test.ts` et `verifierPlancherTactile` exigeaient au caractère
+près `max(var(--hauteur-controle), 44px)`. Cette forme se lit elle-même et ne vaut rien au calcul : sur
+tout écran tactile, chaque bouton de chaque produit valait 44 px. Le test ne pouvait pas le voir, parce
+qu'il lisait la forme, et jsdom ne calcule aucune propriété personnalisée. La garde, distribuée aux
+produits, aurait fait échouer celui qui corrigeait la feuille chez lui.
+
+**Une règle CSS qui produit une valeur se teste par sa valeur** (un résolveur à chaque exécution, puis
+une mesure dans un vrai navigateur), jamais par sa seule forme.

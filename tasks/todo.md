@@ -107,7 +107,7 @@ SPEC et user stories : `docs/superpowers/specs/version-1.2.0-espace-participant/
 « écrite, non testée » ; la tâche 16 vérifie tout d'un bloc.
 
 - [x] T1 · Le suivi, la mesure « avant » du plancher tactile · fait
-- [ ] T2 · Le plancher tactile sans cycle : feuille, garde, résolveur, instantanés de 1.1.0, décision 005
+- [x] T2 · Le plancher tactile sans cycle : feuille, garde, résolveur, instantanés de 1.1.0, décision 005 · écrite, non testée
 - [ ] T3 · Mesure, mouvement, durée longue, sélection, curseur, `COULEURS_NAVIGATEUR`, non-régression, décision 006
 - [ ] T4 · `lien.ts`, `ComposantLien` élargi, `Bouton` rendu en lien
 - [ ] T5 · Le ton `neutre`

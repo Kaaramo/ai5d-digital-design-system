@@ -41,18 +41,50 @@ Le Lab descend à 40 px sur un écran de bureau avec une souris. Jamais sur un t
 une cible de 40 px y produit des erreurs de saisie que l'utilisateur attribue à
 l'application, jamais à son doigt.
 
-La règle s'exprime une seule fois, en requête média — elle n'est donc pas négociable écran
-par écran :
+La règle s'exprime une seule fois, en requête média ; elle n'est donc pas négociable écran par
+écran. Elle relève la **source** de chaque hauteur, jamais la propriété qu'elle écrit :
 
 ```css
+/* Chaque profil déclare ses deux sources. */
+[data-densite='compact'] {
+  --hauteur-controle-profil: 40px;
+  --ligne-liste-profil: 40px;
+}
+
+/* La valeur que lisent les composants, calculée une fois. */
+:root,
+[data-densite] {
+  --hauteur-controle: var(--hauteur-controle-profil);
+  --ligne-liste: var(--ligne-liste-profil);
+}
+
+/* Le plancher, sur la source. */
 @media (pointer: coarse) {
   :root,
   [data-densite] {
-    --hauteur-controle: max(var(--hauteur-controle), 44px);
-    --ligne-liste: max(var(--ligne-liste), 44px);
+    --hauteur-controle: max(var(--hauteur-controle-profil), 44px);
+    --ligne-liste: max(var(--ligne-liste-profil), 44px);
   }
 }
 ```
+
+**Pourquoi l'ancienne forme ne valait rien.** Jusqu'à la 1.1.0, le bloc écrivait
+`--hauteur-controle: max(var(--hauteur-controle), 44px)`. Une propriété personnalisée qui se lit
+elle-même est invalide au moment du calcul : elle ne vaut ni l'ancienne valeur ni 44 px, elle ne vaut
+rien, et la hauteur tombe à celle du contenu. Sur tout écran tactile, chaque bouton valait 44 px
+quelle que soit sa taille, et le squelette d'un champ 21 px. Le test et la garde exigeaient cette
+forme ; ils la refusent depuis la 1.2.0. Décision
+[005](../docs/decisions/005-le-plancher-tactile-sans-cycle.md).
+
+Les valeurs effectives, celles que `tests/densites.test.ts` calcule à chaque exécution et que
+`docs/preuves/1.2.0/plancher-tactile.md` mesure dans Chromium :
+
+|                  | AÉRÉ  | ÉQUILIBRÉ | MODÉRÉ | COMPACT |
+| ---------------- | ----- | --------- | ------ | ------- |
+| Contrôle, souris | 48 px | 48 px     | 44 px  | 40 px   |
+| Contrôle, doigt  | 48 px | 48 px     | 44 px  | 44 px   |
+| Ligne, souris    | 64 px | 56 px     | 48 px  | 40 px   |
+| Ligne, doigt     | 64 px | 56 px     | 48 px  | 44 px   |
 
 Le sélecteur générique `[data-densite]` couvre aussi les profils qu'on ajouterait plus tard
 et que personne n'aurait pensé à vérifier.
@@ -65,11 +97,13 @@ Une ligne, sur l'élément racine du produit :
 <html lang="fr" data-densite="equilibre"></html>
 ```
 
-C'est toute l'adoption. Les composants du noyau lisent `--hauteur-controle` et
+C'est toute l'adoption. Les composants du noyau lisent `--hauteur-controle`, `--ligne-liste` et
 `--padding-carte` sans savoir quel profil est actif.
 
 ## Ajouter un profil
 
 Autorisé quand un produit ne rentre dans aucun des quatre, avec démonstration à l'appui.
-Un profil s'ajoute dans `profils.css`, **avant** le bloc `@media (pointer: coarse)` — un
-profil déclaré après lui le remplacerait, et le test vérifie cet ordre.
+Un profil s'ajoute dans `profils.css`, **avant** le bloc générique et le bloc
+`@media (pointer: coarse)`. Il déclare ses deux sources, `--hauteur-controle-profil` et
+`--ligne-liste-profil`, et jamais `--hauteur-controle` ni `--ligne-liste` : ce sont les valeurs
+calculées. Un profil déclaré après le plancher le remplacerait, et le test vérifie cet ordre.

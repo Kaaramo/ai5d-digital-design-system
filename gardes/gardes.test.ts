@@ -134,25 +134,86 @@ describe('garde 3 - plancher tactile', () => {
     expect(infractions.length, `\n${decrire(infractions)}`).toBe(0);
   });
 
+  it('refuse la forme de la 1.1.0, qui se lisait elle-meme, a sa vraie ligne', () => {
+    /*
+      Jusqu a la 1.1.0, cette garde EXIGEAIT cette forme. Elle est invalide au calcul : sur tout ecran
+      tactile, chaque bouton de chaque produit valait 44 px. Decision 005.
+    */
+    const infractions = verifierPlancherTactile('tests/instantanes/profils-1.1.0.css');
+    const cycles = infractions.filter((i) => i.extrait.includes('se lit elle-meme'));
+    expect(cycles.map((i) => i.ligne)).toEqual([79, 80]);
+    expect(cycles[0]?.extrait).toContain('--hauteur-controle se lit elle-meme');
+    expect(cycles[1]?.extrait).toContain('--ligne-liste se lit elle-meme');
+
+    const sourcesAbsentes = infractions.filter((i) => i.extrait.includes("n'est pas releve"));
+    expect(sourcesAbsentes.map((i) => i.ligne)).toEqual([76, 76]);
+  });
+
   it('releve une requete media absente', () => {
     const racine = depotTemporaire();
     const chemin = join(racine, 'profils.css');
-    writeFileSync(chemin, "[data-densite='compact'] { --hauteur-controle: 40px; }\n");
+    writeFileSync(chemin, "[data-densite='compact'] { --hauteur-controle-profil: 40px; }\n");
     const infractions = verifierPlancherTactile(chemin);
     expect(infractions).toHaveLength(1);
     expect(infractions[0]?.extrait).toContain('absente');
   });
 
-  it('releve une variable oubliee dans la requete', () => {
+  it('releve une source oubliee dans la requete, a la ligne de la requete', () => {
     const racine = depotTemporaire();
     const chemin = join(racine, 'profils.css');
     writeFileSync(
       chemin,
-      '@media (pointer: coarse) {\n  :root { --hauteur-controle: max(var(--hauteur-controle), 44px); }\n}\n',
+      ':root {\n  --ligne-liste-profil: 56px;\n}\n@media (pointer: coarse) {\n  :root { --hauteur-controle: max(var(--hauteur-controle-profil), 44px); }\n}\n',
     );
     const infractions = verifierPlancherTactile(chemin);
     expect(infractions).toHaveLength(1);
     expect(infractions[0]?.extrait).toContain('--ligne-liste');
+    expect(infractions[0]?.ligne).toBe(4);
+  });
+
+  it('releve une propriete qui se lit elle-meme hors du plancher', () => {
+    const racine = depotTemporaire();
+    const chemin = join(racine, 'profils.css');
+    writeFileSync(
+      chemin,
+      [
+        ':root {',
+        '  --ligne-liste: calc(var(--ligne-liste) + 4px);',
+        '}',
+        '@media (pointer: coarse) {',
+        '  :root {',
+        '    --hauteur-controle: max(var(--hauteur-controle-profil), 44px);',
+        '    --ligne-liste: max(var(--ligne-liste-profil), 44px);',
+        '  }',
+        '}',
+        '',
+      ].join('\n'),
+    );
+    const infractions = verifierPlancherTactile(chemin);
+    expect(infractions).toHaveLength(1);
+    expect(infractions[0]?.ligne).toBe(2);
+    expect(infractions[0]?.extrait).toContain('--ligne-liste se lit elle-meme');
+  });
+
+  it('ne releve pas un commentaire qui cite la forme fautive', () => {
+    const racine = depotTemporaire();
+    const chemin = join(racine, 'profils.css');
+    writeFileSync(
+      chemin,
+      [
+        '/* Ancienne forme, invalide :',
+        '   --hauteur-controle: max(var(--hauteur-controle), 44px);',
+        '*/',
+        '@media (pointer: coarse) {',
+        '  :root {',
+        '    --hauteur-controle: max(var(--hauteur-controle-profil), 44px);',
+        '    --ligne-liste: max(var(--ligne-liste-profil), 44px);',
+        '  }',
+        '}',
+        '',
+      ].join('\n'),
+    );
+    expect(verifierPlancherTactile(chemin)).toEqual([]);
   });
 
   it('fixe le plancher a 44 px, valeur non negociable', () => {

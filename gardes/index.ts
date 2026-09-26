@@ -157,19 +157,71 @@ export function verifierAucunJetonDeMarqueRedefini(
 /** Le plancher tactile, en pixels. Il ne dépend d'aucun profil de densité. */
 export const PLANCHER_TACTILE = 44;
 
+/** Une déclaration qui lit sa propre propriété, avec sa ligne. */
+export interface DeclarationAutoReferente {
+  /** La propriété personnalisée, `--hauteur-controle` par exemple. */
+  propriete: string;
+  /** Numéro de ligne dans la feuille, à partir de 1. */
+  ligne: number;
+  /** La ligne de la déclaration, élaguée. */
+  extrait: string;
+}
+
 /**
- * Garde 3 — le plancher tactile est bien posé.
+ * Les déclarations `--x: …var(--x)…` d'une feuille, valeur de repli comprise.
  *
- * Elle n'inspecte pas des écrans rendus, ce qu'un test statique ne peut pas faire : elle
- * vérifie que le fichier de densités contient la requête média qui relève la hauteur de
- * contrôle à 44 px. C'est cette règle unique qui protège tous les écrans à la fois.
+ * Pour le navigateur, une propriété personnalisée qui dépend d'elle-même est invalide au moment du
+ * calcul : elle ne vaut ni l'ancienne valeur ni celle qu'on voulait lui donner, elle ne vaut rien.
+ * C'est le défaut que le plancher tactile a porté de la 0.1.0 à la 1.1.0, protégé par un test et par
+ * cette même garde, qui exigeaient la forme fautive.
+ *
+ * Les commentaires sont vidés avant la lecture, sans perdre une ligne : un commentaire a le droit de
+ * citer la forme fautive, et le numéro rapporté doit rester celui du fichier.
+ */
+export function declarationsAutoReferentes(css: string): DeclarationAutoReferente[] {
+  const sansCommentaires = css.replace(/\/\*[\s\S]*?\*\//g, (commentaire) =>
+    commentaire.replace(/[^\n]/g, ' '),
+  );
+
+  const trouvees: DeclarationAutoReferente[] = [];
+  sansCommentaires.split('\n').forEach((ligne, index) => {
+    for (const correspondance of ligne.matchAll(/(--[a-zA-Z0-9-]+)\s*:([^;{}]*)/g)) {
+      const propriete = correspondance[1] ?? '';
+      const valeur = correspondance[2] ?? '';
+      if (new RegExp(`var\\(\\s*${propriete}\\s*[,)]`).test(valeur)) {
+        trouvees.push({ propriete, ligne: index + 1, extrait: ligne.trim().slice(0, 120) });
+      }
+    }
+  });
+  return trouvees;
+}
+
+/**
+ * Garde 3 — le plancher tactile est bien posé, et il vaut quelque chose.
+ *
+ * Elle n'inspecte pas des écrans rendus, ce qu'un test statique ne peut pas faire. Elle vérifie trois
+ * choses dans le fichier de densités : la requête `(pointer: coarse)` existe ; elle relève la SOURCE de
+ * chaque hauteur, `max(var(--hauteur-controle-profil), 44px)` et
+ * `max(var(--ligne-liste-profil), 44px)` ; et aucune déclaration de la feuille ne se lit elle-même.
+ *
+ * Jusqu'à la 1.1.0, elle exigeait la forme `max(var(--hauteur-controle), 44px)`, invalide au calcul :
+ * un produit qui aurait corrigé la feuille chez lui aurait fait échouer sa propre intégration
+ * continue. Décision 005. La ligne rapportée est la vraie ligne : celle de la déclaration fautive, ou
+ * celle de la requête quand une source y manque.
  */
 export function verifierPlancherTactile(cheminProfils: string): Infraction[] {
   const css = readFileSync(cheminProfils, 'utf8');
-  const infractions: Infraction[] = [];
   const regle = 'cible-tactile-minimale';
 
-  if (!css.includes('@media (pointer: coarse)')) {
+  const infractions: Infraction[] = declarationsAutoReferentes(css).map(({ propriete, ligne }) => ({
+    fichier: cheminProfils,
+    ligne,
+    extrait: `${propriete} se lit elle-meme : la valeur est invalide au calcul, et la hauteur tombe a celle du contenu`,
+    regle,
+  }));
+
+  const debut = css.indexOf('@media (pointer: coarse)');
+  if (debut === -1) {
     infractions.push({
       fichier: cheminProfils,
       ligne: 1,
@@ -179,12 +231,13 @@ export function verifierPlancherTactile(cheminProfils: string): Infraction[] {
     return infractions;
   }
 
+  const ligneRequete = css.slice(0, debut).split('\n').length;
   const bloc = /@media \(pointer: coarse\)\s*\{([\s\S]*?)\n\}/.exec(css)?.[1] ?? '';
   for (const variable of ['--hauteur-controle', '--ligne-liste']) {
-    if (!bloc.includes(`max(var(${variable}), ${PLANCHER_TACTILE}px)`)) {
+    if (!bloc.includes(`max(var(${variable}-profil), ${PLANCHER_TACTILE}px)`)) {
       infractions.push({
         fichier: cheminProfils,
-        ligne: 1,
+        ligne: ligneRequete,
         extrait: `${variable} n'est pas releve a ${PLANCHER_TACTILE}px sur pointeur grossier`,
         regle,
       });

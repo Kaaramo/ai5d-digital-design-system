@@ -17,8 +17,8 @@
       la pente naturelle de tout profil dense.
 
    2. Le plancher tactile de 44 px prime sur les quatre profils. Il est exprime
-      une fois, en bas de ce fichier, sous forme de requete media, et il releve
-      la SOURCE de chaque hauteur, jamais la valeur qu'il ecrit (decision 005).
+      une fois, en bas de ce fichier, sous forme de requete media - il n'est donc
+      pas negociable ecran par ecran.
 
    Un produit pose data-densite sur son element racine, une fois. C'est toute
    son adoption.
@@ -28,8 +28,8 @@
 [data-densite='aere'] {
   --rythme-section: 64px;
   --padding-carte: 32px;
-  --hauteur-controle-profil: 48px;
-  --ligne-liste-profil: 64px;
+  --hauteur-controle: 48px;
+  --ligne-liste: 64px;
   --interligne-corps: 1.6;
   --contenu-max: 1120px;
 }
@@ -37,8 +37,8 @@
 [data-densite='equilibre'] {
   --rythme-section: 48px;
   --padding-carte: 24px;
-  --hauteur-controle-profil: 48px;
-  --ligne-liste-profil: 56px;
+  --hauteur-controle: 48px;
+  --ligne-liste: 56px;
   --interligne-corps: 1.55;
   --contenu-max: 1120px;
 }
@@ -46,8 +46,8 @@
 [data-densite='modere'] {
   --rythme-section: 40px;
   --padding-carte: 20px;
-  --hauteur-controle-profil: 44px;
-  --ligne-liste-profil: 48px;
+  --hauteur-controle: 44px;
+  --ligne-liste: 48px;
   --interligne-corps: 1.5;
   --contenu-max: 1280px;
 }
@@ -55,26 +55,10 @@
 [data-densite='compact'] {
   --rythme-section: 32px;
   --padding-carte: 16px;
-  --hauteur-controle-profil: 40px;
-  --ligne-liste-profil: 40px;
+  --hauteur-controle: 40px;
+  --ligne-liste: 40px;
   --interligne-corps: 1.45;
   --contenu-max: 100%;
-}
-
-/* =========================================================================
-   La valeur que lisent les composants.
-
-   Chaque profil declare la SOURCE de ses deux hauteurs. La hauteur de controle
-   et la ligne de liste que lisent les composants se calculent ici, une fois,
-   sur tout element qui porte un profil : un profil pose sur un bloc interieur
-   recalcule donc les siennes. Un profil ajoute plus tard se declare AU-DESSUS
-   de ce bloc.
-   ========================================================================= */
-
-:root,
-[data-densite] {
-  --hauteur-controle: var(--hauteur-controle-profil);
-  --ligne-liste: var(--ligne-liste-profil);
 }
 
 /* =========================================================================
@@ -87,24 +71,12 @@
    La regle vaut pour les quatre profils, y compris ceux qui sont deja au-dessus
    du plancher : ecrite ainsi, elle survit a l'ajout d'un cinquieme profil que
    personne n'aura pense a verifier.
-
-   ELLE LIT LA SOURCE, JAMAIS LA PROPRIETE QU'ELLE ECRIT. Jusqu'a la 1.1.0, ce
-   bloc relevait chaque hauteur en la lisant elle-meme. Pour le navigateur, une
-   propriete personnalisee qui depend d'elle-meme est invalide au moment du
-   calcul : elle ne valait ni l'ancienne valeur ni 44 px, elle ne valait rien,
-   et la hauteur tombait a celle du contenu. Mesure dans Chromium le 26 septembre
-   2026 : sur tout ecran tactile, chaque bouton valait 44 px quelle que soit sa
-   taille, et le squelette d'un champ 21 px. Le test et la garde exigeaient cette
-   forme. Decision 005.
-
-   Le 44 px reste ecrit en clair : ce fichier s'importe seul, et la cible tactile
-   de jetons.css n'y serait pas definie.
    ========================================================================= */
 
 @media (pointer: coarse) {
   :root,
   [data-densite] {
-    --hauteur-controle: max(var(--hauteur-controle-profil), 44px);
-    --ligne-liste: max(var(--ligne-liste-profil), 44px);
+    --hauteur-controle: max(var(--hauteur-controle), 44px);
+    --ligne-liste: max(var(--ligne-liste), 44px);
   }
 }

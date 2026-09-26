@@ -1,0 +1,297 @@
+{
+  "etiquette": "v1.1.0",
+  "fichiers": {
+    "noyau/marque.css": [
+      {
+        "chemin": [],
+        "selecteur": ":root",
+        "declarations": {
+          "--marque-encre": "#051C2C",
+          "--marque-navy": "#042A76",
+          "--marque-action": "#2251FF",
+          "--marque-action-survol": "#1B44DB",
+          "--marque-action-clair": "#5B7BFF",
+          "--marque-blanc": "#FFFFFF"
+        }
+      }
+    ],
+    "noyau/jetons.css": [
+      {
+        "chemin": [],
+        "selecteur": ":root",
+        "declarations": {
+          "--encre": "var(--marque-encre)",
+          "--navy": "var(--marque-navy)",
+          "--blanc": "var(--marque-blanc)",
+          "--action": "var(--marque-action)",
+          "--action-survol": "var(--marque-action-survol)",
+          "--action-clair": "var(--marque-action-clair)",
+          "--surface-1": "#faf7f2",
+          "--surface-2": "var(--blanc)",
+          "--surface-3": "var(--blanc)",
+          "--surface-chaude": "#f4efe7",
+          "--bordure": "#e7e0d6",
+          "--bordure-forte": "#d5ccbe",
+          "--texte-fort": "var(--encre)",
+          "--texte": "#2b3a45",
+          "--texte-faible": "#616f78",
+          "--texte-sur-action": "var(--blanc)",
+          "--reussite": "#0e7c5a",
+          "--reussite-fond": "#e6f4ee",
+          "--attention": "#b45309",
+          "--attention-fond": "#fdf2e3",
+          "--erreur": "#b42318",
+          "--erreur-fond": "#fdecea",
+          "--erreur-survol": "#9a1e14",
+          "--texte-sur-erreur": "var(--blanc)",
+          "--info": "var(--action)",
+          "--info-fond": "#eaefff",
+          "--surface-selection": "var(--info-fond)",
+          "--police-titre": "'Fraunces', Georgia, 'Times New Roman', serif",
+          "--police-corps": "'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif",
+          "--police-mono": "'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace",
+          "--taille-xs": "0.75rem",
+          "--taille-sm": "0.875rem",
+          "--taille-md": "1rem",
+          "--taille-lg": "1.125rem",
+          "--taille-xl": "1.375rem",
+          "--taille-2xl": "1.875rem",
+          "--taille-3xl": "3rem",
+          "--taille-4xl": "3.5rem",
+          "--graisse-legere": "300",
+          "--graisse-normale": "400",
+          "--graisse-moyenne": "500",
+          "--graisse-semi": "600",
+          "--graisse-forte": "700",
+          "--interligne-serre": "1.12",
+          "--interligne-titre": "1.2",
+          "--interligne-large": "1.75",
+          "--lettrage-titre": "-0.01em",
+          "--lettrage-marque": "-0.02em",
+          "--lettrage-overline": "0.06em",
+          "--lettrage-mono": "0.16em",
+          "--espace-1": "4px",
+          "--espace-2": "8px",
+          "--espace-3": "12px",
+          "--espace-4": "16px",
+          "--espace-6": "24px",
+          "--espace-8": "32px",
+          "--espace-12": "48px",
+          "--espace-16": "64px",
+          "--rayon-sm": "4px",
+          "--rayon-md": "10px",
+          "--rayon-lg": "16px",
+          "--rayon-plein": "999px",
+          "--elevation-0": "none",
+          "--elevation-1": "0 1px 2px rgba(5, 28, 44, 0.06)",
+          "--elevation-2": "0 4px 12px rgba(5, 28, 44, 0.08)",
+          "--elevation-3": "0 12px 32px rgba(5, 28, 44, 0.12)",
+          "--duree-courte": "150ms",
+          "--duree-moyenne": "250ms",
+          "--duree-longue": "800ms",
+          "--courbe-entree": "cubic-bezier(0.16, 1, 0.3, 1)",
+          "--courbe-sortie": "cubic-bezier(0.4, 0, 1, 1)",
+          "--action-sur-sombre": "#6b88ff",
+          "--cible-tactile": "44px"
+        }
+      },
+      {
+        "chemin": ["@media (prefers-color-scheme: dark)"],
+        "selecteur": ":root:not([data-theme='light'])",
+        "declarations": {
+          "--surface-1": "#0b1620",
+          "--surface-2": "#11212d",
+          "--surface-3": "#172c3b",
+          "--surface-chaude": "#171f26",
+          "--bordure": "#22323f",
+          "--bordure-forte": "#2e4252",
+          "--texte-fort": "#f2f5f7",
+          "--texte": "#c9d4dc",
+          "--texte-faible": "#8d9aa5",
+          "--reussite": "#2fa37b",
+          "--reussite-fond": "#103029",
+          "--attention": "#e0a050",
+          "--attention-fond": "#2e2413",
+          "--erreur": "#f27063",
+          "--erreur-fond": "#331a18",
+          "--erreur-survol": "#f58b80",
+          "--texte-sur-erreur": "var(--encre)",
+          "--texte-sur-action": "var(--encre)",
+          "--info": "var(--action-sur-sombre)",
+          "--info-fond": "#14203a",
+          "--surface-selection": "var(--surface-3)",
+          "--action": "var(--action-sur-sombre)",
+          "--action-survol": "#8ba1ff",
+          "--elevation-1": "none",
+          "--elevation-2": "none",
+          "--elevation-3": "none"
+        }
+      },
+      {
+        "chemin": [],
+        "selecteur": ":root[data-theme='dark']",
+        "declarations": {
+          "--surface-1": "#0b1620",
+          "--surface-2": "#11212d",
+          "--surface-3": "#172c3b",
+          "--surface-chaude": "#171f26",
+          "--bordure": "#22323f",
+          "--bordure-forte": "#2e4252",
+          "--texte-fort": "#f2f5f7",
+          "--texte": "#c9d4dc",
+          "--texte-faible": "#8d9aa5",
+          "--reussite": "#2fa37b",
+          "--reussite-fond": "#103029",
+          "--attention": "#e0a050",
+          "--attention-fond": "#2e2413",
+          "--erreur": "#f27063",
+          "--erreur-fond": "#331a18",
+          "--erreur-survol": "#f58b80",
+          "--texte-sur-erreur": "var(--encre)",
+          "--texte-sur-action": "var(--encre)",
+          "--info": "var(--action-sur-sombre)",
+          "--info-fond": "#14203a",
+          "--surface-selection": "var(--surface-3)",
+          "--action": "var(--action-sur-sombre)",
+          "--action-survol": "#8ba1ff",
+          "--elevation-1": "none",
+          "--elevation-2": "none",
+          "--elevation-3": "none"
+        }
+      },
+      {
+        "chemin": [],
+        "selecteur": ":root[data-theme='light']",
+        "declarations": {
+          "--surface-1": "#faf7f2",
+          "--surface-2": "var(--blanc)",
+          "--surface-3": "var(--blanc)",
+          "--surface-chaude": "#f4efe7",
+          "--bordure": "#e7e0d6",
+          "--bordure-forte": "#d5ccbe",
+          "--texte-fort": "var(--encre)",
+          "--texte": "#2b3a45",
+          "--texte-faible": "#616f78",
+          "--reussite": "#0e7c5a",
+          "--reussite-fond": "#e6f4ee",
+          "--attention": "#b45309",
+          "--attention-fond": "#fdf2e3",
+          "--erreur": "#b42318",
+          "--erreur-fond": "#fdecea",
+          "--erreur-survol": "#9a1e14",
+          "--texte-sur-erreur": "var(--blanc)",
+          "--info": "var(--action)",
+          "--info-fond": "#eaefff",
+          "--surface-selection": "var(--info-fond)",
+          "--elevation-1": "0 1px 2px rgba(5, 28, 44, 0.06)",
+          "--elevation-2": "0 4px 12px rgba(5, 28, 44, 0.08)",
+          "--elevation-3": "0 12px 32px rgba(5, 28, 44, 0.12)"
+        }
+      },
+      {
+        "chemin": ["@media (prefers-reduced-motion: reduce)"],
+        "selecteur": ":root",
+        "declarations": {
+          "--duree-courte": "100ms",
+          "--duree-moyenne": "100ms",
+          "--duree-longue": "0ms"
+        }
+      }
+    ],
+    "noyau/paliers.css": [
+      {
+        "chemin": [],
+        "selecteur": ":root",
+        "declarations": {
+          "--marge-page": "16px",
+          "--zone-sure-basse": "env(safe-area-inset-bottom, 0px)",
+          "--zone-sure-haute": "env(safe-area-inset-top, 0px)",
+          "--zone-sure-gauche": "env(safe-area-inset-left, 0px)",
+          "--zone-sure-droite": "env(safe-area-inset-right, 0px)",
+          "--hauteur-entete": "56px",
+          "--hauteur-barre-onglets": "56px",
+          "--reserve-barre": "0px"
+        }
+      },
+      {
+        "chemin": ["@media (min-width: 640px)"],
+        "selecteur": ":root",
+        "declarations": {
+          "--marge-page": "24px"
+        }
+      },
+      {
+        "chemin": ["@media (min-width: 1024px)"],
+        "selecteur": ":root",
+        "declarations": {
+          "--marge-page": "32px"
+        }
+      },
+      {
+        "chemin": ["@media (pointer: coarse)"],
+        "selecteur": ":root",
+        "declarations": {
+          "--duree-survol": "0ms"
+        }
+      }
+    ],
+    "densites/profils.css": [
+      {
+        "chemin": [],
+        "selecteur": ":root, [data-densite='aere']",
+        "declarations": {
+          "--rythme-section": "64px",
+          "--padding-carte": "32px",
+          "--hauteur-controle": "48px",
+          "--ligne-liste": "64px",
+          "--interligne-corps": "1.6",
+          "--contenu-max": "1120px"
+        }
+      },
+      {
+        "chemin": [],
+        "selecteur": "[data-densite='equilibre']",
+        "declarations": {
+          "--rythme-section": "48px",
+          "--padding-carte": "24px",
+          "--hauteur-controle": "48px",
+          "--ligne-liste": "56px",
+          "--interligne-corps": "1.55",
+          "--contenu-max": "1120px"
+        }
+      },
+      {
+        "chemin": [],
+        "selecteur": "[data-densite='modere']",
+        "declarations": {
+          "--rythme-section": "40px",
+          "--padding-carte": "20px",
+          "--hauteur-controle": "44px",
+          "--ligne-liste": "48px",
+          "--interligne-corps": "1.5",
+          "--contenu-max": "1280px"
+        }
+      },
+      {
+        "chemin": [],
+        "selecteur": "[data-densite='compact']",
+        "declarations": {
+          "--rythme-section": "32px",
+          "--padding-carte": "16px",
+          "--hauteur-controle": "40px",
+          "--ligne-liste": "40px",
+          "--interligne-corps": "1.45",
+          "--contenu-max": "100%"
+        }
+      },
+      {
+        "chemin": ["@media (pointer: coarse)"],
+        "selecteur": ":root, [data-densite]",
+        "declarations": {
+          "--hauteur-controle": "max(var(--hauteur-controle), 44px)",
+          "--ligne-liste": "max(var(--ligne-liste), 44px)"
+        }
+      }
+    ]
+  }
+}

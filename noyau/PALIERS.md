@@ -95,8 +95,10 @@ geste suivant. Une information qui n'apparaît qu'au survol n'existe pas sur té
 
 ### 6. Le plancher tactile prime
 
-44 px, déjà garanti par [`../densites/profils.css`](../densites/profils.css) sous
-`@media (pointer: coarse)`. Les paliers ne le renégocient pas.
+44 px, garanti par [`../densites/profils.css`](../densites/profils.css) sous
+`@media (pointer: coarse)`, qui relève la **source** de chaque hauteur. Les paliers ne le renégocient
+pas. Jusqu'à la 1.1.0, la règle était écrite mais ne valait rien au doigt : elle lisait la propriété
+qu'elle écrivait, et la hauteur tombait à celle du contenu. Décision 005.
 
 ### 7. Une colonne, sous `COMPACT`
 
