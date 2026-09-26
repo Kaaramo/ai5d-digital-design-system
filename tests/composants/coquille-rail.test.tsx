@@ -7,6 +7,7 @@ import {
   LARGEUR_RAIL_TABLETTE,
   STYLE_COQUILLE_RAIL,
 } from '../../noyau/composants/CoquilleRail';
+import { CoquilleRail as CoquilleRail110 } from '../instantanes/CoquilleRail-1.1.0';
 
 /**
  * La coquille à rail : ce qu'elle rend, et ce qu'elle refuse de savoir.
@@ -202,5 +203,117 @@ describe('CoquilleRail, ce qu elle refuse de savoir', () => {
     expect(utile).not.toContain("'use client'");
     expect(utile).not.toContain("from 'next/");
     expect(utile).not.toMatch(/\buse[A-Z]\w*\(/);
+  });
+});
+
+/** Le HTML rendu, sans les feuilles injectees : la feuille change en 1.2.0, pas le balisage. */
+function sansFeuilles(conteneur: HTMLElement): string {
+  const copie = conteneur.cloneNode(true) as HTMLElement;
+  copie.querySelectorAll('style').forEach((feuille) => feuille.remove());
+  return copie.innerHTML;
+}
+
+describe('CoquilleRail sans pied : le HTML de la 1.1.0 (1.2.0)', () => {
+  const CAS: Array<Partial<Parameters<typeof CoquilleRail>[0]>> = [
+    {},
+    { actionsBarre: <button type="button">Sortie</button> },
+    { densite: 'compact', largeurContenu: 960 },
+    { mention: 'Console d’administration', bandeau: <p>Vos actions sont consignées.</p> },
+    { mode: 'bureau-seulement', refus: <p>La console demande un écran de bureau.</p> },
+  ];
+
+  for (const [index, cas] of CAS.entries()) {
+    it(`cas ${index + 1}`, () => {
+      const communes = {
+        produit: 'Compte',
+        navigationRail: <nav aria-label="Rubriques">rail</nav>,
+        navigationBarre: <nav aria-label="Barre">barre</nav>,
+        pied: <span>pied</span>,
+        rechargerAuRetour: false,
+      };
+      const avant = render(
+        <CoquilleRail110 {...communes} {...cas}>
+          <p>Le contenu</p>
+        </CoquilleRail110>,
+      ).container;
+      const apres = render(
+        <CoquilleRail {...communes} {...cas}>
+          <p>Le contenu</p>
+        </CoquilleRail>,
+      ).container;
+      expect(sansFeuilles(apres)).toBe(sansFeuilles(avant));
+    });
+  }
+});
+
+describe('CoquilleRail, les deux pieds (1.2.0)', () => {
+  it('rend le pied de contenu dans un footer, apres main et hors de main', () => {
+    const { container } = coquille({ piedContenu: <a href="/confidentialite">Confidentialité</a> });
+    const principal = container.querySelector('main');
+    const pied = container.querySelector('footer');
+    if (principal === null || pied === null) throw new Error('main ou footer absent');
+
+    expect(principal.contains(pied)).toBe(false);
+    expect(principal.compareDocumentPosition(pied) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.getAllByRole('contentinfo')).toHaveLength(1);
+    expect(container.querySelector('[data-coquille="rail"]')).toHaveAttribute(
+      'data-pied',
+      'complet',
+    );
+  });
+
+  it('pose le pied compact au-dessus du pied de contenu', () => {
+    const { container } = coquille({
+      piedCompact: <span>Thème</span>,
+      piedContenu: <span>Mentions légales</span>,
+    });
+    const colonne = container.querySelector('footer .ai5d-coquille-rail__colonne');
+    expect(colonne?.firstElementChild).toHaveClass('ai5d-coquille-rail__pied-compact');
+    expect(colonne?.firstElementChild).toHaveTextContent('Thème');
+    expect(colonne).toHaveTextContent('Mentions légales');
+  });
+
+  it('avec le seul pied compact, se declare compact', () => {
+    const { container } = coquille({ piedCompact: <span>Thème</span> });
+    expect(container.querySelector('[data-coquille="rail"]')).toHaveAttribute(
+      'data-pied',
+      'compact',
+    );
+    expect(container.querySelector('footer')).toBeInTheDocument();
+  });
+
+  it('ignore le pied compact en mode bureau seulement', () => {
+    const { container } = coquille({
+      mode: 'bureau-seulement',
+      refus: <p>La console demande un écran de bureau.</p>,
+      piedCompact: <span>Thème</span>,
+    });
+    expect(container.querySelector('footer')).toBeNull();
+    expect(container.querySelector('[data-coquille="rail"]')).not.toHaveAttribute('data-pied');
+  });
+
+  it('donne au pied la largeur de la colonne du contenu', () => {
+    const { container } = coquille({ largeurContenu: 960, piedContenu: <span>Mentions</span> });
+    expect(container.querySelector('footer .ai5d-coquille-rail__colonne')).toHaveStyle({
+      maxWidth: '960px',
+    });
+  });
+
+  it('passe la reserve basse au pied, et retire le pied compact au-dela de 768 px', () => {
+    const css = STYLE_COQUILLE_RAIL.replace(/\s+/g, ' ');
+    expect(css).toContain(
+      '.ai5d-coquille-rail[data-pied] .ai5d-coquille-rail__contenu { padding-bottom: var(--espace-8); }',
+    );
+    expect(css).toContain(
+      'padding: var(--espace-6) var(--marge-page) calc(var(--espace-6) + var(--reserve-barre, 0px));',
+    );
+
+    const tablette = STYLE_COQUILLE_RAIL.slice(
+      STYLE_COQUILLE_RAIL.indexOf('@media (min-width: 768px)'),
+    ).replace(/\s+/g, ' ');
+    expect(tablette).toContain('.ai5d-coquille-rail__pied-compact { display: none; }');
+    expect(tablette).toContain(
+      ".ai5d-coquille-rail[data-pied='compact'] .ai5d-coquille-rail__pied-contenu { display: none; }",
+    );
   });
 });

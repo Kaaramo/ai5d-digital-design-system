@@ -42,6 +42,15 @@ import { BUREAU, TABLETTE } from '../paliers';
  * ── LA GARDE DU RETOUR ARRIÈRE ──────────────────────────────────────────────
  * `RechargeAuRetour` est monté par défaut : toute coquille qui affiche une identité en a besoin, et
  * un produit qui devrait penser à le monter l'oublierait. Voir son en-tête.
+ *
+ * ── LES DEUX PIEDS DE CONTENU, EN 1.2.0 ─────────────────────────────────────
+ * `piedContenu` se rend dans un `<footer>` APRÈS `<main>`, à toutes les largeurs : c'est lui qui porte
+ * le repère `contentinfo`, et les liens légaux n'ont rien à faire dans le contenu principal.
+ * `piedCompact` s'y ajoute sous 768 px : ce que le pied du rail offre au-delà, et que le téléphone
+ * perdrait sans lui, le thème d'abord. Au-delà de 768 px, il est retiré par `display: none`, donc de
+ * l'arbre d'accessibilité aussi, puisque le rail porte le sien. Quand un pied existe, c'est lui le
+ * dernier élément de la page : c'est donc lui qui porte la réserve basse, pas le contenu. Sans pied,
+ * la coquille rend le HTML de la 1.1.0, au caractère près.
  */
 
 export interface Rubrique {
@@ -66,6 +75,17 @@ export interface ProprietesCoquilleRail {
   navigationBarre?: ReactNode | undefined;
   /** Le pied du rail : identité, thème, sortie. Fourni par le produit. */
   pied?: ReactNode | undefined;
+  /**
+   * Le pied de contenu, à toutes les largeurs : rendu dans un `<footer>` APRÈS `<main>`, pour que
+   * le repère `contentinfo` existe. Liens légaux, mentions. Le système n'y écrit aucun texte.
+   */
+  piedContenu?: ReactNode | undefined;
+  /**
+   * Ce que le pied de contenu porte en plus sous 768 px, au-dessus de `piedContenu` : ce que le
+   * pied du rail offre au-delà, et que le téléphone perdrait sans lui. Le thème, d'abord.
+   * Ignoré en mode `bureau-seulement`.
+   */
+  piedCompact?: ReactNode | undefined;
   /** Les actions de la barre compacte du téléphone : disque d'initiales, sortie. */
   actionsBarre?: ReactNode | undefined;
   /** Une mention sous le logotype, ex. « Console d'administration ». */
@@ -159,6 +179,20 @@ export const STYLE_COQUILLE_RAIL = `
 }
 .ai5d-coquille-rail__bandeau { margin-bottom: var(--espace-6); }
 
+/*
+  LES DEUX PIEDS DE CONTENU, EN 1.2.0. Quand un pied existe, c est lui le dernier element de la
+  page : il porte la reserve basse, et le contenu la rend.
+*/
+.ai5d-coquille-rail[data-pied] .ai5d-coquille-rail__contenu { padding-bottom: var(--espace-8); }
+.ai5d-coquille-rail__pied-contenu {
+  padding: var(--espace-6) var(--marge-page) calc(var(--espace-6) + var(--reserve-barre, 0px));
+  border-top: 1px solid var(--bordure);
+}
+.ai5d-coquille-rail__pied-compact {
+  display: flex; flex-direction: column; gap: var(--espace-2);
+  margin-bottom: var(--espace-4);
+}
+
 /* LE RAIL. Il reste colle au bord gauche et ne se centre jamais avec le contenu. */
 .ai5d-coquille-rail__marque {
   display: flex; flex-direction: column; gap: var(--espace-1);
@@ -193,6 +227,11 @@ export const STYLE_COQUILLE_RAIL = `
   }
 
   .ai5d-coquille-rail__contenu { padding: var(--espace-12) var(--espace-8); }
+
+  /* Le rail porte le theme au-dela : le pied compact sort de l ecran ET de l arbre d accessibilite. */
+  .ai5d-coquille-rail__pied-compact { display: none; }
+  .ai5d-coquille-rail[data-pied='compact'] .ai5d-coquille-rail__pied-contenu { display: none; }
+  .ai5d-coquille-rail__pied-contenu { padding: var(--espace-6) var(--espace-8); }
 }
 
 @media (min-width: ${BUREAU}px) {
@@ -253,6 +292,8 @@ export function CoquilleRail({
   navigationRail,
   navigationBarre,
   pied,
+  piedContenu,
+  piedCompact,
   actionsBarre,
   mention,
   bandeau,
@@ -275,6 +316,12 @@ export function CoquilleRail({
       } as CSSProperties)
     : undefined;
 
+  /* Le pied compact n existe qu en mode complet : la console n a pas de telephone a servir. */
+  const avecPiedCompact = complet && piedCompact !== undefined;
+  const typePied = piedContenu !== undefined ? 'complet' : avecPiedCompact ? 'compact' : undefined;
+  const styleColonne =
+    largeurContenu === undefined ? undefined : { maxWidth: `${largeurContenu}px` };
+
   return (
     <>
       <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_COQUILLE_RAIL }} />
@@ -287,6 +334,7 @@ export function CoquilleRail({
         data-coquille="rail"
         data-mode={mode}
         data-densite={densite}
+        data-pied={typePied}
       >
         {complet ? null : <div className="ai5d-coquille-rail__refus">{refus}</div>}
 
@@ -325,18 +373,24 @@ export function CoquilleRail({
             ) : null}
 
             <main id="contenu" className="ai5d-coquille-rail__contenu">
-              <div
-                className="ai5d-coquille-rail__colonne"
-                style={
-                  largeurContenu === undefined ? undefined : { maxWidth: `${largeurContenu}px` }
-                }
-              >
+              <div className="ai5d-coquille-rail__colonne" style={styleColonne}>
                 {bandeau === undefined ? null : (
                   <div className="ai5d-coquille-rail__bandeau">{bandeau}</div>
                 )}
                 {children}
               </div>
             </main>
+
+            {typePied === undefined ? null : (
+              <footer className="ai5d-coquille-rail__pied-contenu">
+                <div className="ai5d-coquille-rail__colonne" style={styleColonne}>
+                  {avecPiedCompact ? (
+                    <div className="ai5d-coquille-rail__pied-compact">{piedCompact}</div>
+                  ) : null}
+                  {piedContenu}
+                </div>
+              </footer>
+            )}
           </div>
 
           {complet ? navigationBarre : null}
