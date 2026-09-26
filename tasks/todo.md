@@ -118,7 +118,7 @@ SPEC et user stories : `docs/superpowers/specs/version-1.2.0-espace-participant/
 - [x] T10 · `LigneLien` et `ListeLignes` · écrite, non testée
 - [x] T11 · `ValeurCopiable` · écrite, non testée
 - [x] T12 · La recette `LOGOTYPE` et l'export `./logotype`, décision 008 · écrite, non testée
-- [ ] T13 · L'index
+- [x] T13 · L'index · écrite, non testée
 - [ ] T14 · Journal, guide de montée, README, NOYAU, formulations, version, décision 009
 - [ ] T15 · Les spécimens
 - [ ] T16 · Vérification d'un bloc, gardes vues échouer, mesure « après », captures, navigateurs, montée de Compte, preuves

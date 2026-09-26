@@ -1,5 +1,5 @@
 /**
- * Les 34 composants de base du noyau.
+ * Les 39 composants de base du noyau.
  *
  * Ils ne dépendent d'aucun framework de style : leurs styles passent par les variables
  * CSS du noyau, de sorte qu'un projet qui n'utiliserait pas Tailwind les rend
@@ -36,7 +36,19 @@ export { BarreOnglets, HAUTEUR_BARRE_ONGLETS, ONGLETS_MAX, ONGLETS_MIN } from '.
 export type { Onglet, ProprietesBarreOnglets } from './BarreOnglets';
 
 export { Bouton } from './Bouton';
-export type { ProprietesBouton, TailleBouton, VarianteBouton } from './Bouton';
+export type {
+  ProprietesBouton,
+  ProprietesBoutonAction,
+  ProprietesBoutonLien,
+  TailleBouton,
+  VarianteBouton,
+} from './Bouton';
+
+/**
+ * Le protocole d attente et la mention du nouvel onglet, communs aux liens du systeme. Le produit
+ * lit `ATTRIBUT_EN_ATTENTE` pour poser son marqueur dans le lien du routeur.
+ */
+export { ATTRIBUT_EN_ATTENTE, MENTION_NOUVEL_ONGLET } from './lien';
 
 export { Carte } from './Carte';
 
@@ -104,6 +116,14 @@ export type { ProprietesGrilleCartes } from './GrilleCartes';
 export { Champ, TAILLE_ICONE_CHAMP } from './Champ';
 export type { ProprietesChamp } from './Champ';
 
+/**
+ * `ValeurCopiable` est un module client ; sa duree vit dans un module pur, pour qu un composant
+ * serveur qui la lit la recoive (lecon du depot).
+ */
+export { ValeurCopiable } from './ValeurCopiable';
+export type { ProprietesValeurCopiable } from './ValeurCopiable';
+export { DUREE_SUCCES_COPIE_MS } from './copie';
+
 export { EnteteCarte } from './EnteteCarte';
 export type { TonEnteteCarte } from './EnteteCarte';
 
@@ -111,11 +131,28 @@ export { EnteteRubrique, TAILLE_CADRE_RUBRIQUE } from './EnteteRubrique';
 
 export { EtatVide } from './EtatVide';
 
+export { TitreSection } from './TitreSection';
+export type { NiveauTitre, ProprietesTitreSection, TailleTitre } from './TitreSection';
+
+export { CONTENEUR_DEFINITIONS_DEUX_COLONNES, ListeDefinitions } from './ListeDefinitions';
+export type { Definition, ProprietesListeDefinitions } from './ListeDefinitions';
+
 export { EPAISSEUR_TRAIT, Icone } from './Icone';
 export type { ProprietesIcone, TailleIcone } from './Icone';
 
-export { HAUTEUR_ONGLETS, OngletsRubrique } from './OngletsRubrique';
+export {
+  HAUTEUR_ONGLETS,
+  ONGLETS_RUBRIQUE_MAX,
+  ONGLETS_RUBRIQUE_MIN,
+  OngletsRubrique,
+} from './OngletsRubrique';
 export type { OngletRubrique, ProprietesOngletsRubrique } from './OngletsRubrique';
+
+export { LigneLien } from './LigneLien';
+export type { ProprietesLigneLien } from './LigneLien';
+
+export { ListeLignes } from './ListeLignes';
+export type { ProprietesListeLignes } from './ListeLignes';
 
 export { Logotype } from './Logotype';
 export type { ProprietesLogotype, VarianteLogotype } from './Logotype';

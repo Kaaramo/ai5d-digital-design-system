@@ -30,6 +30,9 @@ const ATTENDUS = [
   'GrilleCartes',
   'Icone',
   'LiensRail',
+  'LigneLien',
+  'ListeDefinitions',
+  'ListeLignes',
   'Logotype',
   'OngletsRubrique',
   'Pastille',
@@ -40,10 +43,12 @@ const ATTENDUS = [
   'SommaireDocument',
   'Squelette',
   'TempsRelatif',
+  'TitreSection',
+  'ValeurCopiable',
 ] as const;
 
 describe('index des composants', () => {
-  it('exporte les trente-quatre composants du noyau', () => {
+  it('exporte les trente-neuf composants du noyau', () => {
     for (const nom of ATTENDUS) {
       expect(composants, `${nom} n'est pas exporte`).toHaveProperty(nom);
       expect(typeof composants[nom], `${nom} n'est pas un composant`).toBe('function');
@@ -77,6 +82,12 @@ describe('index des composants', () => {
     expect(composants.RAYON_CARTOUCHE).toBe(53);
     expect(composants.CONTENEUR_DEUX_COLONNES).toBe(560);
     expect(composants.CONTENEUR_TROIS_COLONNES).toBe(900);
+    expect(composants.ONGLETS_RUBRIQUE_MIN).toBe(2);
+    expect(composants.ONGLETS_RUBRIQUE_MAX).toBe(6);
+    expect(composants.CONTENEUR_DEFINITIONS_DEUX_COLONNES).toBe(480);
+    expect(composants.DUREE_SUCCES_COPIE_MS).toBe(2000);
+    expect(composants.ATTRIBUT_EN_ATTENTE).toBe('data-en-attente');
+    expect(composants.MENTION_NOUVEL_ONGLET).toBe('(s’ouvre dans un nouvel onglet)');
   });
 
   it("n'exporte aucun composant inter-produits - ils appartiennent a l'ecosysteme", () => {
@@ -187,6 +198,16 @@ describe('la frontiere serveur / client', () => {
         source.startsWith("'use client';"),
         `${nom} declare use client sans en avoir besoin`,
       ).toBe(false);
+    }
+  });
+
+  it('des cinq composants de la 1.2.0, seul ValeurCopiable est un module client', () => {
+    // SPEC 1.2.0, §5.0.6 : les quatre autres se rendent au serveur, icones et lien du produit compris.
+    const client = (nom: string) =>
+      readFileSync(`${DOSSIER}/${nom}.tsx`, 'utf8').startsWith("'use client';");
+    expect(client('ValeurCopiable')).toBe(true);
+    for (const nom of ['TitreSection', 'LigneLien', 'ListeLignes', 'ListeDefinitions']) {
+      expect(client(nom), `${nom} ne doit pas etre un module client`).toBe(false);
     }
   });
 });
