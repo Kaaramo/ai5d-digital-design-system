@@ -115,7 +115,7 @@ SPEC et user stories : `docs/superpowers/specs/version-1.2.0-espace-participant/
 - [x] T7 · `CoquilleRail` : pied de contenu et pied compact · écrite, non testée
 - [x] T8 · `SelecteurTheme` : 44 px au doigt, libellés visibles · écrite, non testée
 - [x] T9 · `TitreSection` et `ListeDefinitions` · écrite, non testée
-- [ ] T10 · `LigneLien` et `ListeLignes`
+- [x] T10 · `LigneLien` et `ListeLignes` · écrite, non testée
 - [ ] T11 · `ValeurCopiable`
 - [ ] T12 · La recette `LOGOTYPE` et l'export `./logotype`, décision 008
 - [ ] T13 · L'index

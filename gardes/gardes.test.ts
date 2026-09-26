@@ -348,6 +348,8 @@ describe('garde 6 - aucun espacement en dur', () => {
     'noyau/composants/CarteAction.tsx': ['6px', '20px'],
     // Le titre et sa description, serres : un en-tete de carte, pas deux paragraphes.
     'noyau/composants/EnteteCarte.tsx': ['2px'],
+    // Le titre d une ligne et sa description, serres : une ligne, pas deux paragraphes.
+    'noyau/composants/LigneLien.tsx': ['2px'],
     // L etiquette colle a son champ.
     'noyau/composants/Champ.tsx': ['6px'],
     // La marge du panneau d authentification sur telephone.
