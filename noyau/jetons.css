@@ -28,6 +28,12 @@
   color-scheme: light dark;
   accent-color: var(--action);
 
+  /*
+    LE CURSEUR DE SAISIE SUIT L'ACTION, depuis la 1.2.0. Il tient 5,15 au moins sur les champs,
+    dans les deux themes.
+  */
+  caret-color: var(--action);
+
   /* -----------------------------------------------------------------------
      Alias des jetons de marque. Aucune valeur n'est ecrite ici : marque.css est
      le seul fichier du depot ou une couleur de marque apparait en clair.
@@ -132,6 +138,11 @@
   --lettrage-overline: 0.06em;
   --lettrage-mono: 0.16em;
 
+  /* La longueur de ligne d'un texte courant long : programme, annonce, politique. Au-dela de
+     soixante-cinq signes, l'oeil perd le debut de la ligne suivante. Ce n'est pas une largeur
+     de colonne : une phrase courte d'en-tete garde sa propre borne. Depuis la 1.2.0. */
+  --mesure-texte: 65ch;
+
   /* -----------------------------------------------------------------------
      Espacement. Une seule unite, declinee huit fois, a pas de 4 px.
 
@@ -175,14 +186,27 @@
   --elevation-3: 0 12px 32px rgba(5, 28, 44, 0.12);
 
   /* -----------------------------------------------------------------------
-     Mouvement. La duree longue est reservee aux confirmations qui engagent la
-     securite du compte, jamais a un ornement.
+     Mouvement.
+
+     La règle de la durée longue, réécrite en 1.2.0 (décision 006) :
+     La durée longue sert deux choses, et deux seulement : une confirmation qui
+     engage la sécurité du compte, et le moment signature unique d’un produit,
+     déclaré par son nom dans le DESIGN.md de ce produit. Jamais un ornement,
+     jamais deux moments dans un même produit.
      ----------------------------------------------------------------------- */
   --duree-courte: 150ms;
   --duree-moyenne: 250ms;
   --duree-longue: 800ms;
   --courbe-entree: cubic-bezier(0.16, 1, 0.3, 1);
   --courbe-sortie: cubic-bezier(0.4, 0, 1, 1);
+
+  /* Un mouvement se nomme par son ROLE, depuis la 1.2.0. La duree et la courbe qu'il porte
+     peuvent changer sans qu'un seul appel change. Retour et sortie valent la meme chose
+     aujourd'hui : ils ne disent pas la meme chose. Sous prefers-reduced-motion, leurs durees
+     tombent a 100 ms par le bloc du bas ; ce qui se deplace reste a supprimer par chaque feuille. */
+  --mouvement-retour: var(--duree-courte) var(--courbe-sortie); /* un etat repond */
+  --mouvement-entree: var(--duree-moyenne) var(--courbe-entree); /* quelque chose arrive */
+  --mouvement-sortie: var(--duree-courte) var(--courbe-sortie); /* quelque chose part */
 
   /* -----------------------------------------------------------------------
      Action sur fond sombre.
@@ -202,6 +226,23 @@
   /* Cible tactile minimale. Les variables de densite vivent dans
      densites/profils.css : ce fichier n'en declare aucune. */
   --cible-tactile: 44px;
+}
+
+/* =========================================================================
+   La selection de texte, depuis la 1.2.0.
+
+   Elle prend les couleurs du bouton primaire : la seule paire du systeme
+   mesuree dans les deux themes, au repos comme au survol. Le texte selectionne
+   tient 5,69 en clair et 5,45 en sombre. Le fond d'information, propose d'abord,
+   ne se detachait pas d'une carte sombre : 1,01.
+
+   Aucune couleur de barre de defilement n'est posee : color-scheme, livre en
+   1.1.0, les assombrit deja, et le trait propose ne tenait que 1,49.
+   ========================================================================= */
+
+::selection {
+  background: var(--action);
+  color: var(--texte-sur-action);
 }
 
 /* =========================================================================

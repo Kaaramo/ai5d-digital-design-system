@@ -2,8 +2,9 @@
  * Le theme de l interface : clair, sombre, ou celui de l appareil.
  *
  * ── CE MODULE EST PUR, ET IL DOIT LE RESTER ─────────────────────────────────
- * Il n importe rien. Le selecteur de theme est un composant CLIENT : s il atteignait
- * `next/headers` ou Prisma, meme de loin, la compilation echouerait au premier import.
+ * Il n importe que `couleurs-navigateur.ts`, pur lui aussi. Le selecteur de theme est un composant
+ * CLIENT : s il atteignait `next/headers` ou Prisma, meme de loin, la compilation echouerait au premier
+ * import.
  *
  * ── TROIS ETATS, ET L ABSENCE D ATTRIBUT EN EST UN ──────────────────────────
  *
@@ -87,3 +88,11 @@ export const LIBELLE_THEME: Record<Theme, string> = {
   sombre: 'Sombre',
   systeme: 'Système',
 };
+
+/**
+ * Les couleurs de `<meta name="theme-color">`, les seules que le systeme ecrive hors d une feuille.
+ * Reexportees ici pour s importer par `@ai5d/design-system/theme`, depuis un module sans directive
+ * qu un gabarit serveur peut lire (lecon du depot : une constante lue par le serveur ne vit pas dans
+ * un module client).
+ */
+export { COULEURS_NAVIGATEUR } from './couleurs-navigateur';

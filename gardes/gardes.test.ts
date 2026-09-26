@@ -35,13 +35,21 @@ const EXCEPTIONS_DU_DEPOT = [
   'docs',
 ];
 
+/**
+ * La garde des couleurs a une exception de plus que les autres, et une seule : les deux couleurs de
+ * `<meta name="theme-color">`, qui n'acceptent pas de variable CSS (SPEC 1.2.0, §5.7.2). Elle n'entre
+ * pas dans `EXCEPTIONS_DU_DEPOT`, qui la soustrairait aussi aux gardes de largeur, de hauteur de vue et
+ * d'espacement.
+ */
+const EXCEPTIONS_COULEURS = [...EXCEPTIONS_DU_DEPOT, 'noyau/couleurs-navigateur.ts'];
+
 function depotTemporaire(): string {
   return mkdtempSync(join(tmpdir(), 'ai5d-gardes-'));
 }
 
 describe('garde 1 - aucune couleur en dur', () => {
   it('ne releve aucune infraction dans le depot lui-meme', () => {
-    const infractions = verifierAucuneCouleurEnDur('.', { exceptions: EXCEPTIONS_DU_DEPOT });
+    const infractions = verifierAucuneCouleurEnDur('.', { exceptions: EXCEPTIONS_COULEURS });
     expect(infractions.length, `\n${decrire(infractions)}`).toBe(0);
   });
 

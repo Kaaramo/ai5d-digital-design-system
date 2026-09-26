@@ -3,6 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import {
   COOKIE_THEME,
+  COULEURS_NAVIGATEUR,
   DUREE_COOKIE_THEME_S,
   LIBELLE_THEME,
   THEMES,
@@ -10,6 +11,8 @@ import {
   estTheme,
   themeOuSysteme,
 } from '../../noyau/theme';
+import { COULEURS_NAVIGATEUR as COULEURS_DU_MODULE } from '../../noyau/couleurs-navigateur';
+import { lireJetons } from '../../outils/jetons';
 import {
   memoriserTheme,
   SelecteurTheme,
@@ -52,9 +55,43 @@ describe('le module de theme', () => {
     expect(LIBELLE_THEME.systeme).toBe('Système');
   });
 
-  it('n importe rien', () => {
-    const code = readFileSync('noyau/theme.ts', 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-    expect(code).not.toMatch(/^\s*import /m);
+  it('n importe que couleurs-navigateur, pur lui aussi', () => {
+    const sansCommentaires = (chemin: string) =>
+      readFileSync(chemin, 'utf8')
+        .replace(/\/\*[\s\S]*?\*\//g, '')
+        .replace(/^\s*\/\/.*$/gm, '');
+
+    const theme = sansCommentaires('noyau/theme.ts');
+    expect(theme).not.toMatch(/^\s*import /m);
+    expect([...theme.matchAll(/from '([^']+)'/g)].map((m) => m[1])).toEqual([
+      './couleurs-navigateur',
+    ]);
+
+    const couleurs = sansCommentaires('noyau/couleurs-navigateur.ts');
+    expect(couleurs).not.toMatch(/^\s*import /m);
+    expect(couleurs).not.toMatch(/\bfrom '/);
+  });
+});
+
+describe('COULEURS_NAVIGATEUR, pour <meta name="theme-color"> (1.2.0)', () => {
+  const CHEMIN = 'noyau/jetons.css';
+
+  it('vaut --surface-1 dans chaque theme', () => {
+    const clair = lireJetons(CHEMIN, ':root').get('--surface-1')?.toUpperCase();
+    const sombre = lireJetons(CHEMIN, ":root[data-theme='dark']").get('--surface-1')?.toUpperCase();
+    const sombreDuSysteme = lireJetons(CHEMIN, ":root:not([data-theme='light'])", {
+      inclureRegleArobase: true,
+    })
+      .get('--surface-1')
+      ?.toUpperCase();
+
+    expect(COULEURS_NAVIGATEUR.clair).toBe(clair);
+    expect(COULEURS_NAVIGATEUR.sombre).toBe(sombre);
+    expect(COULEURS_NAVIGATEUR.sombre).toBe(sombreDuSysteme);
+  });
+
+  it('s importe par le module de theme, qui le reexporte sans le recopier', () => {
+    expect(COULEURS_NAVIGATEUR).toBe(COULEURS_DU_MODULE);
   });
 });
 

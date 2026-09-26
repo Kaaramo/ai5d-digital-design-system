@@ -6,6 +6,16 @@ import { luminance, ratioContraste, SEUIL_TEXTE_COURANT } from '../outils/contra
 const CHEMIN = 'noyau/jetons.css';
 const brut = readFileSync(CHEMIN, 'utf8');
 
+/** SPEC 1.2.0, §5.14.3, decision 006 : la regle, mot pour mot, dans jetons.css et NOYAU.md. */
+const REGLE_DUREE_LONGUE =
+  'La durée longue sert deux choses, et deux seulement : une confirmation qui engage la sécurité du compte, et le moment signature unique d’un produit, déclaré par son nom dans le DESIGN.md de ce produit. Jamais un ornement, jamais deux moments dans un même produit.';
+
+const MOUVEMENTS: Array<[string, string]> = [
+  ['--mouvement-retour', 'var(--duree-courte) var(--courbe-sortie)'],
+  ['--mouvement-entree', 'var(--duree-moyenne) var(--courbe-entree)'],
+  ['--mouvement-sortie', 'var(--duree-courte) var(--courbe-sortie)'],
+];
+
 const marque = lireJetons('noyau/marque.css', ':root');
 const clair = new Map([...marque, ...lireJetons(CHEMIN, ':root')]);
 const sombre = new Map([...clair, ...lireJetons(CHEMIN, ":root[data-theme='dark']")]);
@@ -107,14 +117,58 @@ describe('jetons - mode sombre', () => {
  * premier jour, les quatre defauts trouves le 5 septembre 2026.
  */
 const EXIGENCES: Array<{ jeton: string; fonds: string[] }> = [
-  { jeton: '--texte-fort', fonds: ['--surface-1', '--surface-2', '--surface-chaude'] },
+  {
+    jeton: '--texte-fort',
+    // `--surface-selection` : le titre d'une ligne ou d'un onglet a l'appui (1.2.0).
+    fonds: ['--surface-1', '--surface-2', '--surface-chaude', '--surface-selection'],
+  },
   { jeton: '--texte', fonds: ['--surface-1', '--surface-2', '--surface-chaude'] },
-  { jeton: '--texte-faible', fonds: ['--surface-1', '--surface-2', '--surface-chaude'] },
+  {
+    jeton: '--texte-faible',
+    // `--surface-selection` : la description d'une ligne a l'appui, 4,51 en clair, de peu (1.2.0).
+    fonds: ['--surface-1', '--surface-2', '--surface-chaude', '--surface-selection'],
+  },
   { jeton: '--reussite', fonds: ['--surface-1', '--surface-2', '--reussite-fond'] },
   { jeton: '--attention', fonds: ['--surface-1', '--surface-2', '--attention-fond'] },
   { jeton: '--erreur', fonds: ['--surface-1', '--surface-2', '--erreur-fond'] },
-  { jeton: '--action', fonds: ['--surface-1', '--surface-2', '--info-fond'] },
+  {
+    jeton: '--action',
+    // `--surface-selection` : l'onglet actif et le segment coche (1.2.0).
+    fonds: ['--surface-1', '--surface-2', '--info-fond', '--surface-selection'],
+  },
 ];
+
+/** Les exigences du theme sombre, sorties du bloc qui les mesure pour que le total se compte. */
+const EXIGENCES_SOMBRES: Array<{ jeton: string; fonds: string[] }> = [
+  {
+    jeton: '--texte-fort',
+    fonds: ['--surface-1', '--surface-2', '--surface-3', '--surface-selection'],
+  },
+  {
+    jeton: '--texte',
+    // `--surface-chaude` : le corps d'un bandeau neutre (1.2.0).
+    fonds: ['--surface-1', '--surface-2', '--surface-3', '--surface-chaude'],
+  },
+  {
+    jeton: '--texte-faible',
+    // `--surface-chaude` : le ton neutre ; `--surface-selection` : l'appui en sombre (1.2.0).
+    fonds: ['--surface-1', '--surface-2', '--surface-3', '--surface-chaude', '--surface-selection'],
+  },
+  { jeton: '--reussite', fonds: ['--surface-1', '--surface-2', '--reussite-fond'] },
+  { jeton: '--attention', fonds: ['--surface-1', '--surface-2', '--attention-fond'] },
+  { jeton: '--erreur', fonds: ['--surface-1', '--surface-2', '--erreur-fond'] },
+  {
+    jeton: '--action',
+    // `--surface-selection` : l'onglet actif en sombre, 4,51, de peu (1.2.0).
+    fonds: ['--surface-1', '--surface-2', '--surface-3', '--info-fond', '--surface-selection'],
+  },
+];
+
+/**
+ * Les couples des boutons, mesures a part : texte sur action, au repos et au survol, et texte sur
+ * erreur, dans chaque theme.
+ */
+const COUPLES_DE_BOUTONS = 6;
 
 describe('jetons - contraste en clair (garde C3)', () => {
   for (const { jeton, fonds } of EXIGENCES) {
@@ -161,16 +215,6 @@ describe('jetons - contraste en clair (garde C3)', () => {
 });
 
 describe('jetons - contraste en sombre (garde C3)', () => {
-  const exigencesSombres: Array<{ jeton: string; fonds: string[] }> = [
-    { jeton: '--texte-fort', fonds: ['--surface-1', '--surface-2', '--surface-3'] },
-    { jeton: '--texte', fonds: ['--surface-1', '--surface-2', '--surface-3'] },
-    { jeton: '--texte-faible', fonds: ['--surface-1', '--surface-2', '--surface-3'] },
-    { jeton: '--reussite', fonds: ['--surface-1', '--surface-2', '--reussite-fond'] },
-    { jeton: '--attention', fonds: ['--surface-1', '--surface-2', '--attention-fond'] },
-    { jeton: '--erreur', fonds: ['--surface-1', '--surface-2', '--erreur-fond'] },
-    { jeton: '--action', fonds: ['--surface-1', '--surface-2', '--surface-3', '--info-fond'] },
-  ];
-
   /**
    * Le couple du bouton danger, mesure separement.
    *
@@ -235,7 +279,7 @@ describe('jetons - contraste en sombre (garde C3)', () => {
     );
   });
 
-  for (const { jeton, fonds } of exigencesSombres) {
+  for (const { jeton, fonds } of EXIGENCES_SOMBRES) {
     for (const fond of fonds) {
       it(`${jeton} sur ${fond}`, () => {
         const ratio = ratioContraste(couleur(sombre, jeton), couleur(sombre, fond));
@@ -246,6 +290,18 @@ describe('jetons - contraste en sombre (garde C3)', () => {
       });
     }
   }
+});
+
+describe('jetons - le nombre de couples mesures', () => {
+  it('mesure cinquante-sept couples : les quarante-neuf de la 1.1.0, et huit de la 1.2.0', () => {
+    /*
+      Le nombre n est plus ecrit dans NOYAU.md : il y avait vieilli (« 44 paires » pour 49). Il se lit
+      ici, et nulle part ailleurs. SPEC 1.2.0, §6.3.
+    */
+    const clairs = EXIGENCES.flatMap(({ fonds }) => fonds).length;
+    const sombres = EXIGENCES_SOMBRES.flatMap(({ fonds }) => fonds).length;
+    expect(clairs + sombres + COUPLES_DE_BOUTONS).toBe(57);
+  });
 });
 
 describe('jetons - typographie', () => {
@@ -334,5 +390,70 @@ describe('le schema de couleur du navigateur', () => {
 
   it('donne aux cases a cocher la couleur d action', () => {
     expect(brut).toMatch(/accent-color:\s*var\(--action\);/);
+  });
+});
+
+describe('jetons - la mesure d un texte (1.2.0)', () => {
+  it('--mesure-texte vaut 65ch', () => {
+    expect(clair.get('--mesure-texte')).toBe('65ch');
+  });
+
+  it('ne varie pas avec le theme', () => {
+    expect(lireJetons(CHEMIN, ":root[data-theme='dark']").has('--mesure-texte')).toBe(false);
+    expect(lireJetons(CHEMIN, ":root[data-theme='light']").has('--mesure-texte')).toBe(false);
+  });
+});
+
+describe('jetons - le mouvement par role (1.2.0)', () => {
+  for (const [nom, valeur] of MOUVEMENTS) {
+    it(`${nom} vaut ${valeur}`, () => {
+      expect(clair.get(nom)).toBe(valeur);
+    });
+  }
+
+  it('ne pointent que vers des durees et des courbes existantes', () => {
+    for (const [nom] of MOUVEMENTS) {
+      const cibles = [...(clair.get(nom) ?? '').matchAll(/var\((--[a-z0-9-]+)\)/g)].map(
+        (m) => m[1] ?? '',
+      );
+      expect(cibles, nom).toHaveLength(2);
+      for (const cible of cibles) {
+        expect(cible, `${nom} pointe vers ${cible}`).toMatch(/^--(duree|courbe)-/);
+        expect(clair.has(cible), `${cible} n'est declare nulle part`).toBe(true);
+      }
+    }
+  });
+
+  it('sous mouvement reduit, leurs durees tombent a 100 ms par le bloc existant', () => {
+    const reduit = lireJetons(CHEMIN, ':root', { inclureRegleArobase: true });
+    expect(reduit.get('--duree-courte')).toBe('100ms');
+    expect(reduit.get('--duree-moyenne')).toBe('100ms');
+    expect(reduit.get('--duree-longue')).toBe('0ms');
+  });
+
+  it('aucun jeton --duree-signature : il doublerait --duree-longue (decision 006)', () => {
+    expect(brut).not.toMatch(/--duree-signature\s*:/);
+  });
+
+  it('la regle de la duree longue est ecrite, mot pour mot, dans jetons.css et NOYAU.md', () => {
+    const normaliser = (texte: string) => texte.replace(/\s+/g, ' ');
+    expect(normaliser(brut)).toContain(REGLE_DUREE_LONGUE);
+    expect(normaliser(readFileSync('noyau/NOYAU.md', 'utf8'))).toContain(REGLE_DUREE_LONGUE);
+  });
+});
+
+describe('le navigateur suit le theme, jusque dans la selection (1.2.0)', () => {
+  it('pose le curseur de saisie sur la couleur d action', () => {
+    expect(brut).toMatch(/:root\s*\{[^}]*caret-color:\s*var\(--action\);/);
+  });
+
+  it('peint la selection aux couleurs du bouton primaire', () => {
+    expect(brut).toMatch(
+      /::selection\s*\{\s*background:\s*var\(--action\);\s*color:\s*var\(--texte-sur-action\);\s*\}/,
+    );
+  });
+
+  it('ne pose aucune couleur de barre de defilement', () => {
+    expect(brut).not.toMatch(/^\s*scrollbar-color\s*:/m);
   });
 });
