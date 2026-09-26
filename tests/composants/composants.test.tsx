@@ -74,6 +74,16 @@ describe('Logotype', () => {
     render(<Logotype produit="Lab" />);
     expect(screen.getByText('Lab').style.fontFamily).toContain('--police-titre');
   });
+
+  it('compose le nom du produit selon la recette, sans changer un pixel (1.2.0)', () => {
+    // 20 px : le nom a Math.round(20 * 0.92) = 18 px, apres Math.round(20 * 0.42) = 8 px.
+    render(<Logotype produit="Portail" taille={20} />);
+    expect(screen.getByRole('img', { name: 'AI5D Portail' })).toBeInTheDocument();
+    const nom = screen.getByText('Portail');
+    expect(nom.style.fontSize).toBe('18px');
+    expect(nom.style.marginLeft).toBe('8px');
+    expect(screen.getByText('5').style.transform).toBe('rotate(-5deg)');
+  });
 });
 
 describe('Bouton', () => {

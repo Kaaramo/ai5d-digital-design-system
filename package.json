@@ -15,7 +15,8 @@
     "./composants": "./noyau/composants/index.ts",
     "./gardes": "./gardes/index.ts",
     "./paliers": "./noyau/paliers.ts",
-    "./theme": "./noyau/theme.ts"
+    "./theme": "./noyau/theme.ts",
+    "./logotype": "./noyau/logotype.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

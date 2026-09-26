@@ -1,4 +1,5 @@
 import type { CSSProperties, HTMLAttributes } from 'react';
+import { LOGOTYPE, nomLogotype } from '../logotype';
 
 /**
  * Le logotype AI5D, avec un label de produit optionnel.
@@ -17,6 +18,11 @@ import type { CSSProperties, HTMLAttributes } from 'react';
  * thème, personne ne pense à basculer aussi la variante, et le logotype disparaît. Les
  * deux variantes explicites restent utiles pour un fond de couleur fixe, un bandeau encre
  * en thème clair par exemple.
+ *
+ * Depuis la 1.2.0, la composition vient de `noyau/logotype.ts`, la recette que suivent aussi le PDF,
+ * l'image de partage et le courriel : les morceaux, l'inclinaison du « 5 », l'échelle et l'écart du
+ * nom du produit. Le rendu ne change pas d'un pixel ; la recette et le composant ne peuvent plus
+ * diverger.
  */
 
 export type VarianteLogotype = 'auto' | 'encre' | 'blanc';
@@ -64,42 +70,41 @@ export function Logotype({
     color: couleurLettres,
   };
 
+  const styleCinq: CSSProperties = {
+    ...styleLettres,
+    // Le geste de la marque. Il ne sort jamais du logotype, et le logotype
+    // ne sort jamais sans lui.
+    color: 'var(--action)',
+    display: 'inline-block',
+    transform: `rotate(${LOGOTYPE.inclinaisonCinqDeg}deg)`,
+  };
+
   return (
     <span
       className={className}
       style={styleRacine}
       role="img"
-      aria-label={produit ? `AI5D ${produit}` : 'AI5D'}
+      aria-label={nomLogotype(produit)}
       {...reste}
     >
-      <span aria-hidden="true" style={styleLettres}>
-        AI
-      </span>
-      <span
-        aria-hidden="true"
-        style={{
-          ...styleLettres,
-          // Le geste de la marque. Il ne sort jamais du logotype, et le logotype
-          // ne sort jamais sans lui.
-          color: 'var(--action)',
-          display: 'inline-block',
-          transform: 'rotate(-5deg)',
-        }}
-      >
-        5
-      </span>
-      <span aria-hidden="true" style={styleLettres}>
-        D
-      </span>
+      {LOGOTYPE.morceaux.map((morceau) => (
+        <span
+          key={morceau.texte}
+          aria-hidden="true"
+          style={morceau.role === 'cinq' ? styleCinq : styleLettres}
+        >
+          {morceau.texte}
+        </span>
+      ))}
       {produit ? (
         <span
           aria-hidden="true"
           style={{
             fontFamily: 'var(--police-titre)',
             fontWeight: 'var(--graisse-legere)',
-            fontSize: `${Math.round(taille * 0.92)}px`,
+            fontSize: `${Math.round(taille * LOGOTYPE.produit.echelle)}px`,
             color: couleurLettres,
-            marginLeft: `${Math.round(taille * 0.42)}px`,
+            marginLeft: `${Math.round(taille * LOGOTYPE.produit.ecartEm)}px`,
           }}
         >
           {produit}
