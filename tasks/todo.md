@@ -114,7 +114,7 @@ SPEC et user stories : `docs/superpowers/specs/version-1.2.0-espace-participant/
 - [x] T6 · `OngletsRubrique` : lien du produit, six onglets, fondu, attente, décision 007 · écrite, non testée
 - [x] T7 · `CoquilleRail` : pied de contenu et pied compact · écrite, non testée
 - [x] T8 · `SelecteurTheme` : 44 px au doigt, libellés visibles · écrite, non testée
-- [ ] T9 · `TitreSection` et `ListeDefinitions`
+- [x] T9 · `TitreSection` et `ListeDefinitions` · écrite, non testée
 - [ ] T10 · `LigneLien` et `ListeLignes`
 - [ ] T11 · `ValeurCopiable`
 - [ ] T12 · La recette `LOGOTYPE` et l'export `./logotype`, décision 008
