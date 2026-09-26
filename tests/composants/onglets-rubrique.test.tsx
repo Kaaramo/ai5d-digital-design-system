@@ -1,11 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { readFileSync } from 'node:fs';
+import type { ComponentProps } from 'react';
 import { Shield, ShieldCheck, MonitorSmartphone } from 'lucide-react';
 import {
   HAUTEUR_ONGLETS,
+  ONGLETS_RUBRIQUE_MAX,
+  ONGLETS_RUBRIQUE_MIN,
   OngletsRubrique,
   type OngletRubrique,
 } from '../../noyau/composants/OngletsRubrique';
+import type { ComposantLien } from '../../noyau/composants/LiensRail';
 
 /**
  * `OngletsRubrique` — des liens qui decoupent une rubrique.
@@ -115,24 +120,21 @@ describe('OngletsRubrique', () => {
     expect(feuille).toContain('scrollbar-width: none');
   });
 
-  it('ne pose AUCUN voile de debordement, et c est une correction', () => {
+  it('ne rend aucun element de voile : le fondu n existe que dans la frise de defilement', () => {
     /*
-      La 0.6.0 en posait un : un degrade de 24 px colle au bord droit, cense dire qu il reste
-      quelque chose derriere.
-
-      Vu a l ecran en 0.6.2, il se dessinait TOUJOURS, y compris sur un ecran de 1440 px ou
-      rien ne deborde, et il y apparaissait comme une bande claire qui COUPAIT le filet et le
-      trait de l onglet actif. Le rendre conditionnel demanderait de mesurer la largeur au
-      montage, donc un etat, donc de faire de ce composant un module client — un cout
-      disproportionne pour un ornement.
-
-      Ce qui signale le debordement est le dernier onglet coupe net par le bord.
+      La 0.6.0 posait un voile, un degrade fixe de 24 px ; vu a l ecran, il se dessinait aussi la ou
+      rien ne debordait, et la 0.6.3 l a retire. La 1.2.0 rend le fondu sans element ni mesure : un
+      masque anime par la frise de defilement du conteneur, sous @supports, qui ne s applique pas quand
+      rien ne defile. Decision 007.
     */
     const { container } = render(<OngletsRubrique onglets={TROIS} actif="connexion" />);
     expect(container.querySelector('.ai5d-onglets-r__voile')).toBeNull();
+    expect(screen.getByRole('navigation').children).toHaveLength(TROIS.length);
 
     const feuille = document.getElementById('ai5d-onglets-rubrique')?.innerHTML ?? '';
-    expect(feuille).not.toContain('linear-gradient');
+    const supports = feuille.indexOf('@supports (animation-timeline: scroll())');
+    expect(supports).toBeGreaterThan(-1);
+    expect(feuille.indexOf('linear-gradient')).toBeGreaterThan(supports);
   });
 
   it("n'ecrit aucune couleur en dur dans sa feuille", () => {
@@ -154,5 +156,108 @@ describe('OngletsRubrique', () => {
     render(<OngletsRubrique onglets={TROIS} actif="connexion" />);
     const feuille = document.getElementById('ai5d-onglets-rubrique')?.innerHTML ?? '';
     expect(feuille).toContain(`height: ${HAUTEUR_ONGLETS}px`);
+  });
+});
+
+const SIX: OngletRubrique[] = [
+  { id: 'vue', libelle: 'Vue d’ensemble', href: '/sessions/7K3F9Q' },
+  { id: 'annonces', libelle: 'Annonces', href: '/sessions/7K3F9Q/annonces' },
+  { id: 'ressources', libelle: 'Ressources', href: '/sessions/7K3F9Q/ressources' },
+  { id: 'replays', libelle: 'Replays', href: '/sessions/7K3F9Q/replays' },
+  { id: 'attestation', libelle: 'Attestation', href: '/sessions/7K3F9Q/attestation' },
+  { id: 'badge', libelle: 'Badge', href: '/sessions/7K3F9Q/badge' },
+];
+
+function feuilleBrute(): string {
+  return document.getElementById('ai5d-onglets-rubrique')?.innerHTML ?? '';
+}
+
+function feuille(): string {
+  return feuilleBrute().replace(/\s+/g, ' ');
+}
+
+describe('OngletsRubrique relie au routeur (1.2.0)', () => {
+  it('rend six onglets, et annonce ses bornes', () => {
+    render(<OngletsRubrique onglets={SIX} actif="attestation" />);
+    expect(screen.getAllByRole('link')).toHaveLength(6);
+    expect(ONGLETS_RUBRIQUE_MIN).toBe(2);
+    expect(ONGLETS_RUBRIQUE_MAX).toBe(6);
+  });
+
+  it('passe chaque onglet par le lien du produit, l etat courant compris', () => {
+    const recus: Array<ComponentProps<ComposantLien>> = [];
+    const Lien: ComposantLien = (proprietes) => {
+      recus.push(proprietes);
+      const { children, ...reste } = proprietes;
+      return <a {...reste}>{children}</a>;
+    };
+    render(<OngletsRubrique onglets={SIX} actif="attestation" Lien={Lien} />);
+
+    expect(recus).toHaveLength(6);
+    expect(recus.map((recu) => recu.href)).toEqual(SIX.map((onglet) => onglet.href));
+    expect(recus.every((recu) => recu.className === 'ai5d-onglets-r__lien')).toBe(true);
+    expect(recus.filter((recu) => recu['aria-current'] === 'page')).toHaveLength(1);
+    expect(screen.getByRole('link', { name: 'Attestation' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+  });
+
+  it('un actif inconnu parmi six onglets ne marque rien, et ne leve pas', () => {
+    render(<OngletsRubrique onglets={SIX} actif="sous-page-retiree" />);
+    for (const lien of screen.getAllByRole('link')) {
+      expect(lien).not.toHaveAttribute('aria-current');
+    }
+  });
+
+  it('montre le debordement par un fondu que le navigateur mesure, sous @supports', () => {
+    render(<OngletsRubrique onglets={SIX} actif="vue" />);
+    const css = feuille();
+    const bloc = css.slice(css.indexOf('@supports (animation-timeline: scroll())'));
+    expect(bloc).toContain('animation: ai5d-onglets-fondu linear both;');
+    expect(bloc).toContain('animation-timeline: scroll(self inline);');
+    // Le raccourci `animation` remet la frise a zero : elle se declare apres lui.
+    expect(bloc.indexOf('animation-timeline: scroll(self inline)')).toBeGreaterThan(
+      bloc.indexOf('animation: ai5d-onglets-fondu'),
+    );
+    expect((bloc.match(/mask-image:/g) ?? []).length).toBe(3);
+  });
+
+  it('amene l onglet actif dans la vue par le CSS, sans effet ni directive', () => {
+    render(<OngletsRubrique onglets={SIX} actif="attestation" />);
+    const css = feuille();
+    expect(css).toContain(
+      "@supports (scroll-initial-target: nearest) { .ai5d-onglets-r__lien[aria-current='page'] { scroll-initial-target: nearest; } }",
+    );
+    expect(css).toContain('scroll-padding-inline: var(--espace-6);');
+    expect(
+      readFileSync('noyau/composants/OngletsRubrique.tsx', 'utf8').startsWith("'use client';"),
+    ).toBe(false);
+  });
+
+  it('pose l appui sans transition, et garde le survol aux pointeurs fins', () => {
+    render(<OngletsRubrique onglets={SIX} actif="vue" />);
+    const css = feuille();
+    expect(css).toContain(
+      '.ai5d-onglets-r__lien:active { background: var(--surface-selection); border-radius: var(--rayon-sm); transition: none; }',
+    );
+    expect(css).toContain('background var(--mouvement-retour)');
+    expect(css).toContain(
+      '@media (hover: hover) { .ai5d-onglets-r__lien:hover { color: var(--texte-fort); } }',
+    );
+    expect(feuilleBrute().replace(/@media \(hover: hover\) \{[\s\S]*?\n\}/, '')).not.toContain(
+      ':hover',
+    );
+  });
+
+  it('fait pulser un trait d attente, jamais sur l onglet actif, et le fige sous mouvement reduit', () => {
+    render(<OngletsRubrique onglets={SIX} actif="vue" />);
+    const css = feuille();
+    expect(css).toContain(
+      ".ai5d-onglets-r__lien:is([data-en-attente], :has([data-en-attente])):not([aria-current='page'])::after { opacity: 1; animation: ai5d-onglets-attente 1200ms ease-in-out infinite alternate; }",
+    );
+    expect(css).toContain('background: var(--bordure-forte);');
+    const reduit = css.slice(css.indexOf('@media (prefers-reduced-motion: reduce)'));
+    expect(reduit).toContain('::after { animation: none; opacity: 1; }');
   });
 });

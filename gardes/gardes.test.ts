@@ -352,8 +352,9 @@ describe('garde 6 - aucun espacement en dur', () => {
     'noyau/composants/Champ.tsx': ['6px'],
     // La marge du panneau d authentification sur telephone.
     'noyau/composants/GabaritAuth.tsx': ['40px'],
-    // Le trait actif qui recouvre la bordure : un chevauchement, pas un espacement.
-    'noyau/composants/OngletsRubrique.tsx': ['-1px'],
+    // Le trait actif qui recouvre la bordure : un chevauchement, pas un espacement. Et depuis la
+    // 1.2.0, le trait d attente, place a -2 px pour recouvrir exactement la bordure basse de 2 px.
+    'noyau/composants/OngletsRubrique.tsx': ['-1px', '-2px'],
     // Le controle segmente du theme : trois segments qui se touchent dans un groupe serre.
     'noyau/composants/SelecteurTheme.tsx': ['2px', '3px'],
     // La pastille : sa hauteur est celle d une ligne de texte, pas celle d un bloc.

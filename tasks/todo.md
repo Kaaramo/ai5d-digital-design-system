@@ -111,7 +111,7 @@ SPEC et user stories : `docs/superpowers/specs/version-1.2.0-espace-participant/
 - [x] T3 · Mesure, mouvement, durée longue, sélection, curseur, `COULEURS_NAVIGATEUR`, non-régression, décision 006 · écrite, non testée
 - [x] T4 · `lien.ts`, `ComposantLien` élargi, `Bouton` rendu en lien · écrite, non testée
 - [x] T5 · Le ton `neutre` · écrite, non testée
-- [ ] T6 · `OngletsRubrique` : lien du produit, six onglets, fondu, attente, décision 007
+- [x] T6 · `OngletsRubrique` : lien du produit, six onglets, fondu, attente, décision 007 · écrite, non testée
 - [ ] T7 · `CoquilleRail` : pied de contenu et pied compact
 - [ ] T8 · `SelecteurTheme` : 44 px au doigt, libellés visibles
 - [ ] T9 · `TitreSection` et `ListeDefinitions`

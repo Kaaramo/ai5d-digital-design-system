@@ -1,6 +1,7 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Icone } from './Icone';
+import type { ComposantLien } from './LiensRail';
 
 /**
  * La navigation entre les sous-pages d'une rubrique.
@@ -21,7 +22,7 @@ import { Icone } from './Icone';
  * vraiment : chaque onglet est une route rendue au serveur, qui se met en signet et revient
  * par le bouton Retour du navigateur.
  *
- * On emploie donc `nav` et `aria-current="page"`, et les flèches ne font rien — ce qui est
+ * On emploie donc `nav` et `aria-current="page"`, et les flèches ne font rien, ce qui est
  * exactement le comportement attendu d'une liste de liens. Annoncer un `tablist` qui
  * navigue serait une promesse fausse.
  *
@@ -31,22 +32,29 @@ import { Icone } from './Icone';
  * correctement le rouge du vert, et un trait de 2 px seul se rate au balayage. C'est la
  * même règle que celle écrite dans `BarreOnglets`, et pour la même raison.
  *
- * ── LE DÉBORDEMENT SE VOIT, ET C'EST LE DERNIER ONGLET COUPÉ QUI LE DIT ─────
+ * ── LE DÉBORDEMENT SE VOIT PAR UN FONDU, MESURÉ PAR LE NAVIGATEUR ──────────
  * Trois onglets de deux mots ne tiennent pas sur un téléphone de 390 px. Le conteneur
  * défile, et son ascenseur est masqué.
  *
- * La 0.6.0 y ajoutait un dégradé de 24 px collé au bord droit, censé dire qu'il reste
- * quelque chose derrière. **Il a été retiré en 0.6.3, après l'avoir vu à l'écran.**
+ * La 0.6.0 y posait un dégradé fixe de 24 px ; la 0.6.3 l'a retiré, parce qu'un voile posé sans
+ * mesure se dessinait aussi là où rien ne débordait, et qu'une mesure au montage aurait fait de ce
+ * composant un module client. La 1.2.0 le rend, sans mesure ni script : c'est la frise de défilement
+ * du conteneur, sous `@supports (animation-timeline: scroll())`, qui choisit le bord. Quand rien ne
+ * déborde, la frise est inactive et aucun masque ne s'applique. Sans prise en charge, le dernier
+ * onglet coupé net par le bord reste le signal, comme en 0.6.3. Décision 007.
  *
- * Un dégradé posé sans mesure se dessine TOUJOURS, y compris sur un écran de 1440 px où
- * rien ne déborde : il y apparaissait comme une bande claire qui coupait le filet et le
- * trait de l'onglet actif. Le rendre conditionnel demanderait de mesurer la largeur au
- * montage, donc un état, donc de faire de ce composant un module client — un coût
- * disproportionné pour un ornement.
+ * L'onglet actif est amené dans la vue au premier affichage par `scroll-initial-target`, sous
+ * `@supports`, pour la même raison : un `scrollIntoView` demanderait un effet, donc une directive
+ * client, et ferait tomber tout appelant serveur qui passe des icônes.
  *
- * Ce qui signale le débordement est donc le dernier onglet **coupé net par le bord**. C'est
- * ce que font les réglages d'iOS, GitHub et Stripe, et c'est suffisant : l'œil reconnaît un
- * mot tronché comme la promesse d'un défilement.
+ * Constaté le 26 septembre 2026 (Playwright 1.57) : Chromium 143 fait les deux, WebKit 26 le fondu
+ * seul, Firefox 144 aucun des deux.
+ *
+ * ── LE LIEN DU PRODUIT, L'APPUI ET L'ATTENTE, EN v1.2.0 ────────────────────
+ * Avec `Lien`, changer d'onglet ne recharge plus le document. L'appui pose la surface de sélection
+ * sans transition ; une navigation en attente, selon le protocole de `lien.ts`, fait pulser un trait
+ * bas, que l'onglet actif ne montre jamais. La borne passe de cinq à six : une session à distance du
+ * Portail a six sous-pages, et fusionner le badge et l'attestation confondrait deux objets.
  *
  * ── LE COMPOSANT NE DÉDUIT PAS L'ACTIF, IL LE REÇOIT ────────────────────────
  * Déduire le chemin courant demanderait un routeur, donc une dépendance à un framework,
@@ -71,12 +79,14 @@ export interface OngletRubrique {
 }
 
 export interface ProprietesOngletsRubrique {
-  /** Deux à cinq. En dessous de deux, il n'y a rien à choisir. */
+  /** Deux à six. En dessous de deux, il n'y a rien à choisir. */
   onglets: OngletRubrique[];
   /** L'`id` de l'onglet courant. Un identifiant inconnu n'en marque aucun. */
   actif: string;
   /** Le nom de la navigation pour les lecteurs d'écran. */
   etiquette?: string | undefined;
+  /** Le lien du routeur du produit ; `a` par défaut. Avec lui, changer d'onglet ne recharge pas le document. */
+  Lien?: ComposantLien | undefined;
   className?: string | undefined;
   style?: CSSProperties | undefined;
 }
@@ -84,12 +94,23 @@ export interface ProprietesOngletsRubrique {
 /** La hauteur d'un onglet. Elle porte le plancher tactile de la charte. */
 export const HAUTEUR_ONGLETS = 44;
 
+/**
+ * Deux à six onglets. Comme `BarreOnglets`, le composant ne lève pas au-delà : la borne est écrite,
+ * exportée et testée.
+ */
+export const ONGLETS_RUBRIQUE_MIN = 2;
+export const ONGLETS_RUBRIQUE_MAX = 6;
+
 const ID_STYLE = 'ai5d-onglets-rubrique';
 
 /*
   La prose vit dans le commentaire au-dessus, jamais dans la chaîne ci-dessous : un accent
   grave dans un gabarit littéral le TERMINE, et la prose de ce système cite volontiers du
   code entre accents graves.
+
+  Le masque du fondu ne lit que l opacite : la teinte choisie n apparait jamais. Le trait
+  d attente se place a -2 px pour recouvrir exactement la bordure basse de 2 px de l onglet,
+  comme le trait actif ; la valeur est nommee hors echelle dans la garde d espacement.
 */
 const STYLE_ONGLETS = `
 .ai5d-onglets-r {
@@ -100,10 +121,12 @@ const STYLE_ONGLETS = `
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  scroll-padding-inline: var(--espace-6);
 }
 .ai5d-onglets-r::-webkit-scrollbar { display: none; }
 
 .ai5d-onglets-r__lien {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: var(--espace-2);
@@ -118,10 +141,16 @@ const STYLE_ONGLETS = `
   color: var(--texte-faible);
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
-  transition: color var(--duree-courte) var(--courbe-entree);
+  transition:
+    color var(--duree-courte) var(--courbe-entree),
+    background var(--mouvement-retour);
 }
 
-.ai5d-onglets-r__lien:hover { color: var(--texte-fort); }
+@media (hover: hover) {
+  .ai5d-onglets-r__lien:hover { color: var(--texte-fort); }
+}
+
+.ai5d-onglets-r__lien:active { background: var(--surface-selection); border-radius: var(--rayon-sm); transition: none; }
 
 .ai5d-onglets-r__lien:focus-visible {
   outline: 2px solid var(--action);
@@ -135,8 +164,49 @@ const STYLE_ONGLETS = `
   border-bottom-color: var(--action);
 }
 
+.ai5d-onglets-r__lien::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background: var(--bordure-forte);
+  opacity: 0;
+  pointer-events: none;
+}
+.ai5d-onglets-r__lien:is([data-en-attente], :has([data-en-attente])):not([aria-current='page'])::after { opacity: 1; animation: ai5d-onglets-attente 1200ms ease-in-out infinite alternate; }
+
+@keyframes ai5d-onglets-attente {
+  from { opacity: 0.4; }
+  to { opacity: 1; }
+}
+
+@supports (animation-timeline: scroll()) {
+  .ai5d-onglets-r {
+    animation: ai5d-onglets-fondu linear both;
+    animation-timeline: scroll(self inline);
+  }
+  @keyframes ai5d-onglets-fondu {
+    0% {
+      mask-image: linear-gradient(to left, transparent, var(--encre) var(--espace-6));
+    }
+    1%, 99% {
+      mask-image: linear-gradient(to right, transparent, var(--encre) var(--espace-6), var(--encre) calc(100% - var(--espace-6)), transparent);
+    }
+    100% {
+      mask-image: linear-gradient(to right, transparent, var(--encre) var(--espace-6));
+    }
+  }
+}
+
+@supports (scroll-initial-target: nearest) {
+  .ai5d-onglets-r__lien[aria-current='page'] { scroll-initial-target: nearest; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ai5d-onglets-r__lien { transition: none; }
+  .ai5d-onglets-r__lien:is([data-en-attente], :has([data-en-attente])):not([aria-current='page'])::after { animation: none; opacity: 1; }
 }
 `;
 
@@ -144,6 +214,7 @@ export function OngletsRubrique({
   onglets,
   actif,
   etiquette = 'Sous-pages de la rubrique',
+  Lien,
   className,
   style,
 }: ProprietesOngletsRubrique) {
@@ -156,22 +227,40 @@ export function OngletsRubrique({
         className={className === undefined ? 'ai5d-onglets-r' : `ai5d-onglets-r ${className}`}
         style={style}
       >
-        {onglets.map((onglet) => (
-          <a
-            key={onglet.id}
-            href={onglet.href}
-            className="ai5d-onglets-r__lien"
-            /*
-              `undefined` et non `false` : `aria-current="false"` est une valeur VALIDE qui
-              signifie « ce n'est pas l'element courant », et certains lecteurs d'ecran
-              l'annoncent. L'attribut doit disparaitre, pas valoir faux.
-            */
-            aria-current={onglet.id === actif ? 'page' : undefined}
-          >
-            {onglet.icone === undefined ? null : <Icone nom={onglet.icone} taille={16} />}
-            <span>{onglet.libelle}</span>
-          </a>
-        ))}
+        {onglets.map((onglet) => {
+          /*
+            `undefined` et non `false` : `aria-current="false"` est une valeur VALIDE qui
+            signifie « ce n'est pas l'element courant », et certains lecteurs d'ecran
+            l'annoncent. L'attribut doit disparaitre, pas valoir faux.
+          */
+          const courant = onglet.id === actif ? 'page' : undefined;
+          const contenu: ReactNode = (
+            <>
+              {onglet.icone === undefined ? null : <Icone nom={onglet.icone} taille={16} />}
+              <span>{onglet.libelle}</span>
+            </>
+          );
+
+          return Lien === undefined ? (
+            <a
+              key={onglet.id}
+              href={onglet.href}
+              className="ai5d-onglets-r__lien"
+              aria-current={courant}
+            >
+              {contenu}
+            </a>
+          ) : (
+            <Lien
+              key={onglet.id}
+              href={onglet.href}
+              className="ai5d-onglets-r__lien"
+              aria-current={courant}
+            >
+              {contenu}
+            </Lien>
+          );
+        })}
       </nav>
     </>
   );
