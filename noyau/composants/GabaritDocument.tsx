@@ -182,9 +182,10 @@ export function GabaritDocument({
       <header className="ai5d-bandeau-document">
         <div className="ai5d-colonne-document ai5d-bandeau-document__interieur">
           {/*
-            Le lien du produit ne recoit que ce que `ComposantLien` promet : ni `aria-label` ni
-            style. Le nom accessible passe donc par un texte masque, et le logotype devient
-            decoratif, pour que le lien s annonce « Retour a l accueil » et rien d autre.
+            Le lien du produit reçoit l'adresse et la classe. Depuis la 1.2.0, `ComposantLien` accepte
+            aussi `aria-label` ; le nom accessible passe pourtant toujours par un texte masqué et le
+            logotype reste décoratif, pour que le rendu de la 1.1.0 ne change pas et que le lien
+            s'annonce « Retour à l'accueil » et rien d'autre.
           */}
           <Lien href={accueil} className="ai5d-bandeau-document__logo">
             <span className="ai5d-document__masque">Retour à l’accueil</span>

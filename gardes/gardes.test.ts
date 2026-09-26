@@ -342,6 +342,8 @@ describe('garde 6 - aucun espacement en dur', () => {
     'noyau/composants/BarreOnglets.tsx': ['3px'],
     // Le rembourrage horizontal du bouton : entre 16 et 24, ni l un ni l autre ne tient.
     'noyau/composants/Bouton.tsx': ['20px'],
+    // Le texte hors ecran : un pixel, et sa marge negative d un pixel. Une construction, pas un pas.
+    'noyau/composants/lien.ts': ['-1px'],
     // Le surtitre colle au titre, et la respiration avant l action.
     'noyau/composants/CarteAction.tsx': ['6px', '20px'],
     // Le titre et sa description, serres : un en-tete de carte, pas deux paragraphes.

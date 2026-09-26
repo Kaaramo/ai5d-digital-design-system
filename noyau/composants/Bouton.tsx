@@ -1,4 +1,13 @@
-import type { ButtonHTMLAttributes, CSSProperties } from 'react';
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, CSSProperties } from 'react';
+import type { ComposantLien } from './LiensRail';
+import {
+  CLASSE_HORS_ECRAN,
+  ID_STYLE_HORS_ECRAN,
+  MENTION_NOUVEL_ONGLET,
+  STYLE_HORS_ECRAN,
+  lienNatif,
+  relSur,
+} from './lien';
 
 /**
  * Le bouton du registre applicatif.
@@ -67,13 +76,29 @@ import type { ButtonHTMLAttributes, CSSProperties } from 'react';
  * Son survol pose `--erreur-fond`, une teinte très pâle, et ne touche ni la bordure ni le
  * texte : un survol qui passerait à `--erreur` plein annulerait la variante. Comme
  * `danger`, elle ne compte pas dans la règle du bouton primaire.
+ *
+ * ── LE BOUTON QUI MÈNE QUELQUE PART, EN v1.2.0 ──────────────────────────────
+ * Avec `href`, le bouton est un lien : un `<a>`, ou le lien du routeur du produit passé en `Lien`,
+ * avec les classes, la hauteur, les variantes et les états d'un bouton. Il s'ouvre au clic du milieu,
+ * se copie, et fonctionne sans JavaScript. Compte naviguait par `window.location.assign` depuis un
+ * `<button>` à deux endroits, et le SDK à un troisième, faute de cette forme.
+ *
+ * Un lien désactivé ou en chargement perd son adresse : `role="link"`, `aria-disabled`, hors de la
+ * tabulation, et le `onClick` du produit ne lui est pas transmis. `type` n'est jamais transmis à un
+ * lien. Le téléchargement et le nouvel onglet sont décidés dans `lien.ts`.
+ *
+ * ── LE SURVOL EST GARDÉ PAR `(hover: hover)`, EN v1.2.0 ─────────────────────
+ * Au doigt, `:hover` se déclenche après la pression et reste collé jusqu'au geste suivant : un bouton
+ * touché gardait sa couleur de survol. C'est la seule différence de rendu pour un `<button>`, et elle
+ * n'existe qu'au doigt.
  */
 
 export type VarianteBouton =
   'primaire' | 'secondaire' | 'neutre' | 'discret' | 'danger' | 'danger-contour';
 export type TailleBouton = 'sm' | 'md' | 'lg';
 
-export interface ProprietesBouton extends ButtonHTMLAttributes<HTMLButtonElement> {
+/** Ce que partagent le bouton d'action et le bouton qui mène quelque part. */
+interface ProprietesCommunesBouton {
   variante?: VarianteBouton | undefined;
   taille?: TailleBouton | undefined;
   /** Le bouton reste lisible et garde son libellé : la mise en page ne saute pas. */
@@ -97,6 +122,25 @@ export interface ProprietesBouton extends ButtonHTMLAttributes<HTMLButtonElement
   pleineLargeur?: boolean | undefined;
 }
 
+/** Le bouton d'action : un `<button>`, rendu exactement comme en 1.1.0. */
+export interface ProprietesBoutonAction
+  extends ProprietesCommunesBouton, ButtonHTMLAttributes<HTMLButtonElement> {
+  href?: undefined;
+}
+
+/** Le bouton qui mène quelque part : un lien, avec l'apparence et les états d'un bouton. */
+export interface ProprietesBoutonLien
+  extends ProprietesCommunesBouton, Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> {
+  /** L'adresse. Sa présence fait du bouton un lien. */
+  href: string;
+  /** Le lien du routeur du produit ; `a` par défaut. Ignoré avec `download` ou `target="_blank"`. */
+  Lien?: ComposantLien | undefined;
+  /** Rend un lien inerte : ni adresse, ni focus, et il le dit. */
+  disabled?: boolean | undefined;
+}
+
+export type ProprietesBouton = ProprietesBoutonAction | ProprietesBoutonLien;
+
 const HAUTEURS: Record<TailleBouton, string> = {
   sm: 'calc(var(--hauteur-controle) - 8px)',
   md: 'var(--hauteur-controle)',
@@ -112,7 +156,8 @@ const TAILLES_TEXTE: Record<TailleBouton, string> = {
 const ID_STYLE = 'ai5d-bouton';
 
 /**
- * Les couleurs et les états, hors du style en ligne.
+ * Les couleurs et les états, hors du style en ligne. La feuille sert les deux éléments, `<button>` et
+ * `<a>`.
  *
  * `:focus-visible` et non `:focus` : un anneau qui apparaît au clic de souris est du
  * bruit, un anneau qui n'apparaît pas au clavier est un mur.
@@ -121,9 +166,11 @@ const ID_STYLE = 'ai5d-bouton';
  * un bouton pleine largeur fait bouger toute la colonne, et sur un écran de 440 px cela
  * se voit.
  *
- * Chaque règle de survol est gardée par `:not(:disabled)`. Un bouton en chargement
- * réagirait sinon à la souris tout en refusant le clic, ce qui est la pire des deux
- * réponses possibles.
+ * Chaque règle de survol et d'appui est gardée par `:not(:disabled)` et
+ * `:not([aria-disabled='true'])` : un bouton en chargement, ou un lien inerte, réagirait sinon à la
+ * souris tout en refusant le clic. Et depuis la 1.2.0, le survol l'est par `@media (hover: hover)`.
+ *
+ * Un lien actif rend trois points d'attente, masqués ; le protocole de `lien.ts` les montre.
  */
 const STYLE_BOUTON = `
 .ai5d-bouton {
@@ -136,6 +183,7 @@ const STYLE_BOUTON = `
     color var(--duree-courte) var(--courbe-entree),
     opacity var(--duree-courte) var(--courbe-entree),
     transform var(--duree-courte) var(--courbe-sortie);
+  text-decoration: none;
 }
 
 .ai5d-bouton[data-variante='primaire'] {
@@ -164,27 +212,29 @@ const STYLE_BOUTON = `
   border-color: var(--erreur);
 }
 
-.ai5d-bouton:not(:disabled):hover[data-variante='primaire'] {
-  background: var(--action-survol);
-  border-color: var(--action-survol);
-}
-.ai5d-bouton:not(:disabled):hover[data-variante='secondaire'],
-.ai5d-bouton:not(:disabled):hover[data-variante='discret'] {
-  background: var(--info-fond);
-}
-.ai5d-bouton:not(:disabled):hover[data-variante='neutre'] {
-  background: var(--surface-chaude);
-  border-color: var(--texte-faible);
-}
-.ai5d-bouton:not(:disabled):hover[data-variante='danger'] {
-  background: var(--erreur-survol);
-  border-color: var(--erreur-survol);
-}
-.ai5d-bouton:not(:disabled):hover[data-variante='danger-contour'] {
-  background: var(--erreur-fond);
+@media (hover: hover) {
+  .ai5d-bouton:not(:disabled):not([aria-disabled='true']):hover[data-variante='primaire'] {
+    background: var(--action-survol);
+    border-color: var(--action-survol);
+  }
+  .ai5d-bouton:not(:disabled):not([aria-disabled='true']):hover[data-variante='secondaire'],
+  .ai5d-bouton:not(:disabled):not([aria-disabled='true']):hover[data-variante='discret'] {
+    background: var(--info-fond);
+  }
+  .ai5d-bouton:not(:disabled):not([aria-disabled='true']):hover[data-variante='neutre'] {
+    background: var(--surface-chaude);
+    border-color: var(--texte-faible);
+  }
+  .ai5d-bouton:not(:disabled):not([aria-disabled='true']):hover[data-variante='danger'] {
+    background: var(--erreur-survol);
+    border-color: var(--erreur-survol);
+  }
+  .ai5d-bouton:not(:disabled):not([aria-disabled='true']):hover[data-variante='danger-contour'] {
+    background: var(--erreur-fond);
+  }
 }
 
-.ai5d-bouton:not(:disabled):active { transform: translateY(1px); }
+.ai5d-bouton:not(:disabled):not([aria-disabled='true']):active { transform: translateY(1px); }
 
 .ai5d-bouton:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
 .ai5d-bouton[data-variante='danger']:focus-visible,
@@ -194,6 +244,10 @@ const STYLE_BOUTON = `
   display: inline-flex;
   align-items: center;
   gap: var(--espace-1);
+}
+.ai5d-bouton__points--attente { display: none; }
+.ai5d-bouton:is([data-en-attente], :has([data-en-attente])) .ai5d-bouton__points--attente {
+  display: inline-flex;
 }
 .ai5d-bouton__point {
   width: 4px;
@@ -212,7 +266,7 @@ const STYLE_BOUTON = `
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ai5d-bouton:not(:disabled):active { transform: none; }
+  .ai5d-bouton:not(:disabled):not([aria-disabled='true']):active { transform: none; }
   .ai5d-bouton__point { animation: none; opacity: 1; }
 }
 `;
@@ -237,22 +291,44 @@ function PointsDeChargement() {
   );
 }
 
-export function Bouton({
-  variante = 'primaire',
-  taille = 'md',
-  chargement = false,
-  libelleChargement,
-  pleineLargeur = false,
-  disabled,
-  className,
-  style,
-  children,
-  type = 'button',
-  ...reste
-}: ProprietesBouton) {
-  const inactif = disabled === true || chargement;
+/**
+ * Les trois points de l'attente de navigation.
+ *
+ * Tout bouton en lien actif les rend, masqués ; le protocole de `lien.ts` les montre quand le lien,
+ * ou l'un de ses descendants, porte `data-en-attente`. Un `<button>` ne les rend pas : il a
+ * `chargement`.
+ */
+function PointsDAttente() {
+  return (
+    <span className="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true">
+      <span className="ai5d-bouton__point" />
+      <span className="ai5d-bouton__point" />
+      <span className="ai5d-bouton__point" />
+    </span>
+  );
+}
 
-  const styleBouton: CSSProperties = {
+interface OptionsStyle {
+  taille: TailleBouton;
+  pleineLargeur: boolean;
+  curseur: CSSProperties['cursor'];
+  opacite: number;
+  style: CSSProperties | undefined;
+}
+
+/**
+ * Le style en ligne, commun aux deux éléments. Il garde ce qui dépend des propriétés reçues : la
+ * hauteur selon la taille, la largeur pleine, le curseur et l'opacité. Les couleurs et les états sont
+ * dans la feuille. Un `style` du consommateur gagne, comme avant.
+ */
+function styleDuBouton({
+  taille,
+  pleineLargeur,
+  curseur,
+  opacite,
+  style,
+}: OptionsStyle): CSSProperties {
+  return {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -281,10 +357,36 @@ export function Bouton({
       disponible. Le chargement garde sa pleine opacite, et son curseur dit qu on attend
       plutot qu on est refuse.
     */
-    cursor: chargement ? 'progress' : disabled === true ? 'not-allowed' : 'pointer',
-    opacity: disabled === true ? 0.6 : 1,
+    cursor: curseur,
+    opacity: opacite,
     ...style,
   };
+}
+
+/** Le bouton d'action. Son rendu est celui de la 1.1.0, au caractère près : un test le compare. */
+function BoutonAction({
+  variante = 'primaire',
+  taille = 'md',
+  chargement = false,
+  libelleChargement,
+  pleineLargeur = false,
+  disabled,
+  className,
+  style,
+  children,
+  type = 'button',
+  href: _href,
+  ...reste
+}: ProprietesBoutonAction) {
+  const inactif = disabled === true || chargement;
+
+  const styleBouton = styleDuBouton({
+    taille,
+    pleineLargeur,
+    curseur: chargement ? 'progress' : disabled === true ? 'not-allowed' : 'pointer',
+    opacite: disabled === true ? 0.6 : 1,
+    style,
+  });
 
   return (
     <>
@@ -304,5 +406,127 @@ export function Bouton({
         {chargement ? <PointsDeChargement /> : null}
       </button>
     </>
+  );
+}
+
+/**
+ * Le bouton qui mène quelque part.
+ *
+ * Inactif, désactivé ou en chargement, il perd son adresse : un lien sans `href` ne navigue pas, ne
+ * prend pas le focus, et `role="link"` avec `aria-disabled` le fait annoncer « lien, indisponible ».
+ * Le `onClick` du produit ne lui est pas transmis : un `<a>` sans adresse reçoit encore les clics, là
+ * où un `<button disabled>` les refuse.
+ */
+function BoutonLien({
+  variante = 'primaire',
+  taille = 'md',
+  chargement = false,
+  libelleChargement,
+  pleineLargeur = false,
+  href,
+  Lien,
+  disabled,
+  download,
+  target,
+  rel,
+  onClick,
+  className,
+  style,
+  children,
+  type: _type,
+  ...reste
+}: ProprietesBoutonLien) {
+  const classe = className === undefined ? 'ai5d-bouton' : `ai5d-bouton ${className}`;
+  const feuille = <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_BOUTON }} />;
+
+  if (disabled === true || chargement) {
+    return (
+      <>
+        {feuille}
+        <a
+          {...reste}
+          role="link"
+          aria-disabled="true"
+          aria-busy={chargement || undefined}
+          className={classe}
+          style={styleDuBouton({
+            taille,
+            pleineLargeur,
+            curseur: chargement ? 'progress' : 'not-allowed',
+            opacite: disabled === true ? 0.6 : 1,
+            style,
+          })}
+          data-variante={variante}
+          data-taille={taille}
+        >
+          {chargement && libelleChargement !== undefined ? libelleChargement : children}
+          {chargement ? <PointsDeChargement /> : null}
+        </a>
+      </>
+    );
+  }
+
+  const nouvelOnglet = target === '_blank';
+  const attributs = {
+    className: classe,
+    style: styleDuBouton({ taille, pleineLargeur, curseur: 'pointer', opacite: 1, style }),
+    'data-variante': variante,
+    'data-taille': taille,
+  };
+  const contenu = (
+    <>
+      {children}
+      <PointsDAttente />
+      {nouvelOnglet ? (
+        <span className={CLASSE_HORS_ECRAN}>{` ${MENTION_NOUVEL_ONGLET}`}</span>
+      ) : null}
+    </>
+  );
+
+  return (
+    <>
+      {feuille}
+      {nouvelOnglet ? (
+        <style id={ID_STYLE_HORS_ECRAN} dangerouslySetInnerHTML={{ __html: STYLE_HORS_ECRAN }} />
+      ) : null}
+
+      {Lien === undefined || lienNatif({ download, target }) ? (
+        <a
+          {...reste}
+          {...attributs}
+          href={href}
+          download={download}
+          target={target}
+          rel={relSur(rel, target)}
+          onClick={onClick}
+        >
+          {contenu}
+        </a>
+      ) : (
+        <Lien
+          {...reste}
+          {...attributs}
+          href={href}
+          target={target}
+          rel={relSur(rel, target)}
+          onClick={onClick}
+        >
+          {contenu}
+        </Lien>
+      )}
+    </>
+  );
+}
+
+/** Vrai quand le bouton reçoit une adresse : il devient un lien. */
+function estBoutonLien(proprietes: ProprietesBouton): proprietes is ProprietesBoutonLien {
+  return typeof proprietes.href === 'string';
+}
+
+export function Bouton(proprietes: ProprietesBouton) {
+  return estBoutonLien(proprietes) ? (
+    <BoutonLien {...proprietes} />
+  ) : (
+    <BoutonAction {...proprietes} />
   );
 }

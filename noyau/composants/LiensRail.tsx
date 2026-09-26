@@ -1,4 +1,4 @@
-import type { ComponentProps, ComponentType, ReactNode } from 'react';
+import type { AnchorHTMLAttributes, ComponentProps, ComponentType, ReactNode } from 'react';
 import type { Rubrique } from './CoquilleRail';
 import { Icone } from './Icone';
 
@@ -34,17 +34,18 @@ import { Icone } from './Icone';
 /**
  * Le composant de lien du produit. Celui de Next convient tel quel.
  *
- * Les `| undefined` ne sont pas dans l'interface écrite par la SPEC. Ils sont requis par
- * `exactOptionalPropertyTypes`, actif dans ce dépôt : sans eux, un lien inactif, qui reçoit
- * `aria-current={undefined}`, ne compilerait pas. C'est la convention de tous les composants du
- * système.
+ * Il reçoit TOUS les attributs d'un `<a>`, et il doit les transmettre : un bouton en lien lui passe
+ * `style`, `target`, `rel`, `aria-*` et `data-*`, et les perdre rendrait un lien sans hauteur ni
+ * variante. Élargi en 1.2.0 ; jusque-là, il ne promettait que l'adresse, la classe et l'état courant.
+ *
+ * Un composant typé sur l'ancienne forme, avec `'aria-current'?: 'page'`, n'est plus assignable : un
+ * lien admet aussi `true`, `step`, `location`… Un produit type le sien par
+ * `ComponentProps<ComposantLien>`. Constaté par `tsc` le 26 septembre 2026 ; aucun produit n'était
+ * concerné, tous passent `Link` tel quel.
  */
-export type ComposantLien = ComponentType<{
-  href: string;
-  className?: string | undefined;
-  'aria-current'?: 'page' | undefined;
-  children: ReactNode;
-}>;
+export type ComposantLien = ComponentType<
+  AnchorHTMLAttributes<HTMLAnchorElement> & { href: string; children: ReactNode }
+>;
 
 export interface ProprietesLiensRail {
   rubriques: Rubrique[];

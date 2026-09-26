@@ -181,9 +181,9 @@ export function BarreOnglets({
             </a>
           ) : (
             /*
-              Le lien du produit ne reçoit que ce que `ComposantLien` promet : l'adresse, la classe
-              et l'état courant. `data-onglet` reste sur le repli `a` seulement, parce qu'un
-              composant de lien quelconque n'a aucune obligation de le transmettre.
+              Le lien du produit reçoit l'adresse, la classe et l'état courant. Depuis la 1.2.0,
+              `ComposantLien` promet tous les attributs d'un lien ; `data-onglet` reste pourtant sur le
+              repli `a` seulement, pour que le rendu de la 1.1.0 ne change pas.
             */
             <Lien
               key={onglet.id}
