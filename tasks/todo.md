@@ -99,3 +99,28 @@ Le sujet manquait. Relevé par le commanditaire à partir d'un portail concurren
       prouvent que la règle est écrite, pas qu'elle s'applique.
 - [ ] Zone sûre sur un iPhone sans bouton d'accueil. `env(safe-area-inset-bottom)` ne vaut
       jamais autre chose que zéro dans un navigateur de bureau.
+
+## Version 1.2.0 · l'espace participant, et le plancher tactile réparé · 26 septembre 2026
+
+SPEC et user stories : `docs/superpowers/specs/version-1.2.0-espace-participant/`. Plan :
+`docs/superpowers/plans/2026-09-26-version-1-2-0-espace-participant.md`. Chaque tâche se coche
+« écrite, non testée » ; la tâche 16 vérifie tout d'un bloc.
+
+- [x] T1 · Le suivi, la mesure « avant » du plancher tactile · fait
+- [ ] T2 · Le plancher tactile sans cycle : feuille, garde, résolveur, instantanés de 1.1.0, décision 005
+- [ ] T3 · Mesure, mouvement, durée longue, sélection, curseur, `COULEURS_NAVIGATEUR`, non-régression, décision 006
+- [ ] T4 · `lien.ts`, `ComposantLien` élargi, `Bouton` rendu en lien
+- [ ] T5 · Le ton `neutre`
+- [ ] T6 · `OngletsRubrique` : lien du produit, six onglets, fondu, attente, décision 007
+- [ ] T7 · `CoquilleRail` : pied de contenu et pied compact
+- [ ] T8 · `SelecteurTheme` : 44 px au doigt, libellés visibles
+- [ ] T9 · `TitreSection` et `ListeDefinitions`
+- [ ] T10 · `LigneLien` et `ListeLignes`
+- [ ] T11 · `ValeurCopiable`
+- [ ] T12 · La recette `LOGOTYPE` et l'export `./logotype`, décision 008
+- [ ] T13 · L'index
+- [ ] T14 · Journal, guide de montée, README, NOYAU, formulations, version, décision 009
+- [ ] T15 · Les spécimens
+- [ ] T16 · Vérification d'un bloc, gardes vues échouer, mesure « après », captures, navigateurs, montée de Compte, preuves
+- [ ] T17 · Relecture du lot contre la SPEC
+- [ ] T18 · Points du §0.8 tranchés par Karamo, accord explicite, étiquette `v1.2.0` et poussée
