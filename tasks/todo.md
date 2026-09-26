@@ -110,7 +110,7 @@ SPEC et user stories : `docs/superpowers/specs/version-1.2.0-espace-participant/
 - [x] T2 · Le plancher tactile sans cycle : feuille, garde, résolveur, instantanés de 1.1.0, décision 005 · écrite, non testée
 - [x] T3 · Mesure, mouvement, durée longue, sélection, curseur, `COULEURS_NAVIGATEUR`, non-régression, décision 006 · écrite, non testée
 - [x] T4 · `lien.ts`, `ComposantLien` élargi, `Bouton` rendu en lien · écrite, non testée
-- [ ] T5 · Le ton `neutre`
+- [x] T5 · Le ton `neutre` · écrite, non testée
 - [ ] T6 · `OngletsRubrique` : lien du produit, six onglets, fondu, attente, décision 007
 - [ ] T7 · `CoquilleRail` : pied de contenu et pied compact
 - [ ] T8 · `SelecteurTheme` : 44 px au doigt, libellés visibles

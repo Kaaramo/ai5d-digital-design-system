@@ -11,6 +11,10 @@ import type { TonSemantique } from './Pastille';
  * suit le ton : `status` pour ce qui informe, `alert` pour ce qui demande une réaction.
  * Un lecteur d'écran annonce alors la chose au bon moment — un `alert` interrompt, un
  * `status` attend une pause.
+ *
+ * Le ton `neutre` (v1.2.0) dit « rien à signaler » : icône `Info`, `role="status"`, contour et titre
+ * en texte faible, corps en `--texte`. Le contour suit la règle des quatre autres tons, la couleur du
+ * ton : en `--bordure-forte`, le bandeau ne se détacherait pas du papier (1,49).
  */
 
 export interface ProprietesBandeau extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
@@ -27,6 +31,7 @@ const ICONES: Record<TonSemantique, LucideIcon> = {
   reussite: CheckCircle2,
   attention: AlertTriangle,
   erreur: XCircle,
+  neutre: Info,
 };
 
 const COULEURS: Record<TonSemantique, { texte: string; fond: string }> = {
@@ -34,6 +39,7 @@ const COULEURS: Record<TonSemantique, { texte: string; fond: string }> = {
   reussite: { texte: 'var(--reussite)', fond: 'var(--reussite-fond)' },
   attention: { texte: 'var(--attention)', fond: 'var(--attention-fond)' },
   erreur: { texte: 'var(--erreur)', fond: 'var(--erreur-fond)' },
+  neutre: { texte: 'var(--texte-faible)', fond: 'var(--surface-chaude)' },
 };
 
 /** `alert` interrompt le lecteur d'écran ; `status` attend. Le ton décide. */
@@ -42,6 +48,7 @@ const ROLES: Record<TonSemantique, 'status' | 'alert'> = {
   reussite: 'status',
   attention: 'alert',
   erreur: 'alert',
+  neutre: 'status',
 };
 
 export function Bandeau({

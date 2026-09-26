@@ -1,12 +1,13 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Mail, Shield } from 'lucide-react';
+import { Info, Mail, Shield } from 'lucide-react';
 import {
   Bandeau,
   BASCULE_DEUX_COLONNES,
   Bouton,
   Carte,
+  CarteAction,
   Champ,
   CHEMIN_TETE,
   Embleme,
@@ -17,6 +18,7 @@ import {
   LARGEUR_MAX_PANNEAU,
   Logotype,
   Pastille,
+  PastilleEtat,
   TRANSFORME_TETE,
 } from '../../noyau/composants';
 
@@ -743,5 +745,63 @@ describe('Embleme', () => {
   it('ne prend jamais le focus : ce n est pas une commande', () => {
     const { container } = render(<Embleme />);
     expect(container.querySelector('svg')?.getAttribute('focusable')).toBe('false');
+  });
+});
+
+describe('le ton neutre (1.2.0)', () => {
+  it('Pastille : texte faible sur surface chaude, et le mot, toujours', () => {
+    const element = Pastille({ ton: 'neutre', children: 'Inscription confirmée' });
+    expect(element.props.style).toMatchObject({
+      color: 'var(--texte-faible)',
+      background: 'var(--surface-chaude)',
+    });
+    expect(element.props['data-ton']).toBe('neutre');
+
+    render(<Pastille ton="neutre">Inscription confirmée</Pastille>);
+    expect(screen.getByText('Inscription confirmée')).toHaveAttribute('data-ton', 'neutre');
+  });
+
+  it('PastilleEtat : le point prend la couleur du ton, donc le texte faible', () => {
+    const { container } = render(<PastilleEtat ton="neutre">Formation terminée</PastilleEtat>);
+    const pastille = container.querySelector('[data-ton="neutre"]');
+    expect(pastille).toHaveTextContent('Formation terminée');
+    expect(pastille?.querySelector('[aria-hidden="true"]')).not.toBeNull();
+  });
+
+  it('Bandeau : icone Info, role status, contour et titre en texte faible, corps en texte', () => {
+    const element = Bandeau({
+      ton: 'neutre',
+      titre: 'Formation terminée',
+      children: 'Votre attestation sera délivrée par l’équipe AI5D.',
+    });
+    expect(element.props.role).toBe('status');
+    expect(element.props.style).toMatchObject({
+      background: 'var(--surface-chaude)',
+      border: '1px solid var(--texte-faible)',
+      color: 'var(--texte)',
+    });
+
+    const { container } = render(
+      <Bandeau ton="neutre" titre="Formation terminée">
+        Votre attestation sera délivrée par l’équipe AI5D.
+      </Bandeau>,
+    );
+    expect(screen.getByRole('status')).toBeInTheDocument();
+    expect(screen.getByText('Formation terminée').style.color).toBe('var(--texte-faible)');
+
+    const reference = render(<Icone nom={Info} taille={20} />).container.querySelector('svg');
+    expect(container.querySelector('svg')?.innerHTML).toBe(reference?.innerHTML);
+  });
+
+  it('CarteAction accepte un etat neutre sans changement de code', () => {
+    const { container } = render(
+      <CarteAction
+        icone={Shield}
+        titre="AI5D Lab"
+        action="Voir le produit"
+        etat={{ ton: 'neutre', libelle: 'Sans accès' }}
+      />,
+    );
+    expect(container.querySelector('[data-ton="neutre"]')).toHaveTextContent('Sans accès');
   });
 });
