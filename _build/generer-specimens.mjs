@@ -418,7 +418,7 @@ body {
 .logo .cinq { color: var(--action); display: inline-block; transform: rotate(-5deg); }
 .logo i { font-family: var(--police-titre); font-weight: var(--graisse-legere); font-style: normal; margin-left: 9px; }
 
-.themes { display: flex; gap: 8px; }
+.themes { display: flex; flex-wrap: wrap; gap: 8px; }
 .themes button {
   height: 36px; padding: 0 14px; cursor: pointer;
   background: transparent; color: var(--action);
@@ -433,7 +433,7 @@ body {
 .entete h2 { margin: 6px 0 2px; font-family: var(--police-titre); font-weight: var(--graisse-normale); font-size: var(--taille-2xl); color: var(--texte-fort); letter-spacing: var(--lettrage-titre); }
 .entete p { margin: 0; color: var(--texte-faible); font-size: var(--taille-sm); }
 
-.grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; }
+.grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 32px; }
 .colonne { min-width: 0; }
 h3 { margin: 28px 0 12px; font-size: var(--taille-sm); font-weight: var(--graisse-semi); color: var(--texte-faible); text-transform: uppercase; letter-spacing: var(--lettrage-overline); }
 h3:first-child { margin-top: 0; }

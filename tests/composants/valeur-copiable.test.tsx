@@ -166,6 +166,21 @@ describe('ValeurCopiable (1.2.0)', () => {
     expect(css).not.toMatch(/@media \(min-width/);
   });
 
+  it('empile sans vide : en colonne, la base du champ redevient sa hauteur naturelle', () => {
+    /*
+      Vu a la capture au doigt, le 26 septembre 2026 : en colonne, `flex: 1 1 16rem`, pense pour une
+      largeur, devenait une HAUTEUR de 256 px, et un grand vide separait le champ de son bouton. jsdom
+      ne calcule aucune mise en page : la regle se garde ici par sa forme, et la capture la montre.
+    */
+    rendre();
+    const css = (document.getElementById('ai5d-valeur-copiable')?.innerHTML ?? '').replace(
+      /\s+/g,
+      ' ',
+    );
+    const pile = css.slice(css.indexOf('@container (max-width: 24rem)'));
+    expect(pile).toContain('.ai5d-copiable__rangee .ai5d-copiable__champ { flex: 0 0 auto; }');
+  });
+
   it('se declare module client, et sa duree vit dans un module pur', () => {
     expect(
       readFileSync('noyau/composants/ValeurCopiable.tsx', 'utf8').startsWith("'use client';"),

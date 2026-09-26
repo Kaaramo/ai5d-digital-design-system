@@ -50,6 +50,11 @@ type EtatCopie = 'repos' | 'succes' | 'echec';
 
 const ID_STYLE = 'ai5d-valeur-copiable';
 
+/*
+  En colonne, sous 24rem, la base flexible du champ (16rem), pensee pour une largeur, deviendrait une
+  hauteur de 256 px, et un grand vide separerait le champ de son bouton. Vu a la capture au doigt le
+  26 septembre 2026 ; en colonne, le champ reprend donc sa hauteur naturelle.
+*/
 export const STYLE_COPIABLE = `
 .ai5d-copiable { container-type: inline-size; display: flex; flex-direction: column; gap: var(--espace-2); }
 .ai5d-copiable__rangee { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--espace-2); }
@@ -61,6 +66,7 @@ export const STYLE_COPIABLE = `
 }
 @container (max-width: 24rem) {
   .ai5d-copiable__rangee { flex-direction: column; align-items: stretch; }
+  .ai5d-copiable__rangee .ai5d-copiable__champ { flex: 0 0 auto; }
   .ai5d-copiable__rangee .ai5d-bouton { width: 100%; }
 }
 `;
