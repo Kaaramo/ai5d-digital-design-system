@@ -120,7 +120,7 @@ SPEC et user stories : `docs/superpowers/specs/version-1.2.0-espace-participant/
 - [x] T12 · La recette `LOGOTYPE` et l'export `./logotype`, décision 008 · écrite, non testée
 - [x] T13 · L'index · écrite, non testée
 - [x] T14 · Journal, guide de montée, README, NOYAU, formulations, version, décision 009 · écrite, non testée
-- [ ] T15 · Les spécimens
+- [x] T15 · Les spécimens · écrite, non testée
 - [ ] T16 · Vérification d'un bloc, gardes vues échouer, mesure « après », captures, navigateurs, montée de Compte, preuves
 - [ ] T17 · Relecture du lot contre la SPEC
 - [ ] T18 · Points du §0.8 tranchés par Karamo, accord explicite, étiquette `v1.2.0` et poussée

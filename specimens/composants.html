@@ -99,6 +99,567 @@ h3:first-child { margin-top: 0; }
 .corps { font-size: var(--taille-md); color: var(--texte); max-width: 46ch; }
 .mono { font-family: var(--police-mono); font-size: var(--taille-sm); letter-spacing: var(--lettrage-mono); color: var(--texte-faible); }
 </style>
+<style>
+.ai5d-hors-ecran {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+
+.ai5d-bouton {
+  background: transparent;
+  color: var(--action);
+  border: 1px solid transparent;
+  transition:
+    background var(--duree-courte) var(--courbe-entree),
+    border-color var(--duree-courte) var(--courbe-entree),
+    color var(--duree-courte) var(--courbe-entree),
+    opacity var(--duree-courte) var(--courbe-entree),
+    transform var(--duree-courte) var(--courbe-sortie);
+  text-decoration: none;
+}
+
+.ai5d-bouton[data-variante='primaire'] {
+  background: var(--action);
+  color: var(--texte-sur-action);
+  border-color: var(--action);
+}
+.ai5d-bouton[data-variante='secondaire'] {
+  background: transparent;
+  color: var(--action);
+  border-color: var(--action);
+}
+.ai5d-bouton[data-variante='neutre'] {
+  background: var(--surface-2);
+  color: var(--texte-fort);
+  border-color: var(--bordure-forte);
+}
+.ai5d-bouton[data-variante='danger'] {
+  background: var(--erreur);
+  color: var(--texte-sur-erreur);
+  border-color: var(--erreur);
+}
+.ai5d-bouton[data-variante='danger-contour'] {
+  background: transparent;
+  color: var(--erreur);
+  border-color: var(--erreur);
+}
+
+@media (hover: hover) {
+  .ai5d-bouton:not(:disabled):not([aria-disabled='true']):hover[data-variante='primaire'] {
+    background: var(--action-survol);
+    border-color: var(--action-survol);
+  }
+  .ai5d-bouton:not(:disabled):not([aria-disabled='true']):hover[data-variante='secondaire'],
+  .ai5d-bouton:not(:disabled):not([aria-disabled='true']):hover[data-variante='discret'] {
+    background: var(--info-fond);
+  }
+  .ai5d-bouton:not(:disabled):not([aria-disabled='true']):hover[data-variante='neutre'] {
+    background: var(--surface-chaude);
+    border-color: var(--texte-faible);
+  }
+  .ai5d-bouton:not(:disabled):not([aria-disabled='true']):hover[data-variante='danger'] {
+    background: var(--erreur-survol);
+    border-color: var(--erreur-survol);
+  }
+  .ai5d-bouton:not(:disabled):not([aria-disabled='true']):hover[data-variante='danger-contour'] {
+    background: var(--erreur-fond);
+  }
+}
+
+.ai5d-bouton:not(:disabled):not([aria-disabled='true']):active { transform: translateY(1px); }
+
+.ai5d-bouton:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
+.ai5d-bouton[data-variante='danger']:focus-visible,
+.ai5d-bouton[data-variante='danger-contour']:focus-visible { outline-color: var(--erreur); }
+
+.ai5d-bouton__points {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espace-1);
+}
+.ai5d-bouton__points--attente { display: none; }
+.ai5d-bouton:is([data-en-attente], :has([data-en-attente])) .ai5d-bouton__points--attente {
+  display: inline-flex;
+}
+.ai5d-bouton__point {
+  width: 4px;
+  height: 4px;
+  border-radius: var(--rayon-plein);
+  background: currentColor;
+  opacity: 0.35;
+  animation: ai5d-bouton-point 1200ms infinite ease-in-out;
+}
+.ai5d-bouton__point:nth-child(2) { animation-delay: 160ms; }
+.ai5d-bouton__point:nth-child(3) { animation-delay: 320ms; }
+
+@keyframes ai5d-bouton-point {
+  0%, 60%, 100% { opacity: 0.35; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai5d-bouton:not(:disabled):not([aria-disabled='true']):active { transform: none; }
+  .ai5d-bouton__point { animation: none; opacity: 1; }
+}
+
+
+.ai5d-onglets-r {
+  display: flex;
+  align-items: stretch;
+  gap: var(--espace-6);
+  border-bottom: 1px solid var(--bordure);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-padding-inline: var(--espace-6);
+}
+.ai5d-onglets-r::-webkit-scrollbar { display: none; }
+
+.ai5d-onglets-r__lien {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espace-2);
+  flex: 0 0 auto;
+  height: 44px;
+  padding: 0 var(--espace-1);
+  white-space: nowrap;
+  text-decoration: none;
+  font-family: var(--police-corps);
+  font-size: var(--taille-sm);
+  font-weight: var(--graisse-normale);
+  color: var(--texte-faible);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition:
+    color var(--duree-courte) var(--courbe-entree),
+    background var(--mouvement-retour);
+}
+
+@media (hover: hover) {
+  .ai5d-onglets-r__lien:hover { color: var(--texte-fort); }
+}
+
+.ai5d-onglets-r__lien:active { background: var(--surface-selection); border-radius: var(--rayon-sm); transition: none; }
+
+.ai5d-onglets-r__lien:focus-visible {
+  outline: 2px solid var(--action);
+  outline-offset: 2px;
+  border-radius: var(--rayon-sm);
+}
+
+.ai5d-onglets-r__lien[aria-current='page'] {
+  color: var(--action);
+  font-weight: var(--graisse-semi);
+  border-bottom-color: var(--action);
+}
+
+.ai5d-onglets-r__lien::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background: var(--bordure-forte);
+  opacity: 0;
+  pointer-events: none;
+}
+.ai5d-onglets-r__lien:is([data-en-attente], :has([data-en-attente])):not([aria-current='page'])::after { opacity: 1; animation: ai5d-onglets-attente 1200ms ease-in-out infinite alternate; }
+
+@keyframes ai5d-onglets-attente {
+  from { opacity: 0.4; }
+  to { opacity: 1; }
+}
+
+@supports (animation-timeline: scroll()) {
+  .ai5d-onglets-r {
+    animation: ai5d-onglets-fondu linear both;
+    animation-timeline: scroll(self inline);
+  }
+  @keyframes ai5d-onglets-fondu {
+    0% {
+      mask-image: linear-gradient(to left, transparent, var(--encre) var(--espace-6));
+    }
+    1%, 99% {
+      mask-image: linear-gradient(to right, transparent, var(--encre) var(--espace-6), var(--encre) calc(100% - var(--espace-6)), transparent);
+    }
+    100% {
+      mask-image: linear-gradient(to right, transparent, var(--encre) var(--espace-6));
+    }
+  }
+}
+
+@supports (scroll-initial-target: nearest) {
+  .ai5d-onglets-r__lien[aria-current='page'] { scroll-initial-target: nearest; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai5d-onglets-r__lien { transition: none; }
+  .ai5d-onglets-r__lien:is([data-en-attente], :has([data-en-attente])):not([aria-current='page'])::after { animation: none; opacity: 1; }
+}
+
+
+.ai5d-coquille-rail {
+  min-height: 100dvh;
+  background: var(--surface-1);
+}
+.ai5d-coquille-rail__refus { display: none; }
+.ai5d-coquille-rail__cadre {
+  display: flex; align-items: flex-start;
+  min-height: 100dvh;
+}
+.ai5d-coquille-rail__rail { display: none; }
+.ai5d-coquille-rail__principal {
+  flex: 1 1 auto; min-width: 0; width: 100%;
+  display: flex; flex-direction: column;
+  min-height: 100dvh;
+}
+
+/* La barre compacte du telephone. Elle disparait des que le rail apparait. */
+.ai5d-coquille-rail__barre {
+  position: sticky; top: 0; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--espace-3);
+  height: calc(var(--hauteur-entete) + var(--zone-sure-haute, 0px));
+  padding: var(--zone-sure-haute, 0px) var(--marge-page) 0;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--bordure);
+}
+.ai5d-coquille-rail__barre-actions {
+  display: flex; align-items: center; gap: var(--espace-2);
+}
+
+.ai5d-coquille-rail__contenu {
+  flex: 1 1 auto;
+  width: 100%;
+  padding: var(--espace-8) var(--marge-page);
+  padding-bottom: calc(var(--espace-8) + var(--reserve-barre, 0px));
+}
+/* La largeur maximale est posee en style en ligne : elle depend de la page. */
+.ai5d-coquille-rail__colonne {
+  width: 100%;
+  margin-inline: auto;
+  display: flex; flex-direction: column;
+}
+.ai5d-coquille-rail__bandeau { margin-bottom: var(--espace-6); }
+
+/*
+  LES DEUX PIEDS DE CONTENU, EN 1.2.0. Quand un pied existe, c est lui le dernier element de la
+  page : il porte la reserve basse, et le contenu la rend.
+*/
+.ai5d-coquille-rail[data-pied] .ai5d-coquille-rail__contenu { padding-bottom: var(--espace-8); }
+.ai5d-coquille-rail__pied-contenu {
+  padding: var(--espace-6) var(--marge-page) calc(var(--espace-6) + var(--reserve-barre, 0px));
+  border-top: 1px solid var(--bordure);
+}
+.ai5d-coquille-rail__pied-compact {
+  display: flex; flex-direction: column; gap: var(--espace-2);
+  margin-bottom: var(--espace-4);
+}
+
+/* LE RAIL. Il reste colle au bord gauche et ne se centre jamais avec le contenu. */
+.ai5d-coquille-rail__marque {
+  display: flex; flex-direction: column; gap: var(--espace-1);
+  padding: var(--espace-8) var(--espace-4) var(--espace-6);
+}
+.ai5d-coquille-rail__mention {
+  font-family: var(--police-corps); font-size: var(--taille-sm);
+  color: var(--texte-faible);
+}
+.ai5d-coquille-rail__nav {
+  flex: 1 1 auto; min-height: 0; overflow-y: auto;
+  padding: 0 var(--espace-3);
+}
+.ai5d-coquille-rail__pied {
+  flex: 0 0 auto;
+  padding: var(--espace-4) var(--espace-3);
+  border-top: 1px solid var(--bordure);
+}
+
+@media (min-width: 768px) {
+  /* La barre basse se masque toute seule au meme palier : c'est sa propre regle. */
+  .ai5d-coquille-rail { --reserve-barre: 0px; }
+  .ai5d-coquille-rail[data-mode='complet'] .ai5d-coquille-rail__barre { display: none; }
+
+  .ai5d-coquille-rail__rail {
+    display: flex; flex-direction: column;
+    position: sticky; top: 0; align-self: flex-start;
+    height: 100dvh;
+    flex: 0 0 240px; width: 240px;
+    background: var(--surface-2);
+    border-right: 1px solid var(--bordure);
+  }
+
+  .ai5d-coquille-rail__contenu { padding: var(--espace-12) var(--espace-8); }
+
+  /* Le rail porte le theme au-dela : le pied compact sort de l ecran ET de l arbre d accessibilite. */
+  .ai5d-coquille-rail__pied-compact { display: none; }
+  .ai5d-coquille-rail[data-pied='compact'] .ai5d-coquille-rail__pied-contenu { display: none; }
+  .ai5d-coquille-rail__pied-contenu { padding: var(--espace-6) var(--espace-8); }
+}
+
+@media (min-width: 1024px) {
+  .ai5d-coquille-rail__rail {
+    flex-basis: 280px;
+    width: 280px;
+  }
+}
+
+/* LE MODE BUREAU SEULEMENT. Sous 1024 px, le refus remplace tout. */
+.ai5d-coquille-rail[data-mode='bureau-seulement'] .ai5d-coquille-rail__refus {
+  display: flex; flex-direction: column; gap: var(--espace-4);
+  align-items: flex-start; justify-content: center;
+  min-height: 100dvh;
+  padding: var(--espace-8) var(--marge-page);
+}
+.ai5d-coquille-rail[data-mode='bureau-seulement'] .ai5d-coquille-rail__cadre { display: none; }
+@media (min-width: 1024px) {
+  .ai5d-coquille-rail[data-mode='bureau-seulement'] .ai5d-coquille-rail__refus { display: none; }
+  .ai5d-coquille-rail[data-mode='bureau-seulement'] .ai5d-coquille-rail__cadre { display: flex; }
+}
+
+/*
+  LE LIEN D EVITEMENT.
+
+  Premier element focalisable du document. Sans lui, quelqu un qui navigue a la tabulation
+  traverse le logotype, toutes les rubriques et le pied du rail AVANT d atteindre ce qu il est venu
+  faire, a chaque page.
+
+  Il sort de l ecran par une TRANSLATION. Pas par display:none, qui le rendrait non focalisable.
+  Et plus par un decalage de -9999 px, comme dans Compte : c est un espacement en dur, et la garde
+  du systeme le refuse a raison, puisqu une translation fait la meme chose sans mesure inventee.
+*/
+.ai5d-coquille-rail__evitement {
+  position: absolute; top: 0; left: 0; z-index: 50;
+  transform: translateY(-200%);
+  padding: var(--espace-3) var(--espace-4);
+  background: var(--surface-2);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon-md);
+  color: var(--action);
+  font-family: var(--police-corps); font-size: var(--taille-sm);
+  font-weight: var(--graisse-semi);
+  text-decoration: none;
+}
+.ai5d-coquille-rail__evitement:focus {
+  top: var(--espace-4); left: var(--espace-4);
+  transform: none;
+}
+.ai5d-coquille-rail__evitement:focus-visible {
+  outline: 2px solid var(--action);
+  outline-offset: 2px;
+}
+
+
+.ai5d-theme {
+  display: inline-flex; align-items: center; gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon-plein);
+}
+.ai5d-theme__segment {
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  padding: 0;
+  border: none; border-radius: var(--rayon-plein);
+  background: none; color: var(--texte-faible);
+  cursor: pointer;
+  transition: background var(--duree-courte) var(--courbe-sortie),
+              color var(--duree-courte) var(--courbe-sortie);
+}
+@media (hover: hover) {
+  .ai5d-theme__segment:hover { background: var(--surface-1); color: var(--texte-fort); }
+}
+.ai5d-theme__segment[aria-checked='true'] {
+  background: var(--surface-selection);
+  color: var(--action);
+}
+.ai5d-theme__segment:active { background: var(--surface-selection); transition: none; }
+.ai5d-theme__segment:focus-visible {
+  outline: 2px solid var(--action);
+  outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+  .ai5d-theme__segment { min-width: var(--cible-tactile); min-height: var(--cible-tactile); }
+}
+
+.ai5d-theme[data-libelles] {
+  display: flex; width: 100%;
+  container-type: inline-size;
+}
+.ai5d-theme[data-libelles] .ai5d-theme__segment {
+  flex: 1 1 0; width: auto; min-width: 0;
+  gap: var(--espace-1); padding: 0 var(--espace-2);
+  font-family: var(--police-corps); font-size: var(--taille-sm);
+  font-weight: var(--graisse-moyenne); white-space: nowrap;
+}
+.ai5d-theme[data-libelles] .ai5d-theme__segment[aria-checked='true'] {
+  font-weight: var(--graisse-semi);
+}
+@container (max-width: 17rem) {
+  .ai5d-theme[data-libelles] .ai5d-theme__icone { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai5d-theme__segment { transition: none; }
+}
+
+
+.ai5d-ligne {
+  display: flex; align-items: center; gap: var(--espace-3);
+  min-height: var(--ligne-liste);
+  padding: var(--espace-3);
+  margin-inline: calc(var(--espace-3) * -1);
+  border-radius: var(--rayon-md);
+  color: inherit;
+  text-decoration: none;
+  transition: background var(--mouvement-retour);
+}
+.ai5d-ligne__debut,
+.ai5d-ligne__fin { flex: 0 0 auto; display: inline-flex; align-items: center; }
+.ai5d-ligne__corps {
+  flex: 1 1 auto; min-width: 0;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.ai5d-ligne__titre {
+  font-family: var(--police-corps); font-size: var(--taille-md);
+  font-weight: var(--graisse-moyenne); color: var(--texte-fort);
+  overflow-wrap: anywhere;
+}
+.ai5d-ligne__titre[data-en-titre] {
+  font-family: var(--police-titre); font-size: var(--taille-lg);
+  font-weight: var(--graisse-normale); line-height: var(--interligne-titre);
+}
+.ai5d-ligne__description,
+.ai5d-ligne__meta {
+  font-family: var(--police-corps); font-size: var(--taille-sm);
+  font-weight: var(--graisse-normale); color: var(--texte-faible);
+}
+.ai5d-ligne__meta[data-mono] { font-family: var(--police-mono); font-weight: var(--graisse-moyenne); }
+.ai5d-ligne__fin { color: var(--texte-faible); }
+
+@media (hover: hover) {
+  .ai5d-ligne:hover { background: var(--surface-chaude); }
+  :root[data-theme='dark'] .ai5d-ligne:hover { background: var(--surface-3); }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .ai5d-ligne:hover { background: var(--surface-3); }
+  }
+}
+.ai5d-ligne:active { background: var(--surface-selection); transition: none; }
+.ai5d-ligne:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
+
+.ai5d-ligne__attente { display: none; align-items: center; gap: var(--espace-1); color: var(--texte-faible); }
+.ai5d-ligne:is([data-en-attente], :has([data-en-attente])) .ai5d-ligne__attente { display: inline-flex; }
+.ai5d-ligne:is([data-en-attente], :has([data-en-attente])) .ai5d-ligne__fin { display: none; }
+.ai5d-ligne__point {
+  width: 4px; height: 4px;
+  border-radius: var(--rayon-plein);
+  background: currentColor;
+  opacity: 0.35;
+  animation: ai5d-ligne-point 1200ms infinite ease-in-out;
+}
+.ai5d-ligne__point:nth-child(2) { animation-delay: 160ms; }
+.ai5d-ligne__point:nth-child(3) { animation-delay: 320ms; }
+@keyframes ai5d-ligne-point {
+  0%, 60%, 100% { opacity: 0.35; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai5d-ligne__point { animation: none; opacity: 1; }
+}
+
+
+.ai5d-liste-lignes { list-style: none; margin: 0; padding: 0; }
+.ai5d-liste-lignes > li + li { border-top: 1px solid var(--bordure); }
+.ai5d-liste-lignes[data-bords] { border-top: 1px solid var(--bordure); border-bottom: 1px solid var(--bordure); }
+
+
+.ai5d-definitions { container-type: inline-size; }
+.ai5d-definitions__liste {
+  display: grid; grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--espace-4); column-gap: var(--espace-6);
+  margin: 0;
+}
+.ai5d-definitions__element { min-width: 0; }
+.ai5d-definitions__element dt {
+  font-family: var(--police-corps); font-size: var(--taille-xs);
+  font-weight: var(--graisse-moyenne); line-height: 1.6;
+  color: var(--texte-faible);
+}
+.ai5d-definitions__element dd {
+  margin: 0;
+  font-family: var(--police-corps); font-size: var(--taille-md);
+  font-weight: var(--graisse-normale); line-height: var(--interligne-corps);
+  color: var(--texte-fort);
+  overflow-wrap: anywhere;
+}
+.ai5d-definitions__element dd[data-mono] {
+  font-family: var(--police-mono); font-weight: var(--graisse-moyenne); font-size: var(--taille-sm);
+}
+@container (min-width: 480px) {
+  .ai5d-definitions[data-colonnes='2'] .ai5d-definitions__liste {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+.ai5d-copiable { container-type: inline-size; display: flex; flex-direction: column; gap: var(--espace-2); }
+.ai5d-copiable__rangee { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--espace-2); }
+.ai5d-copiable__champ { flex: 1 1 16rem; min-width: 0; }
+.ai5d-copiable__echec {
+  margin: 0;
+  font-family: var(--police-corps); font-size: var(--taille-sm);
+  font-weight: var(--graisse-normale); color: var(--texte-faible);
+}
+@container (max-width: 24rem) {
+  .ai5d-copiable__rangee { flex-direction: column; align-items: stretch; }
+  .ai5d-copiable__rangee .ai5d-bouton { width: 100%; }
+}
+</style>
+<style>
+/* Les aides de la page, pour les pieces de la 1.2.0. Aucune ne remplace la feuille d un composant. */
+.neutre { color: var(--texte-faible); background: var(--surface-chaude); }
+.bandeau.neutre { border: 1px solid currentColor; }
+.specimen-colonne-390 { width: 390px; max-width: 100%; margin-bottom: 12px; }
+.specimen-pied-288 { width: 288px; max-width: 100%; margin-bottom: 12px; }
+.specimen-pied-216 { width: 216px; margin-bottom: 12px; }
+.specimen-bloc { margin-bottom: 16px; }
+.specimen-icone { display: inline-block; flex: 0 0 auto; width: 16px; height: 16px; border: 1.75px solid currentColor; border-radius: var(--rayon-plein); }
+.specimen-chevron { font-size: var(--taille-lg); line-height: 1; }
+.specimen-libelle { font-size: var(--taille-sm); font-weight: var(--graisse-semi); color: var(--texte-faible); }
+.specimen-coquille.ai5d-coquille-rail { min-height: 0; }
+.specimen-titres { display: flex; flex-direction: column; gap: 12px; }
+.specimen-titres :is(h1, h2, h3) { text-transform: none; }
+.ai5d-copiable__champ.champ { margin-bottom: 0; }
+.ai5d-copiable__champ.champ input { width: 100%; }
+
+/* Les etats que le pointeur pose d ordinaire, forces pour la capture. */
+.ai5d-ligne[data-force='survol'] { background: var(--surface-chaude); }
+:root[data-theme='dark'] .ai5d-ligne[data-force='survol'] { background: var(--surface-3); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .ai5d-ligne[data-force='survol'] { background: var(--surface-3); }
+}
+.ai5d-ligne[data-force='appui'] { background: var(--surface-selection); }
+
+.mesure-bloc, .mesure-ligne {
+  display: flex; align-items: center; margin-bottom: 8px; padding: 0 12px;
+  background: var(--surface-chaude); border: 1px dashed var(--bordure-forte); border-radius: var(--rayon-md);
+  font-family: var(--police-mono); font-size: var(--taille-xs); color: var(--texte-faible);
+}
+.mesure-bloc { height: var(--hauteur-controle); }
+.mesure-ligne { min-height: var(--ligne-liste); }
+
+.specimen-selection { max-width: var(--contenu-max); margin: 0 auto; padding: 32px 24px; display: flex; flex-direction: column; gap: 12px; }
+.specimen-selection p { margin: 0; padding: 12px 16px; border: 1px solid var(--bordure); border-radius: var(--rayon-md); color: var(--texte-fort); }
+.surface-papier { background: var(--surface-1); }
+.surface-carte { background: var(--surface-2); }
+.surface-menu { background: var(--surface-3); }
+.specimen-curseur { display: flex; flex-direction: column; gap: 6px; font-size: var(--taille-sm); color: var(--texte); }
+.specimen-curseur input { height: var(--hauteur-controle); padding: 0 14px; background: var(--surface-2); color: var(--texte-fort); border: 1px solid var(--bordure-forte); border-radius: var(--rayon-md); font-family: var(--police-mono); font-size: var(--taille-md); }
+</style>
 </head>
 <body>
 <div class="barre">
@@ -142,7 +703,7 @@ h3:first-child { margin-top: 0; }
       </div>
 
         <h3>Pastilles</h3>
-        <div class="rangee"><span class="pastille information">Information</span> <span class="pastille reussite">Adresse vérifiée</span> <span class="pastille attention">Adresse non confirmée</span> <span class="pastille erreur">Trop de tentatives</span></div>
+        <div class="rangee"><span class="pastille information">Information</span> <span class="pastille reussite">Adresse vérifiée</span> <span class="pastille attention">Adresse non confirmée</span> <span class="pastille erreur">Trop de tentatives</span> <span class="pastille neutre">Inscription confirmée</span></div>
 
         <h3>Champs</h3>
         
@@ -194,6 +755,10 @@ h3:first-child { margin-top: 0; }
         <span class="puce"></span>
         <div><b>Trop de tentatives</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
       </div>
+      <div class="bandeau neutre">
+        <span class="puce"></span>
+        <div><b>Inscription confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+      </div>
 
         <h3>Typographie</h3>
         <div class="display">Un compte. Tout AI5D.</div>
@@ -202,6 +767,131 @@ h3:first-child { margin-top: 0; }
         <div class="mono">AI5D-7F3K-92QX</div>
       </div>
     </div>
+
+    <div class="grille">
+      <div class="colonne">
+        <h3>Boutons en lien</h3>
+        
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="secondaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="secondaire" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="secondaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="neutre" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="discret" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="discret" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="discret" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="danger" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="danger" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="danger" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="danger-contour" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="danger-contour" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="danger-contour" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div><div class="rangee"><a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="sm" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">sm<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a> <a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">md<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a> <a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="lg" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) + 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">lg<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a></div>
+
+        <h3>Onglets de rubrique</h3>
+        
+      <div class="specimen-colonne-390" data-specimen="onglets-debut" data-defiler="debut"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+      <div class="specimen-colonne-390" data-specimen="onglets-milieu" data-defiler="milieu"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+      <div class="specimen-colonne-390" data-specimen="onglets-fin" data-defiler="fin"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+      <div class="specimen-colonne-390" data-specimen="onglets-initial"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+
+        <h3>Sélecteur de thème</h3>
+        
+      <div class="rangee" data-specimen="theme-icones"><div class="ai5d-theme" role="radiogroup" aria-label="Thème de l’interface"><button type="button" role="radio" aria-checked="false" aria-label="Clair" title="Clair" class="ai5d-theme__segment"><span class="specimen-icone" aria-hidden="true"></span></button><button type="button" role="radio" aria-checked="true" aria-label="Sombre" title="Sombre" class="ai5d-theme__segment"><span class="specimen-icone" aria-hidden="true"></span></button><button type="button" role="radio" aria-checked="false" aria-label="Système" title="Système" class="ai5d-theme__segment"><span class="specimen-icone" aria-hidden="true"></span></button></div></div>
+      <div class="specimen-pied-288" data-specimen="theme-288"><div class="ai5d-theme" role="radiogroup" aria-label="Thème de l’interface" data-libelles=""><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Clair</span></button><button type="button" role="radio" aria-checked="true" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Sombre</span></button><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Système</span></button></div></div>
+      <div class="specimen-pied-216" data-specimen="theme-216"><div class="ai5d-theme" role="radiogroup" aria-label="Thème de l’interface" data-libelles=""><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Clair</span></button><button type="button" role="radio" aria-checked="true" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Sombre</span></button><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Système</span></button></div></div>
+
+        <h3>Pied de coquille</h3>
+        
+      <div class="ai5d-coquille-rail specimen-coquille" data-coquille="rail" data-mode="complet" data-pied="complet">
+        <footer class="ai5d-coquille-rail__pied-contenu">
+          <div class="ai5d-coquille-rail__colonne">
+            <div class="ai5d-coquille-rail__pied-compact">
+              <span class="specimen-libelle">Thème</span>
+              <div class="ai5d-theme" role="radiogroup" aria-label="Thème de l’interface" data-libelles=""><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Clair</span></button><button type="button" role="radio" aria-checked="true" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Sombre</span></button><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Système</span></button></div>
+            </div>
+            <div class="rangee"><a class="lien" href="#">Confidentialité</a><a class="lien" href="#">Mentions légales</a></div>
+          </div>
+        </footer>
+      </div>
+      </div>
+
+      <div class="colonne">
+        <h3>Titres</h3>
+        
+      <div class="specimen-titres">
+        <h1 style="margin: 0; font-family: var(--police-titre); font-weight: var(--graisse-normale); font-size: var(--taille-2xl); line-height: var(--interligne-titre); letter-spacing: var(--lettrage-titre); color: var(--texte-fort); text-wrap: balance; overflow-wrap: break-word;">IA générative et relation client</h1>
+        <h2 style="margin: 0; font-family: var(--police-titre); font-weight: var(--graisse-normale); font-size: var(--taille-xl); line-height: var(--interligne-titre); letter-spacing: var(--lettrage-titre); color: var(--texte-fort); text-wrap: balance; overflow-wrap: break-word;">Mes autres formations</h2>
+        <h3 style="margin: 0; font-family: var(--police-titre); font-weight: var(--graisse-normale); font-size: var(--taille-lg); line-height: var(--interligne-titre); letter-spacing: var(--lettrage-titre); color: var(--texte-fort); text-wrap: balance; overflow-wrap: break-word;">Ressources de la session</h3>
+      </div>
+
+        <h3>Lignes</h3>
+        
+      <ul role="list" class="ai5d-liste-lignes" data-bords="">
+        <li><a class="ai5d-ligne" href="#"><span class="ai5d-ligne__corps"><span class="ai5d-ligne__titre" data-en-titre="">IA générative et relation client</span><span class="ai5d-ligne__description">Du 13 au 15 octobre 2026, présentiel</span></span><span class="ai5d-ligne__fin"><span class="specimen-chevron" aria-hidden="true">›</span></span><span class="ai5d-ligne__attente" aria-hidden="true"><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span></span></a></li>
+        <li><a class="ai5d-ligne" href="#" download data-force="survol"><span class="ai5d-ligne__corps"><span class="ai5d-ligne__titre">Support du jour 1</span><span class="ai5d-ligne__meta">PDF · 2,4 Mo</span></span><span class="ai5d-ligne__attente" aria-hidden="true"><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span></span></a></li>
+        <li><a class="ai5d-ligne" href="#" target="_blank" rel="noopener noreferrer" data-force="appui"><span class="ai5d-ligne__corps"><span class="ai5d-ligne__titre">Rejoindre la session</span><span class="ai5d-ligne__meta" data-mono="">AI5D-2026-7K3F9Q</span></span><span class="ai5d-ligne__attente" aria-hidden="true"><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span></span><span class="ai5d-hors-ecran"> (s’ouvre dans un nouvel onglet)</span></a></li>
+      </ul>
+      <ul role="list" class="ai5d-liste-lignes">
+        <li><a class="ai5d-ligne" href="#" data-en-attente=""><span class="ai5d-ligne__corps"><span class="ai5d-ligne__titre">Ressources</span><span class="ai5d-ligne__description">La page suivante arrive</span></span><span class="ai5d-ligne__fin"><span class="specimen-chevron" aria-hidden="true">›</span></span><span class="ai5d-ligne__attente" aria-hidden="true"><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span></span></a></li>
+      </ul>
+
+        <h3>Définitions, une colonne</h3>
+        <div class="ai5d-definitions specimen-bloc" data-colonnes="1"><dl class="ai5d-definitions__liste"><div class="ai5d-definitions__element"><dt>Session</dt><dd>Orange Guinée · octobre 2026</dd></div><div class="ai5d-definitions__element"><dt>Dates</dt><dd>Du 13 au 15 octobre 2026, présentiel</dd></div><div class="ai5d-definitions__element"><dt>Émise le</dt><dd>19 octobre 2026</dd></div><div class="ai5d-definitions__element"><dt>Numéro</dt><dd data-mono="">AI5D-2026-7K3F9Q</dd></div></dl></div>
+
+        <h3>Valeur copiable</h3>
+        
+      <div class="ai5d-copiable specimen-bloc">
+        <div class="ai5d-copiable__rangee">
+          <div class="champ ai5d-copiable__champ"><label>Adresse de votre badge</label><input value="https://portail.ai5d.technology/badge/7K3F9Q" readonly style="font-family: var(--police-mono); font-weight: var(--graisse-moyenne); font-size: var(--taille-md);" /></div>
+          <button type="button" class="ai5d-bouton" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;"><span class="specimen-icone" aria-hidden="true"></span>Copier le lien</button>
+        </div>
+        <div class="ai5d-copiable__annonce" aria-live="polite"></div>
+      </div>
+        
+      <div class="ai5d-copiable specimen-bloc">
+        <div class="ai5d-copiable__rangee">
+          <div class="champ ai5d-copiable__champ"><label>Adresse de votre badge</label><input value="https://portail.ai5d.technology/badge/7K3F9Q" readonly style="font-family: var(--police-mono); font-weight: var(--graisse-moyenne); font-size: var(--taille-md);" /></div>
+          <button type="button" class="ai5d-bouton" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;"><span class="specimen-icone" aria-hidden="true"></span>Lien copié</button>
+        </div>
+        <div class="ai5d-copiable__annonce" aria-live="polite"></div>
+      </div>
+        
+      <div class="ai5d-copiable specimen-bloc">
+        <div class="ai5d-copiable__rangee">
+          <div class="champ ai5d-copiable__champ"><label>Adresse de votre badge</label><input value="https://portail.ai5d.technology/badge/7K3F9Q" readonly style="font-family: var(--police-mono); font-weight: var(--graisse-moyenne); font-size: var(--taille-md);" /></div>
+          <button type="button" class="ai5d-bouton" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;"><span class="specimen-icone" aria-hidden="true"></span>Copier le lien</button>
+        </div>
+        <div class="ai5d-copiable__annonce" aria-live="polite"><p class="ai5d-copiable__echec">Sélectionnez l’adresse ci-dessus pour la copier.</p></div>
+      </div>
+
+        <h3>Mesure du plancher</h3>
+        
+      <div class="mesure-bloc">height: var(--hauteur-controle)</div>
+      <div class="mesure-ligne">min-height: var(--ligne-liste)</div>
+      </div>
+    </div>
+
+    <h3>Définitions, deux colonnes dès 480 px de conteneur</h3>
+    <div class="ai5d-definitions specimen-bloc" data-colonnes="2"><dl class="ai5d-definitions__liste"><div class="ai5d-definitions__element"><dt>Session</dt><dd>Orange Guinée · octobre 2026</dd></div><div class="ai5d-definitions__element"><dt>Dates</dt><dd>Du 13 au 15 octobre 2026, présentiel</dd></div><div class="ai5d-definitions__element"><dt>Émise le</dt><dd>19 octobre 2026</dd></div><div class="ai5d-definitions__element"><dt>Numéro</dt><dd data-mono="">AI5D-2026-7K3F9Q</dd></div></dl></div>
+
+    <h3>Onglets, sans débordement</h3>
+    <div data-specimen="onglets-large"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
   </section>
 
   <section class="planche" data-densite="equilibre">
@@ -235,7 +925,7 @@ h3:first-child { margin-top: 0; }
       </div>
 
         <h3>Pastilles</h3>
-        <div class="rangee"><span class="pastille information">Information</span> <span class="pastille reussite">Adresse vérifiée</span> <span class="pastille attention">Adresse non confirmée</span> <span class="pastille erreur">Trop de tentatives</span></div>
+        <div class="rangee"><span class="pastille information">Information</span> <span class="pastille reussite">Adresse vérifiée</span> <span class="pastille attention">Adresse non confirmée</span> <span class="pastille erreur">Trop de tentatives</span> <span class="pastille neutre">Inscription confirmée</span></div>
 
         <h3>Champs</h3>
         
@@ -287,6 +977,10 @@ h3:first-child { margin-top: 0; }
         <span class="puce"></span>
         <div><b>Trop de tentatives</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
       </div>
+      <div class="bandeau neutre">
+        <span class="puce"></span>
+        <div><b>Inscription confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+      </div>
 
         <h3>Typographie</h3>
         <div class="display">Un compte. Tout AI5D.</div>
@@ -295,6 +989,131 @@ h3:first-child { margin-top: 0; }
         <div class="mono">AI5D-7F3K-92QX</div>
       </div>
     </div>
+
+    <div class="grille">
+      <div class="colonne">
+        <h3>Boutons en lien</h3>
+        
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="secondaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="secondaire" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="secondaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="neutre" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="discret" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="discret" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="discret" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="danger" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="danger" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="danger" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="danger-contour" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="danger-contour" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="danger-contour" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div><div class="rangee"><a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="sm" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">sm<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a> <a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">md<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a> <a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="lg" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) + 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">lg<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a></div>
+
+        <h3>Onglets de rubrique</h3>
+        
+      <div class="specimen-colonne-390" data-specimen="onglets-debut" data-defiler="debut"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+      <div class="specimen-colonne-390" data-specimen="onglets-milieu" data-defiler="milieu"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+      <div class="specimen-colonne-390" data-specimen="onglets-fin" data-defiler="fin"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+      <div class="specimen-colonne-390" data-specimen="onglets-initial"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+
+        <h3>Sélecteur de thème</h3>
+        
+      <div class="rangee" data-specimen="theme-icones"><div class="ai5d-theme" role="radiogroup" aria-label="Thème de l’interface"><button type="button" role="radio" aria-checked="false" aria-label="Clair" title="Clair" class="ai5d-theme__segment"><span class="specimen-icone" aria-hidden="true"></span></button><button type="button" role="radio" aria-checked="true" aria-label="Sombre" title="Sombre" class="ai5d-theme__segment"><span class="specimen-icone" aria-hidden="true"></span></button><button type="button" role="radio" aria-checked="false" aria-label="Système" title="Système" class="ai5d-theme__segment"><span class="specimen-icone" aria-hidden="true"></span></button></div></div>
+      <div class="specimen-pied-288" data-specimen="theme-288"><div class="ai5d-theme" role="radiogroup" aria-label="Thème de l’interface" data-libelles=""><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Clair</span></button><button type="button" role="radio" aria-checked="true" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Sombre</span></button><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Système</span></button></div></div>
+      <div class="specimen-pied-216" data-specimen="theme-216"><div class="ai5d-theme" role="radiogroup" aria-label="Thème de l’interface" data-libelles=""><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Clair</span></button><button type="button" role="radio" aria-checked="true" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Sombre</span></button><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Système</span></button></div></div>
+
+        <h3>Pied de coquille</h3>
+        
+      <div class="ai5d-coquille-rail specimen-coquille" data-coquille="rail" data-mode="complet" data-pied="complet">
+        <footer class="ai5d-coquille-rail__pied-contenu">
+          <div class="ai5d-coquille-rail__colonne">
+            <div class="ai5d-coquille-rail__pied-compact">
+              <span class="specimen-libelle">Thème</span>
+              <div class="ai5d-theme" role="radiogroup" aria-label="Thème de l’interface" data-libelles=""><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Clair</span></button><button type="button" role="radio" aria-checked="true" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Sombre</span></button><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Système</span></button></div>
+            </div>
+            <div class="rangee"><a class="lien" href="#">Confidentialité</a><a class="lien" href="#">Mentions légales</a></div>
+          </div>
+        </footer>
+      </div>
+      </div>
+
+      <div class="colonne">
+        <h3>Titres</h3>
+        
+      <div class="specimen-titres">
+        <h1 style="margin: 0; font-family: var(--police-titre); font-weight: var(--graisse-normale); font-size: var(--taille-2xl); line-height: var(--interligne-titre); letter-spacing: var(--lettrage-titre); color: var(--texte-fort); text-wrap: balance; overflow-wrap: break-word;">IA générative et relation client</h1>
+        <h2 style="margin: 0; font-family: var(--police-titre); font-weight: var(--graisse-normale); font-size: var(--taille-xl); line-height: var(--interligne-titre); letter-spacing: var(--lettrage-titre); color: var(--texte-fort); text-wrap: balance; overflow-wrap: break-word;">Mes autres formations</h2>
+        <h3 style="margin: 0; font-family: var(--police-titre); font-weight: var(--graisse-normale); font-size: var(--taille-lg); line-height: var(--interligne-titre); letter-spacing: var(--lettrage-titre); color: var(--texte-fort); text-wrap: balance; overflow-wrap: break-word;">Ressources de la session</h3>
+      </div>
+
+        <h3>Lignes</h3>
+        
+      <ul role="list" class="ai5d-liste-lignes" data-bords="">
+        <li><a class="ai5d-ligne" href="#"><span class="ai5d-ligne__corps"><span class="ai5d-ligne__titre" data-en-titre="">IA générative et relation client</span><span class="ai5d-ligne__description">Du 13 au 15 octobre 2026, présentiel</span></span><span class="ai5d-ligne__fin"><span class="specimen-chevron" aria-hidden="true">›</span></span><span class="ai5d-ligne__attente" aria-hidden="true"><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span></span></a></li>
+        <li><a class="ai5d-ligne" href="#" download data-force="survol"><span class="ai5d-ligne__corps"><span class="ai5d-ligne__titre">Support du jour 1</span><span class="ai5d-ligne__meta">PDF · 2,4 Mo</span></span><span class="ai5d-ligne__attente" aria-hidden="true"><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span></span></a></li>
+        <li><a class="ai5d-ligne" href="#" target="_blank" rel="noopener noreferrer" data-force="appui"><span class="ai5d-ligne__corps"><span class="ai5d-ligne__titre">Rejoindre la session</span><span class="ai5d-ligne__meta" data-mono="">AI5D-2026-7K3F9Q</span></span><span class="ai5d-ligne__attente" aria-hidden="true"><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span></span><span class="ai5d-hors-ecran"> (s’ouvre dans un nouvel onglet)</span></a></li>
+      </ul>
+      <ul role="list" class="ai5d-liste-lignes">
+        <li><a class="ai5d-ligne" href="#" data-en-attente=""><span class="ai5d-ligne__corps"><span class="ai5d-ligne__titre">Ressources</span><span class="ai5d-ligne__description">La page suivante arrive</span></span><span class="ai5d-ligne__fin"><span class="specimen-chevron" aria-hidden="true">›</span></span><span class="ai5d-ligne__attente" aria-hidden="true"><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span></span></a></li>
+      </ul>
+
+        <h3>Définitions, une colonne</h3>
+        <div class="ai5d-definitions specimen-bloc" data-colonnes="1"><dl class="ai5d-definitions__liste"><div class="ai5d-definitions__element"><dt>Session</dt><dd>Orange Guinée · octobre 2026</dd></div><div class="ai5d-definitions__element"><dt>Dates</dt><dd>Du 13 au 15 octobre 2026, présentiel</dd></div><div class="ai5d-definitions__element"><dt>Émise le</dt><dd>19 octobre 2026</dd></div><div class="ai5d-definitions__element"><dt>Numéro</dt><dd data-mono="">AI5D-2026-7K3F9Q</dd></div></dl></div>
+
+        <h3>Valeur copiable</h3>
+        
+      <div class="ai5d-copiable specimen-bloc">
+        <div class="ai5d-copiable__rangee">
+          <div class="champ ai5d-copiable__champ"><label>Adresse de votre badge</label><input value="https://portail.ai5d.technology/badge/7K3F9Q" readonly style="font-family: var(--police-mono); font-weight: var(--graisse-moyenne); font-size: var(--taille-md);" /></div>
+          <button type="button" class="ai5d-bouton" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;"><span class="specimen-icone" aria-hidden="true"></span>Copier le lien</button>
+        </div>
+        <div class="ai5d-copiable__annonce" aria-live="polite"></div>
+      </div>
+        
+      <div class="ai5d-copiable specimen-bloc">
+        <div class="ai5d-copiable__rangee">
+          <div class="champ ai5d-copiable__champ"><label>Adresse de votre badge</label><input value="https://portail.ai5d.technology/badge/7K3F9Q" readonly style="font-family: var(--police-mono); font-weight: var(--graisse-moyenne); font-size: var(--taille-md);" /></div>
+          <button type="button" class="ai5d-bouton" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;"><span class="specimen-icone" aria-hidden="true"></span>Lien copié</button>
+        </div>
+        <div class="ai5d-copiable__annonce" aria-live="polite"></div>
+      </div>
+        
+      <div class="ai5d-copiable specimen-bloc">
+        <div class="ai5d-copiable__rangee">
+          <div class="champ ai5d-copiable__champ"><label>Adresse de votre badge</label><input value="https://portail.ai5d.technology/badge/7K3F9Q" readonly style="font-family: var(--police-mono); font-weight: var(--graisse-moyenne); font-size: var(--taille-md);" /></div>
+          <button type="button" class="ai5d-bouton" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;"><span class="specimen-icone" aria-hidden="true"></span>Copier le lien</button>
+        </div>
+        <div class="ai5d-copiable__annonce" aria-live="polite"><p class="ai5d-copiable__echec">Sélectionnez l’adresse ci-dessus pour la copier.</p></div>
+      </div>
+
+        <h3>Mesure du plancher</h3>
+        
+      <div class="mesure-bloc">height: var(--hauteur-controle)</div>
+      <div class="mesure-ligne">min-height: var(--ligne-liste)</div>
+      </div>
+    </div>
+
+    <h3>Définitions, deux colonnes dès 480 px de conteneur</h3>
+    <div class="ai5d-definitions specimen-bloc" data-colonnes="2"><dl class="ai5d-definitions__liste"><div class="ai5d-definitions__element"><dt>Session</dt><dd>Orange Guinée · octobre 2026</dd></div><div class="ai5d-definitions__element"><dt>Dates</dt><dd>Du 13 au 15 octobre 2026, présentiel</dd></div><div class="ai5d-definitions__element"><dt>Émise le</dt><dd>19 octobre 2026</dd></div><div class="ai5d-definitions__element"><dt>Numéro</dt><dd data-mono="">AI5D-2026-7K3F9Q</dd></div></dl></div>
+
+    <h3>Onglets, sans débordement</h3>
+    <div data-specimen="onglets-large"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
   </section>
 
   <section class="planche" data-densite="modere">
@@ -328,7 +1147,7 @@ h3:first-child { margin-top: 0; }
       </div>
 
         <h3>Pastilles</h3>
-        <div class="rangee"><span class="pastille information">Information</span> <span class="pastille reussite">Adresse vérifiée</span> <span class="pastille attention">Adresse non confirmée</span> <span class="pastille erreur">Trop de tentatives</span></div>
+        <div class="rangee"><span class="pastille information">Information</span> <span class="pastille reussite">Adresse vérifiée</span> <span class="pastille attention">Adresse non confirmée</span> <span class="pastille erreur">Trop de tentatives</span> <span class="pastille neutre">Inscription confirmée</span></div>
 
         <h3>Champs</h3>
         
@@ -380,6 +1199,10 @@ h3:first-child { margin-top: 0; }
         <span class="puce"></span>
         <div><b>Trop de tentatives</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
       </div>
+      <div class="bandeau neutre">
+        <span class="puce"></span>
+        <div><b>Inscription confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+      </div>
 
         <h3>Typographie</h3>
         <div class="display">Un compte. Tout AI5D.</div>
@@ -388,6 +1211,131 @@ h3:first-child { margin-top: 0; }
         <div class="mono">AI5D-7F3K-92QX</div>
       </div>
     </div>
+
+    <div class="grille">
+      <div class="colonne">
+        <h3>Boutons en lien</h3>
+        
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="secondaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="secondaire" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="secondaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="neutre" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="discret" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="discret" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="discret" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="danger" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="danger" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="danger" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="danger-contour" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="danger-contour" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="danger-contour" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div><div class="rangee"><a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="sm" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">sm<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a> <a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">md<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a> <a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="lg" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) + 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">lg<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a></div>
+
+        <h3>Onglets de rubrique</h3>
+        
+      <div class="specimen-colonne-390" data-specimen="onglets-debut" data-defiler="debut"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+      <div class="specimen-colonne-390" data-specimen="onglets-milieu" data-defiler="milieu"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+      <div class="specimen-colonne-390" data-specimen="onglets-fin" data-defiler="fin"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+      <div class="specimen-colonne-390" data-specimen="onglets-initial"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+
+        <h3>Sélecteur de thème</h3>
+        
+      <div class="rangee" data-specimen="theme-icones"><div class="ai5d-theme" role="radiogroup" aria-label="Thème de l’interface"><button type="button" role="radio" aria-checked="false" aria-label="Clair" title="Clair" class="ai5d-theme__segment"><span class="specimen-icone" aria-hidden="true"></span></button><button type="button" role="radio" aria-checked="true" aria-label="Sombre" title="Sombre" class="ai5d-theme__segment"><span class="specimen-icone" aria-hidden="true"></span></button><button type="button" role="radio" aria-checked="false" aria-label="Système" title="Système" class="ai5d-theme__segment"><span class="specimen-icone" aria-hidden="true"></span></button></div></div>
+      <div class="specimen-pied-288" data-specimen="theme-288"><div class="ai5d-theme" role="radiogroup" aria-label="Thème de l’interface" data-libelles=""><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Clair</span></button><button type="button" role="radio" aria-checked="true" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Sombre</span></button><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Système</span></button></div></div>
+      <div class="specimen-pied-216" data-specimen="theme-216"><div class="ai5d-theme" role="radiogroup" aria-label="Thème de l’interface" data-libelles=""><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Clair</span></button><button type="button" role="radio" aria-checked="true" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Sombre</span></button><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Système</span></button></div></div>
+
+        <h3>Pied de coquille</h3>
+        
+      <div class="ai5d-coquille-rail specimen-coquille" data-coquille="rail" data-mode="complet" data-pied="complet">
+        <footer class="ai5d-coquille-rail__pied-contenu">
+          <div class="ai5d-coquille-rail__colonne">
+            <div class="ai5d-coquille-rail__pied-compact">
+              <span class="specimen-libelle">Thème</span>
+              <div class="ai5d-theme" role="radiogroup" aria-label="Thème de l’interface" data-libelles=""><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Clair</span></button><button type="button" role="radio" aria-checked="true" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Sombre</span></button><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Système</span></button></div>
+            </div>
+            <div class="rangee"><a class="lien" href="#">Confidentialité</a><a class="lien" href="#">Mentions légales</a></div>
+          </div>
+        </footer>
+      </div>
+      </div>
+
+      <div class="colonne">
+        <h3>Titres</h3>
+        
+      <div class="specimen-titres">
+        <h1 style="margin: 0; font-family: var(--police-titre); font-weight: var(--graisse-normale); font-size: var(--taille-2xl); line-height: var(--interligne-titre); letter-spacing: var(--lettrage-titre); color: var(--texte-fort); text-wrap: balance; overflow-wrap: break-word;">IA générative et relation client</h1>
+        <h2 style="margin: 0; font-family: var(--police-titre); font-weight: var(--graisse-normale); font-size: var(--taille-xl); line-height: var(--interligne-titre); letter-spacing: var(--lettrage-titre); color: var(--texte-fort); text-wrap: balance; overflow-wrap: break-word;">Mes autres formations</h2>
+        <h3 style="margin: 0; font-family: var(--police-titre); font-weight: var(--graisse-normale); font-size: var(--taille-lg); line-height: var(--interligne-titre); letter-spacing: var(--lettrage-titre); color: var(--texte-fort); text-wrap: balance; overflow-wrap: break-word;">Ressources de la session</h3>
+      </div>
+
+        <h3>Lignes</h3>
+        
+      <ul role="list" class="ai5d-liste-lignes" data-bords="">
+        <li><a class="ai5d-ligne" href="#"><span class="ai5d-ligne__corps"><span class="ai5d-ligne__titre" data-en-titre="">IA générative et relation client</span><span class="ai5d-ligne__description">Du 13 au 15 octobre 2026, présentiel</span></span><span class="ai5d-ligne__fin"><span class="specimen-chevron" aria-hidden="true">›</span></span><span class="ai5d-ligne__attente" aria-hidden="true"><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span></span></a></li>
+        <li><a class="ai5d-ligne" href="#" download data-force="survol"><span class="ai5d-ligne__corps"><span class="ai5d-ligne__titre">Support du jour 1</span><span class="ai5d-ligne__meta">PDF · 2,4 Mo</span></span><span class="ai5d-ligne__attente" aria-hidden="true"><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span></span></a></li>
+        <li><a class="ai5d-ligne" href="#" target="_blank" rel="noopener noreferrer" data-force="appui"><span class="ai5d-ligne__corps"><span class="ai5d-ligne__titre">Rejoindre la session</span><span class="ai5d-ligne__meta" data-mono="">AI5D-2026-7K3F9Q</span></span><span class="ai5d-ligne__attente" aria-hidden="true"><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span></span><span class="ai5d-hors-ecran"> (s’ouvre dans un nouvel onglet)</span></a></li>
+      </ul>
+      <ul role="list" class="ai5d-liste-lignes">
+        <li><a class="ai5d-ligne" href="#" data-en-attente=""><span class="ai5d-ligne__corps"><span class="ai5d-ligne__titre">Ressources</span><span class="ai5d-ligne__description">La page suivante arrive</span></span><span class="ai5d-ligne__fin"><span class="specimen-chevron" aria-hidden="true">›</span></span><span class="ai5d-ligne__attente" aria-hidden="true"><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span></span></a></li>
+      </ul>
+
+        <h3>Définitions, une colonne</h3>
+        <div class="ai5d-definitions specimen-bloc" data-colonnes="1"><dl class="ai5d-definitions__liste"><div class="ai5d-definitions__element"><dt>Session</dt><dd>Orange Guinée · octobre 2026</dd></div><div class="ai5d-definitions__element"><dt>Dates</dt><dd>Du 13 au 15 octobre 2026, présentiel</dd></div><div class="ai5d-definitions__element"><dt>Émise le</dt><dd>19 octobre 2026</dd></div><div class="ai5d-definitions__element"><dt>Numéro</dt><dd data-mono="">AI5D-2026-7K3F9Q</dd></div></dl></div>
+
+        <h3>Valeur copiable</h3>
+        
+      <div class="ai5d-copiable specimen-bloc">
+        <div class="ai5d-copiable__rangee">
+          <div class="champ ai5d-copiable__champ"><label>Adresse de votre badge</label><input value="https://portail.ai5d.technology/badge/7K3F9Q" readonly style="font-family: var(--police-mono); font-weight: var(--graisse-moyenne); font-size: var(--taille-md);" /></div>
+          <button type="button" class="ai5d-bouton" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;"><span class="specimen-icone" aria-hidden="true"></span>Copier le lien</button>
+        </div>
+        <div class="ai5d-copiable__annonce" aria-live="polite"></div>
+      </div>
+        
+      <div class="ai5d-copiable specimen-bloc">
+        <div class="ai5d-copiable__rangee">
+          <div class="champ ai5d-copiable__champ"><label>Adresse de votre badge</label><input value="https://portail.ai5d.technology/badge/7K3F9Q" readonly style="font-family: var(--police-mono); font-weight: var(--graisse-moyenne); font-size: var(--taille-md);" /></div>
+          <button type="button" class="ai5d-bouton" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;"><span class="specimen-icone" aria-hidden="true"></span>Lien copié</button>
+        </div>
+        <div class="ai5d-copiable__annonce" aria-live="polite"></div>
+      </div>
+        
+      <div class="ai5d-copiable specimen-bloc">
+        <div class="ai5d-copiable__rangee">
+          <div class="champ ai5d-copiable__champ"><label>Adresse de votre badge</label><input value="https://portail.ai5d.technology/badge/7K3F9Q" readonly style="font-family: var(--police-mono); font-weight: var(--graisse-moyenne); font-size: var(--taille-md);" /></div>
+          <button type="button" class="ai5d-bouton" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;"><span class="specimen-icone" aria-hidden="true"></span>Copier le lien</button>
+        </div>
+        <div class="ai5d-copiable__annonce" aria-live="polite"><p class="ai5d-copiable__echec">Sélectionnez l’adresse ci-dessus pour la copier.</p></div>
+      </div>
+
+        <h3>Mesure du plancher</h3>
+        
+      <div class="mesure-bloc">height: var(--hauteur-controle)</div>
+      <div class="mesure-ligne">min-height: var(--ligne-liste)</div>
+      </div>
+    </div>
+
+    <h3>Définitions, deux colonnes dès 480 px de conteneur</h3>
+    <div class="ai5d-definitions specimen-bloc" data-colonnes="2"><dl class="ai5d-definitions__liste"><div class="ai5d-definitions__element"><dt>Session</dt><dd>Orange Guinée · octobre 2026</dd></div><div class="ai5d-definitions__element"><dt>Dates</dt><dd>Du 13 au 15 octobre 2026, présentiel</dd></div><div class="ai5d-definitions__element"><dt>Émise le</dt><dd>19 octobre 2026</dd></div><div class="ai5d-definitions__element"><dt>Numéro</dt><dd data-mono="">AI5D-2026-7K3F9Q</dd></div></dl></div>
+
+    <h3>Onglets, sans débordement</h3>
+    <div data-specimen="onglets-large"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
   </section>
 
   <section class="planche" data-densite="compact">
@@ -421,7 +1369,7 @@ h3:first-child { margin-top: 0; }
       </div>
 
         <h3>Pastilles</h3>
-        <div class="rangee"><span class="pastille information">Information</span> <span class="pastille reussite">Adresse vérifiée</span> <span class="pastille attention">Adresse non confirmée</span> <span class="pastille erreur">Trop de tentatives</span></div>
+        <div class="rangee"><span class="pastille information">Information</span> <span class="pastille reussite">Adresse vérifiée</span> <span class="pastille attention">Adresse non confirmée</span> <span class="pastille erreur">Trop de tentatives</span> <span class="pastille neutre">Inscription confirmée</span></div>
 
         <h3>Champs</h3>
         
@@ -473,6 +1421,10 @@ h3:first-child { margin-top: 0; }
         <span class="puce"></span>
         <div><b>Trop de tentatives</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
       </div>
+      <div class="bandeau neutre">
+        <span class="puce"></span>
+        <div><b>Inscription confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+      </div>
 
         <h3>Typographie</h3>
         <div class="display">Un compte. Tout AI5D.</div>
@@ -481,7 +1433,139 @@ h3:first-child { margin-top: 0; }
         <div class="mono">AI5D-7F3K-92QX</div>
       </div>
     </div>
+
+    <div class="grille">
+      <div class="colonne">
+        <h3>Boutons en lien</h3>
+        
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="secondaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="secondaire" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="secondaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="neutre" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="discret" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="discret" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="discret" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="danger" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="danger" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="danger" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div>
+      <div class="rangee">
+        <a class="ai5d-bouton" href="#" data-variante="danger-contour" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Voir ma formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" href="#" data-variante="danger-contour" data-taille="md" data-en-attente="" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">En attente<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a>
+        <a class="ai5d-bouton" role="link" aria-disabled="true" data-variante="danger-contour" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; cursor: not-allowed; opacity: 0.6;">Désactivé</a>
+      </div><div class="rangee"><a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="sm" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">sm<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a> <a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">md<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a> <a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="lg" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) + 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">lg<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a></div>
+
+        <h3>Onglets de rubrique</h3>
+        
+      <div class="specimen-colonne-390" data-specimen="onglets-debut" data-defiler="debut"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+      <div class="specimen-colonne-390" data-specimen="onglets-milieu" data-defiler="milieu"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+      <div class="specimen-colonne-390" data-specimen="onglets-fin" data-defiler="fin"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+      <div class="specimen-colonne-390" data-specimen="onglets-initial"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+
+        <h3>Sélecteur de thème</h3>
+        
+      <div class="rangee" data-specimen="theme-icones"><div class="ai5d-theme" role="radiogroup" aria-label="Thème de l’interface"><button type="button" role="radio" aria-checked="false" aria-label="Clair" title="Clair" class="ai5d-theme__segment"><span class="specimen-icone" aria-hidden="true"></span></button><button type="button" role="radio" aria-checked="true" aria-label="Sombre" title="Sombre" class="ai5d-theme__segment"><span class="specimen-icone" aria-hidden="true"></span></button><button type="button" role="radio" aria-checked="false" aria-label="Système" title="Système" class="ai5d-theme__segment"><span class="specimen-icone" aria-hidden="true"></span></button></div></div>
+      <div class="specimen-pied-288" data-specimen="theme-288"><div class="ai5d-theme" role="radiogroup" aria-label="Thème de l’interface" data-libelles=""><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Clair</span></button><button type="button" role="radio" aria-checked="true" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Sombre</span></button><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Système</span></button></div></div>
+      <div class="specimen-pied-216" data-specimen="theme-216"><div class="ai5d-theme" role="radiogroup" aria-label="Thème de l’interface" data-libelles=""><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Clair</span></button><button type="button" role="radio" aria-checked="true" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Sombre</span></button><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Système</span></button></div></div>
+
+        <h3>Pied de coquille</h3>
+        
+      <div class="ai5d-coquille-rail specimen-coquille" data-coquille="rail" data-mode="complet" data-pied="complet">
+        <footer class="ai5d-coquille-rail__pied-contenu">
+          <div class="ai5d-coquille-rail__colonne">
+            <div class="ai5d-coquille-rail__pied-compact">
+              <span class="specimen-libelle">Thème</span>
+              <div class="ai5d-theme" role="radiogroup" aria-label="Thème de l’interface" data-libelles=""><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Clair</span></button><button type="button" role="radio" aria-checked="true" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Sombre</span></button><button type="button" role="radio" aria-checked="false" class="ai5d-theme__segment"><span class="ai5d-theme__icone specimen-icone" aria-hidden="true"></span><span>Système</span></button></div>
+            </div>
+            <div class="rangee"><a class="lien" href="#">Confidentialité</a><a class="lien" href="#">Mentions légales</a></div>
+          </div>
+        </footer>
+      </div>
+      </div>
+
+      <div class="colonne">
+        <h3>Titres</h3>
+        
+      <div class="specimen-titres">
+        <h1 style="margin: 0; font-family: var(--police-titre); font-weight: var(--graisse-normale); font-size: var(--taille-2xl); line-height: var(--interligne-titre); letter-spacing: var(--lettrage-titre); color: var(--texte-fort); text-wrap: balance; overflow-wrap: break-word;">IA générative et relation client</h1>
+        <h2 style="margin: 0; font-family: var(--police-titre); font-weight: var(--graisse-normale); font-size: var(--taille-xl); line-height: var(--interligne-titre); letter-spacing: var(--lettrage-titre); color: var(--texte-fort); text-wrap: balance; overflow-wrap: break-word;">Mes autres formations</h2>
+        <h3 style="margin: 0; font-family: var(--police-titre); font-weight: var(--graisse-normale); font-size: var(--taille-lg); line-height: var(--interligne-titre); letter-spacing: var(--lettrage-titre); color: var(--texte-fort); text-wrap: balance; overflow-wrap: break-word;">Ressources de la session</h3>
+      </div>
+
+        <h3>Lignes</h3>
+        
+      <ul role="list" class="ai5d-liste-lignes" data-bords="">
+        <li><a class="ai5d-ligne" href="#"><span class="ai5d-ligne__corps"><span class="ai5d-ligne__titre" data-en-titre="">IA générative et relation client</span><span class="ai5d-ligne__description">Du 13 au 15 octobre 2026, présentiel</span></span><span class="ai5d-ligne__fin"><span class="specimen-chevron" aria-hidden="true">›</span></span><span class="ai5d-ligne__attente" aria-hidden="true"><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span></span></a></li>
+        <li><a class="ai5d-ligne" href="#" download data-force="survol"><span class="ai5d-ligne__corps"><span class="ai5d-ligne__titre">Support du jour 1</span><span class="ai5d-ligne__meta">PDF · 2,4 Mo</span></span><span class="ai5d-ligne__attente" aria-hidden="true"><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span></span></a></li>
+        <li><a class="ai5d-ligne" href="#" target="_blank" rel="noopener noreferrer" data-force="appui"><span class="ai5d-ligne__corps"><span class="ai5d-ligne__titre">Rejoindre la session</span><span class="ai5d-ligne__meta" data-mono="">AI5D-2026-7K3F9Q</span></span><span class="ai5d-ligne__attente" aria-hidden="true"><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span></span><span class="ai5d-hors-ecran"> (s’ouvre dans un nouvel onglet)</span></a></li>
+      </ul>
+      <ul role="list" class="ai5d-liste-lignes">
+        <li><a class="ai5d-ligne" href="#" data-en-attente=""><span class="ai5d-ligne__corps"><span class="ai5d-ligne__titre">Ressources</span><span class="ai5d-ligne__description">La page suivante arrive</span></span><span class="ai5d-ligne__fin"><span class="specimen-chevron" aria-hidden="true">›</span></span><span class="ai5d-ligne__attente" aria-hidden="true"><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span><span class="ai5d-ligne__point"></span></span></a></li>
+      </ul>
+
+        <h3>Définitions, une colonne</h3>
+        <div class="ai5d-definitions specimen-bloc" data-colonnes="1"><dl class="ai5d-definitions__liste"><div class="ai5d-definitions__element"><dt>Session</dt><dd>Orange Guinée · octobre 2026</dd></div><div class="ai5d-definitions__element"><dt>Dates</dt><dd>Du 13 au 15 octobre 2026, présentiel</dd></div><div class="ai5d-definitions__element"><dt>Émise le</dt><dd>19 octobre 2026</dd></div><div class="ai5d-definitions__element"><dt>Numéro</dt><dd data-mono="">AI5D-2026-7K3F9Q</dd></div></dl></div>
+
+        <h3>Valeur copiable</h3>
+        
+      <div class="ai5d-copiable specimen-bloc">
+        <div class="ai5d-copiable__rangee">
+          <div class="champ ai5d-copiable__champ"><label>Adresse de votre badge</label><input value="https://portail.ai5d.technology/badge/7K3F9Q" readonly style="font-family: var(--police-mono); font-weight: var(--graisse-moyenne); font-size: var(--taille-md);" /></div>
+          <button type="button" class="ai5d-bouton" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;"><span class="specimen-icone" aria-hidden="true"></span>Copier le lien</button>
+        </div>
+        <div class="ai5d-copiable__annonce" aria-live="polite"></div>
+      </div>
+        
+      <div class="ai5d-copiable specimen-bloc">
+        <div class="ai5d-copiable__rangee">
+          <div class="champ ai5d-copiable__champ"><label>Adresse de votre badge</label><input value="https://portail.ai5d.technology/badge/7K3F9Q" readonly style="font-family: var(--police-mono); font-weight: var(--graisse-moyenne); font-size: var(--taille-md);" /></div>
+          <button type="button" class="ai5d-bouton" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;"><span class="specimen-icone" aria-hidden="true"></span>Lien copié</button>
+        </div>
+        <div class="ai5d-copiable__annonce" aria-live="polite"></div>
+      </div>
+        
+      <div class="ai5d-copiable specimen-bloc">
+        <div class="ai5d-copiable__rangee">
+          <div class="champ ai5d-copiable__champ"><label>Adresse de votre badge</label><input value="https://portail.ai5d.technology/badge/7K3F9Q" readonly style="font-family: var(--police-mono); font-weight: var(--graisse-moyenne); font-size: var(--taille-md);" /></div>
+          <button type="button" class="ai5d-bouton" data-variante="neutre" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;"><span class="specimen-icone" aria-hidden="true"></span>Copier le lien</button>
+        </div>
+        <div class="ai5d-copiable__annonce" aria-live="polite"><p class="ai5d-copiable__echec">Sélectionnez l’adresse ci-dessus pour la copier.</p></div>
+      </div>
+
+        <h3>Mesure du plancher</h3>
+        
+      <div class="mesure-bloc">height: var(--hauteur-controle)</div>
+      <div class="mesure-ligne">min-height: var(--ligne-liste)</div>
+      </div>
+    </div>
+
+    <h3>Définitions, deux colonnes dès 480 px de conteneur</h3>
+    <div class="ai5d-definitions specimen-bloc" data-colonnes="2"><dl class="ai5d-definitions__liste"><div class="ai5d-definitions__element"><dt>Session</dt><dd>Orange Guinée · octobre 2026</dd></div><div class="ai5d-definitions__element"><dt>Dates</dt><dd>Du 13 au 15 octobre 2026, présentiel</dd></div><div class="ai5d-definitions__element"><dt>Émise le</dt><dd>19 octobre 2026</dd></div><div class="ai5d-definitions__element"><dt>Numéro</dt><dd data-mono="">AI5D-2026-7K3F9Q</dd></div></dl></div>
+
+    <h3>Onglets, sans débordement</h3>
+    <div data-specimen="onglets-large"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
   </section>
+
+<section class="specimen-selection" data-specimen="selection" aria-label="Sélection de texte et curseur">
+  <p class="surface-papier">Sur le papier : attestation AI5D-2026-7K3F9Q, délivrée le 19 octobre 2026.</p>
+  <p class="surface-carte">Sur une carte : attestation AI5D-2026-7K3F9Q, délivrée le 19 octobre 2026.</p>
+  <p class="surface-menu">Sur un menu : attestation AI5D-2026-7K3F9Q, délivrée le 19 octobre 2026.</p>
+  <label class="specimen-curseur">Numéro d’attestation <input value="AI5D-2026-7K3F9Q" /></label>
+</section>
 <script>
 const racine = document.documentElement;
 for (const bouton of document.querySelectorAll('.themes button')) {
@@ -494,6 +1578,19 @@ for (const bouton of document.querySelectorAll('.themes button')) {
     }
   });
 }
+
+/* Les rangees d onglets a une position de defilement imposee : debut, milieu, fin. */
+function defiler() {
+  for (const cadre of document.querySelectorAll('[data-defiler]')) {
+    const rangee = cadre.querySelector('.ai5d-onglets-r');
+    if (rangee === null) continue;
+    const maximum = rangee.scrollWidth - rangee.clientWidth;
+    const position = cadre.dataset.defiler;
+    rangee.scrollLeft = position === 'fin' ? maximum : position === 'milieu' ? maximum / 2 : 0;
+  }
+}
+window.addEventListener('load', defiler);
+window.addEventListener('resize', defiler);
 </script>
 </body>
 </html>
