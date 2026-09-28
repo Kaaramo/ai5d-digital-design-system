@@ -132,21 +132,21 @@ SPEC et user stories : `docs/superpowers/specs/version-1.3.0-console/`. Plan :
 se coche « écrite, non testée » ; la tâche 17 vérifie tout d'un bloc et voit chaque test échouer.
 
 - [x] T1 · Le suivi, la revérification de Compte, le banc d'essai, les mesures « avant » · fait
-- [x] T2 · Les feuilles hissées : `feuille.ts`, les 21 composants, `texteFeuille`, 52 lectures migrées · écrite, non testée
-- [x] T3 · La garde `verifierFeuilleUnique`, décision 010 · écrite, non testée
-- [x] T4 · `--surface-survol`, l'instantané de la 1.2.0, les contrastes, décision 011 · écrite, non testée
-- [x] T5 · `LiensRail` au jeton de survol, commentaire de `LigneLien` · écrite, non testée
-- [x] T6 · `Bandeau` qui se ferme et reçoit le focus · écrite, non testée
-- [x] T7 · `EnteteRubrique` et son action · écrite, non testée
-- [x] T8 · Le compteur d'onglet · écrite, non testée
-- [x] T9 · `Chiffre` compact et `SqueletteIndicateurs compact` · écrite, non testée
-- [x] T10 · `MenuActions` · écrite, non testée
-- [x] T11 · `EnteteObjet` · écrite, non testée
-- [x] T12 · `Selecteur` · écrite, non testée
-- [x] T13 · La réserve basse dans la feuille, décision 013 · écrite, non testée
-- [x] T14 · L'index · écrite, non testée
-- [x] T15 · Journal, guide de montée, README, NOYAU, formulations, décision 012, sans la version · écrite, non testée
-- [x] T16 · Les spécimens · écrite, page engendrée et regardée
+- [x] T2 · Les feuilles hissées : `feuille.ts`, les 21 composants, `texteFeuille`, 52 lectures migrées · vérifiée
+- [x] T3 · La garde `verifierFeuilleUnique`, décision 010 · vérifiée
+- [x] T4 · `--surface-survol`, l'instantané de la 1.2.0, les contrastes, décision 011 · vérifiée
+- [x] T5 · `LiensRail` au jeton de survol, commentaire de `LigneLien` · vérifiée
+- [x] T6 · `Bandeau` qui se ferme et reçoit le focus · vérifiée
+- [x] T7 · `EnteteRubrique` et son action · vérifiée
+- [x] T8 · Le compteur d'onglet · vérifiée
+- [x] T9 · `Chiffre` compact et `SqueletteIndicateurs compact` · vérifiée
+- [x] T10 · `MenuActions` · vérifiée
+- [x] T11 · `EnteteObjet` · vérifiée
+- [x] T12 · `Selecteur` · vérifiée
+- [x] T13 · La réserve basse dans la feuille, décision 013 · vérifiée
+- [x] T14 · L'index · vérifiée
+- [x] T15 · Journal, guide de montée, README, NOYAU, formulations, décision 012, sans la version · vérifiée
+- [x] T16 · Les spécimens · vérifiée
 - [ ] T17 · Vérification d'un bloc, chaque test vu échouer
 - [ ] T18 · Recette au navigateur, mesures « après », captures, preuves, leçons
 - [ ] T19 · Relecture du lot contre la SPEC
