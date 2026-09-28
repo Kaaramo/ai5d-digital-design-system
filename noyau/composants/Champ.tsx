@@ -40,7 +40,8 @@ export const TAILLE_ICONE_CHAMP = 20;
 const RETRAIT = 14;
 const ESPACE_ICONE = RETRAIT + TAILLE_ICONE_CHAMP + 10;
 
-const ID_STYLE = 'ai5d-champ';
+/** La clé de la feuille des champs, partagée avec `Selecteur` : une seule feuille pour les deux. */
+export const ID_STYLE_CHAMP = 'ai5d-champ';
 
 /**
  * Les couleurs et les états, hors du style en ligne, pour la même raison que dans
@@ -58,7 +59,7 @@ const ID_STYLE = 'ai5d-champ';
  * Les règles s'accrochent à `aria-invalid`, que le composant pose déjà : l'état visuel et
  * l'état annoncé ne peuvent donc pas diverger.
  */
-const STYLE_CHAMP = `
+export const STYLE_CHAMP = `
 .ai5d-champ__entree {
   background: var(--surface-2);
   color: var(--texte-fort);
@@ -156,7 +157,7 @@ export function Champ({
 
   return (
     <>
-      {feuille(ID_STYLE, STYLE_CHAMP)}
+      {feuille(ID_STYLE_CHAMP, STYLE_CHAMP)}
 
       <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
         <label
