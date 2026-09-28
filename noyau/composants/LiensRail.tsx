@@ -82,9 +82,11 @@ export interface ProprietesLiensRail {
 const ID_STYLE = 'ai5d-liens-rail';
 
 /**
- * Le survol change de jeton selon le thème, comme dans le rail de Compte : `--surface-1` se
- * détache du rail en clair et s'y confond en sombre, où `--surface-3` prend le relais. Il n'existe
- * pas de jeton de survol réglé par thème, et en déclarer un sortirait du périmètre de ce sprint.
+ * Le survol prend `--surface-survol`, depuis la 1.3.0 (décision 011). Jusque-là, faute de jeton réglé
+ * par thème, il valait `--surface-1` en clair et `--surface-3` en sombre, écrit à la main dans deux
+ * blocs de sélecteurs : en sombre, un lien survolé avait exactement le fond de la rubrique active. Le
+ * jeton creuse d'un cran en sombre, là où la sélection éclaire. Le survol est gardé par
+ * `(hover: hover)` : au doigt, il restait collé après le toucher.
  */
 export const STYLE_LIENS_RAIL = `
 .ai5d-liens-rail {
@@ -101,19 +103,18 @@ export const STYLE_LIENS_RAIL = `
   transition: background var(--duree-courte) var(--courbe-sortie),
               color var(--duree-courte) var(--courbe-sortie);
 }
-.ai5d-liens-rail__lien:hover { background: var(--surface-1); color: var(--texte-fort); }
+@media (hover: hover) {
+  .ai5d-liens-rail__lien:hover { background: var(--surface-survol); color: var(--texte-fort); }
+}
 .ai5d-liens-rail__lien[aria-current='page'] {
   background: var(--surface-selection);
   color: var(--action);
   font-weight: var(--graisse-semi);
 }
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) .ai5d-liens-rail__lien:hover { background: var(--surface-3); }
-}
-:root[data-theme='dark'] .ai5d-liens-rail__lien:hover { background: var(--surface-3); }
 /* Le survol ne recouvre pas la pastille active : elle garde son fond de selection. */
-.ai5d-liens-rail__lien[aria-current='page']:hover { background: var(--surface-selection); }
+@media (hover: hover) {
+  .ai5d-liens-rail__lien[aria-current='page']:hover { background: var(--surface-selection); }
+}
 
 /* Au clavier seulement : focus-visible ne se declenche pas au clic de souris. */
 .ai5d-liens-rail__lien:focus-visible {

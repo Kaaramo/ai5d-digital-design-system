@@ -35,8 +35,11 @@ import { feuille } from './feuille';
  * chevron, qui promettrait une page. Le lien sortant reçoit `noopener noreferrer` et la mention lue du
  * nouvel onglet.
  *
- * Le survol change de jeton selon le thème, comme `LiensRail` : `--surface-chaude` se détache en
- * clair, `--surface-3` prend le relais en sombre, en attendant le jeton de survol de la 1.3.0.
+ * Le survol change de jeton selon le thème : `--surface-chaude` se détache en clair, `--surface-3`
+ * prend le relais en sombre. Il ne passe pas à `--surface-survol` (décision 011) : ce jeton vaut pour
+ * un élément posé sur `--surface-2` ou `--surface-3`, et une ligne se pose aussi à même la page, où il
+ * se confondrait avec elle en sombre. En sombre, son survol reste égal à son appui ; aucune valeur ne
+ * se détache à la fois des trois surfaces (SPEC 1.3.0, §5.2.4). Différé.
  */
 
 export interface ProprietesLigneLien {

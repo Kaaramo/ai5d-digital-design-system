@@ -38,4 +38,3 @@ il se confondrait avec elle en sombre.
 - `LigneLien` garde ses règles : son survol reste égal à son appui en sombre. Aucune valeur ne se
   détache à la fois des trois surfaces ; différé à un lot qui tranchera une surface nouvelle.
 - Quatre couples de contraste de plus, lus dans `tests/jetons.test.ts` et nulle part ailleurs.
-```

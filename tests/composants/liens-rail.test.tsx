@@ -111,3 +111,22 @@ describe('BarreOnglets et le lien du produit', () => {
     expect(container.querySelector('a[href="/profil"]')).toHaveAttribute('aria-current', 'page');
   });
 });
+
+describe('LiensRail, le survol par jeton (1.3.0, decision 011)', () => {
+  it('survole sur --surface-survol, garde par (hover: hover), sans bloc par theme', () => {
+    expect(STYLE_LIENS_RAIL).toMatch(
+      /@media \(hover: hover\) \{\s*\.ai5d-liens-rail__lien:hover \{ background: var\(--surface-survol\);/,
+    );
+    expect(STYLE_LIENS_RAIL.replace(/@media \(hover: hover\) \{[\s\S]*?\n\}/g, '')).not.toContain(
+      ':hover',
+    );
+    expect(STYLE_LIENS_RAIL).not.toContain('data-theme');
+    expect(STYLE_LIENS_RAIL).not.toContain('prefers-color-scheme');
+  });
+
+  it('ne recouvre pas la rubrique active au survol', () => {
+    expect(STYLE_LIENS_RAIL).toMatch(
+      /\[aria-current='page'\]:hover \{ background: var\(--surface-selection\); \}/,
+    );
+  });
+});
