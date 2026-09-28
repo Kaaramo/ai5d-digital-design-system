@@ -124,3 +124,31 @@ SPEC et user stories : `docs/superpowers/specs/version-1.2.0-espace-participant/
 - [x] T16 · Vérification d'un bloc, gardes vues échouer, mesure « après », captures, navigateurs, montée de Compte, preuves · vérifiée, preuves dans docs/preuves/1.2.0/
 - [x] T17 · Relecture du lot contre la SPEC · faite, trois constats corrigés, six différés (docs/preuves/1.2.0/relecture.md)
 - [x] T18 · accord de Karamo le 26 septembre 2026 (mineure, sélection gardée), étiquette v1.2.0 posée et poussée
+
+## Version 1.3.0 · ce qui manque au système pour la console · 28 septembre 2026
+
+SPEC et user stories : `docs/superpowers/specs/version-1.3.0-console/`. Plan :
+`docs/superpowers/plans/2026-09-28-version-1-3-0-console.md`. Chaque tâche écrit son test d'abord et
+se coche « écrite, non testée » ; la tâche 17 vérifie tout d'un bloc et voit chaque test échouer.
+
+- [x] T1 · Le suivi, la revérification de Compte, le banc d'essai, les mesures « avant » · fait
+- [ ] T2 · Les feuilles hissées : `feuille.ts`, les 21 composants, `texteFeuille`, 52 lectures migrées
+- [ ] T3 · La garde `verifierFeuilleUnique`, décision 010
+- [ ] T4 · `--surface-survol`, l'instantané de la 1.2.0, les contrastes, décision 011
+- [ ] T5 · `LiensRail` au jeton de survol, commentaire de `LigneLien`
+- [ ] T6 · `Bandeau` qui se ferme et reçoit le focus
+- [ ] T7 · `EnteteRubrique` et son action
+- [ ] T8 · Le compteur d'onglet
+- [ ] T9 · `Chiffre` compact et `SqueletteIndicateurs compact`
+- [ ] T10 · `MenuActions`
+- [ ] T11 · `EnteteObjet`
+- [ ] T12 · `Selecteur`
+- [ ] T13 · La réserve basse dans la feuille, décision 013
+- [ ] T14 · L'index
+- [ ] T15 · Journal, guide de montée, README, NOYAU, formulations, décision 012, sans la version
+- [ ] T16 · Les spécimens
+- [ ] T17 · Vérification d'un bloc, chaque test vu échouer
+- [ ] T18 · Recette au navigateur, mesures « après », captures, preuves, leçons
+- [ ] T19 · Relecture du lot contre la SPEC
+- [ ] T20 · Montée d'essai dans le Portail, puis Compte et le SDK
+- [ ] T21 · Points du §0.9 revus par Karamo, accord explicite, version 1.3.0, étiquette `v1.3.0` et poussée

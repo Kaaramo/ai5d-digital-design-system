@@ -1,0 +1,2 @@
+# Les pages et les paquets du banc se reconstruisent par `node docs/preuves/1.3.0/banc.mjs`.
+genere/
