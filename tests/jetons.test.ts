@@ -128,13 +128,22 @@ const EXIGENCES: Array<{ jeton: string; fonds: string[] }> = [
     // `--surface-selection` : la description d'une ligne a l'appui, 4,51 en clair, de peu (1.2.0).
     fonds: ['--surface-1', '--surface-2', '--surface-chaude', '--surface-selection'],
   },
-  { jeton: '--reussite', fonds: ['--surface-1', '--surface-2', '--reussite-fond'] },
+  {
+    jeton: '--reussite',
+    // `--surface-survol` : un texte de reussite dans une ligne survolee, 4,53 (1.3.0).
+    fonds: ['--surface-1', '--surface-2', '--reussite-fond', '--surface-survol'],
+  },
   { jeton: '--attention', fonds: ['--surface-1', '--surface-2', '--attention-fond'] },
-  { jeton: '--erreur', fonds: ['--surface-1', '--surface-2', '--erreur-fond'] },
+  {
+    jeton: '--erreur',
+    // `--surface-survol` : le geste grave d'un menu, survole (1.3.0).
+    fonds: ['--surface-1', '--surface-2', '--erreur-fond', '--surface-survol'],
+  },
   {
     jeton: '--action',
-    // `--surface-selection` : l'onglet actif et le segment coche (1.2.0).
-    fonds: ['--surface-1', '--surface-2', '--info-fond', '--surface-selection'],
+    // `--surface-selection` : l'onglet actif et le segment coche (1.2.0). `--surface-survol` : un
+    // lien dans une ligne survolee (1.3.0).
+    fonds: ['--surface-1', '--surface-2', '--info-fond', '--surface-selection', '--surface-survol'],
   },
 ];
 
@@ -156,7 +165,11 @@ const EXIGENCES_SOMBRES: Array<{ jeton: string; fonds: string[] }> = [
   },
   { jeton: '--reussite', fonds: ['--surface-1', '--surface-2', '--reussite-fond'] },
   { jeton: '--attention', fonds: ['--surface-1', '--surface-2', '--attention-fond'] },
-  { jeton: '--erreur', fonds: ['--surface-1', '--surface-2', '--erreur-fond'] },
+  {
+    jeton: '--erreur',
+    // `--surface-3` : le geste grave d'un menu, en sombre, 4,98 (1.3.0).
+    fonds: ['--surface-1', '--surface-2', '--erreur-fond', '--surface-3'],
+  },
   {
     jeton: '--action',
     // `--surface-selection` : l'onglet actif en sombre, 4,51, de peu (1.2.0).
@@ -293,14 +306,14 @@ describe('jetons - contraste en sombre (garde C3)', () => {
 });
 
 describe('jetons - le nombre de couples mesures', () => {
-  it('mesure cinquante-sept couples : les quarante-neuf de la 1.1.0, et huit de la 1.2.0', () => {
+  it('mesure soixante et un couples : quarante-neuf de la 1.1.0, huit de la 1.2.0, quatre de la 1.3.0', () => {
     /*
       Le nombre n est plus ecrit dans NOYAU.md : il y avait vieilli (« 44 paires » pour 49). Il se lit
       ici, et nulle part ailleurs. SPEC 1.2.0, §6.3.
     */
     const clairs = EXIGENCES.flatMap(({ fonds }) => fonds).length;
     const sombres = EXIGENCES_SOMBRES.flatMap(({ fonds }) => fonds).length;
-    expect(clairs + sombres + COUPLES_DE_BOUTONS).toBe(57);
+    expect(clairs + sombres + COUPLES_DE_BOUTONS).toBe(61);
   });
 });
 
@@ -455,5 +468,46 @@ describe('le navigateur suit le theme, jusque dans la selection (1.2.0)', () => 
 
   it('ne pose aucune couleur de barre de defilement', () => {
     expect(brut).not.toMatch(/^\s*scrollbar-color\s*:/m);
+  });
+});
+
+describe('jetons - le survol (1.3.0, decision 011)', () => {
+  const BLOCS = [':root', ":root[data-theme='dark']", ":root[data-theme='light']"] as const;
+
+  it('--surface-survol est declare dans les quatre blocs de theme', () => {
+    for (const bloc of BLOCS) {
+      expect(lireJetons(CHEMIN, bloc).has('--surface-survol'), bloc).toBe(true);
+    }
+    const preference = lireJetons(CHEMIN, ":root:not([data-theme='light'])", {
+      inclureRegleArobase: true,
+    });
+    expect(preference.get('--surface-survol')).toBe('var(--surface-1)');
+  });
+
+  it('ne pointe que vers une surface existante, et ne porte aucune valeur nouvelle', () => {
+    expect(clair.get('--surface-survol')).toBe('var(--surface-chaude)');
+    expect(themeClairExplicite.get('--surface-survol')).toBe('var(--surface-chaude)');
+    expect(sombre.get('--surface-survol')).toBe('var(--surface-1)');
+  });
+
+  it('se distingue de la selection en sombre : il creuse la ou elle eclaire', () => {
+    const ratio = ratioContraste(
+      couleur(sombre, '--surface-survol'),
+      couleur(sombre, '--surface-selection'),
+    );
+    expect(ratio, ratio.toFixed(2)).toBeGreaterThan(1.2);
+  });
+
+  it('le temoin : --attention en texte nu sur une surface survolee echoue en clair, et doit echouer', () => {
+    /*
+      4,39. Un texte en --attention ne se pose pas sur une surface survolee sans son fond
+      --attention-fond (4,54). NOYAU.md, section 1.4, l ecrit. Si ce test passe un jour, une valeur a
+      bouge sans que la regle ait ete relue.
+    */
+    const ratio = ratioContraste(couleur(clair, '--attention'), couleur(clair, '--surface-survol'));
+    expect(ratio, ratio.toFixed(2)).toBeLessThan(SEUIL_TEXTE_COURANT);
+    expect(
+      ratioContraste(couleur(clair, '--attention'), couleur(clair, '--attention-fond')),
+    ).toBeGreaterThanOrEqual(SEUIL_TEXTE_COURANT);
   });
 });

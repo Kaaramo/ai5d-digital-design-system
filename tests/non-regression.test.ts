@@ -132,3 +132,39 @@ describe(`aucune valeur de ${INSTANTANE.etiquette} ne change`, () => {
     }
   });
 });
+
+/**
+ * AUCUNE VALEUR DE LA 1.2.0 NE CHANGE (SPEC 1.3.0, §6).
+ *
+ * La 1.3.0 ajoute une seule propriete, `--surface-survol`, qui nomme un role et pointe vers des
+ * surfaces existantes. Les quatre feuilles se comparent ici declaration par declaration, la feuille de
+ * densites comprise : la 1.3.0 n y touche pas. L instantane a ete engendre une fois depuis l etiquette
+ * v1.2.0 par `_build/figer-1.2.0.mjs`, puis versionne.
+ */
+const INSTANTANE_120 = JSON.parse(
+  readFileSync('tests/instantanes/jetons-1.2.0.json', 'utf8'),
+) as Instantane;
+
+describe(`aucune valeur de ${INSTANTANE_120.etiquette} ne change`, () => {
+  it('l instantane porte les quatre feuilles', () => {
+    expect(Object.keys(INSTANTANE_120.fichiers).sort()).toEqual([
+      'densites/profils.css',
+      'noyau/jetons.css',
+      'noyau/marque.css',
+      'noyau/paliers.css',
+    ]);
+  });
+
+  for (const [fichier, figes] of Object.entries(INSTANTANE_120.fichiers)) {
+    it(`${fichier} garde chaque declaration, bloc par bloc`, () => {
+      expect(figes.length).toBeGreaterThan(0);
+      const actuels = indexer(decouperBlocs(readFileSync(fichier, 'utf8')));
+      for (const bloc of figes) {
+        const ou = cle(bloc.chemin, bloc.selecteur);
+        for (const [nom, valeur] of Object.entries(bloc.declarations)) {
+          expect(actuels.get(ou)?.get(nom), `${fichier} · ${ou} · ${nom}`).toBe(valeur);
+        }
+      }
+    });
+  }
+});

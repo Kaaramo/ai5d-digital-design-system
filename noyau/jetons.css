@@ -104,6 +104,14 @@
      sombre et 0,00 en clair. D'ou un jeton de ROLE, qui prend l'un ou l'autre selon le theme. */
   --surface-selection: var(--info-fond);
 
+  /* Le survol d'un element pose sur --surface-2 ou --surface-3 : une ligne de table, un element
+     de menu, un lien du rail. Il ne vaut pas sur --surface-1 en sombre, ou il se confondrait avec
+     la page : un element pose a meme la page garde ses propres regles (LigneLien). En sombre, il
+     creuse d'un cran la ou la selection eclaire : les deux ne se confondent plus (1,27), ce que
+     --surface-3 ne permettait pas (1,00). Il ne porte aucune valeur nouvelle : il nomme un role et
+     choisit, par theme, une surface deja mesuree. Decision 011. */
+  --surface-survol: var(--surface-chaude);
+
   /* -----------------------------------------------------------------------
      Typographie. Fraunces signe, Inter travaille, JetBrains Mono identifie.
      Fraunces ne compose JAMAIS un paragraphe.
@@ -290,6 +298,7 @@
     --info: var(--action-sur-sombre);
     --info-fond: #14203a;
     --surface-selection: var(--surface-3);
+    --surface-survol: var(--surface-1);
 
     /* L'action s'eclaircit : c'est le seul jeton dont la valeur change entre les
        deux themes. Voir la note sur --action-sur-sombre plus haut. */
@@ -329,6 +338,7 @@
   --info: var(--action-sur-sombre);
   --info-fond: #14203a;
   --surface-selection: var(--surface-3);
+  --surface-survol: var(--surface-1);
 
   --action: var(--action-sur-sombre);
   --action-survol: #8ba1ff;
@@ -362,6 +372,7 @@
   --info: var(--action);
   --info-fond: #eaefff;
   --surface-selection: var(--info-fond);
+  --surface-survol: var(--surface-chaude);
 
   --elevation-1: 0 1px 2px rgba(5, 28, 44, 0.06);
   --elevation-2: 0 4px 12px rgba(5, 28, 44, 0.08);
