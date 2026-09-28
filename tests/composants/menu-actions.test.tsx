@@ -263,12 +263,79 @@ describe('MenuActions : le clavier, sur la mecanique doublee', () => {
     expect(declencheur).toHaveAttribute('aria-expanded', 'false');
   });
 
+  it('choisir un lien referme le menu et rend le focus, au a natif comme au lien du produit', () => {
+    // Relecture de la 1.3.0, constat M1 : un lien qui ne change que la requete laisserait le menu
+    // ouvert. L adresse est une ancre, que jsdom suit sans naviguer.
+    const Lien: ComposantLien = ({ children, ...reste }) => (
+      <a data-lien-produit="" {...reste}>
+        {children}
+      </a>
+    );
+    const actions: ActionMenu[] = [{ id: 'fiche', libelle: 'Voir la fiche', href: '#fiche' }];
+    for (const avecLien of [false, true]) {
+      const { declencheur, menu, unmount } = (() => {
+        const rendu = render(
+          <MenuActions libelle="Actions" actions={actions} Lien={avecLien ? Lien : undefined} />,
+        );
+        return {
+          ...rendu,
+          declencheur: screen.getByRole('button', { name: 'Actions' }),
+          menu: screen.getByRole('menu', { hidden: true }),
+        };
+      })();
+      fireEvent.keyDown(declencheur, { key: 'ArrowDown' });
+      expect(declencheur).toHaveAttribute('aria-expanded', 'true');
+      cacher.mockClear();
+      fireEvent.click(within(menu).getByRole('menuitem', { name: 'Voir la fiche' }));
+      expect(cacher, avecLien ? 'lien du produit' : 'a natif').toHaveBeenLastCalledWith(menu.id);
+      expect(declencheur).toHaveAttribute('aria-expanded', 'false');
+      expect(document.activeElement).toBe(declencheur);
+      unmount();
+    }
+  });
+
   it('sans ancre CSS, un defilement de la fenetre referme le menu plutot que de le laisser flotter', () => {
     const { declencheur, menu } = rendre();
     fireEvent.keyDown(declencheur, { key: 'ArrowDown' });
     fireEvent.scroll(window);
     expect(cacher).toHaveBeenLastCalledWith(menu.id);
     expect(declencheur).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('un defilement dans le menu lui-meme ne le referme pas : un long menu defile', () => {
+    // Relecture de la 1.3.0, constat M8 : l ecoute en capture sur la fenetre recevait aussi le
+    // defilement de la liste, et un menu qui defile se serait referme sous le doigt.
+    const { declencheur, menu } = rendre();
+    fireEvent.keyDown(declencheur, { key: 'ArrowDown' });
+    cacher.mockClear();
+    fireEvent.scroll(menu);
+    expect(cacher).not.toHaveBeenCalled();
+    expect(declencheur).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  it('se place par la mesure quand le moteur connait anchor-name mais pas position-area', () => {
+    // Relecture de la 1.3.0, constat I2 : Chromium 125 a 128 connaissent anchor-name et ecrivent
+    // inset-area ; tester anchor-name y laissait le menu en (0, 0).
+    vi.stubGlobal('CSS', { supports: (condition: string) => condition.startsWith('anchor-name') });
+    try {
+      const { declencheur, menu } = rendre();
+      fireEvent.keyDown(declencheur, { key: 'ArrowDown' });
+      expect(menu.style.top).not.toBe('');
+      expect(menu.style.left).not.toBe('');
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('se laisse placer par l ancre quand le moteur connait position-area', () => {
+    vi.stubGlobal('CSS', { supports: () => true });
+    try {
+      const { declencheur, menu } = rendre();
+      fireEvent.keyDown(declencheur, { key: 'ArrowDown' });
+      expect(menu.style.top).toBe('');
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });
 
@@ -309,11 +376,27 @@ describe('MenuActions : la feuille', () => {
     expect(css).toContain('.ai5d-menu__liste:popover-open { display: flex;');
   });
 
-  it('se place par l ancre la ou le moteur la connait, et borne sa largeur en rem', () => {
+  it('se place par l ancre la ou le moteur connait position-area, et borne sa largeur en rem', () => {
     const css = feuille();
-    expect(css).toContain('@supports (anchor-name: --a)');
+    // La condition teste la propriete que la regle emploie (constat I2), et la meme chaine sert au
+    // repli par la mesure : elles ne peuvent plus diverger.
+    expect(css).toContain('@supports (position-area: block-end)');
+    expect(css).not.toContain('@supports (anchor-name');
+    expect(readFileSync('noyau/composants/MenuActions.tsx', 'utf8')).toContain(
+      'CSS.supports(CONDITION_ANCRE)',
+    );
     expect(css).toContain('position-area: block-end span-inline-start;');
     expect(css).toContain('min-inline-size: 12rem; max-inline-size: 20rem;');
+  });
+
+  it('borne sa hauteur a la fenetre et defile au-dela', () => {
+    const css = feuille();
+    const base = css.slice(
+      css.indexOf('.ai5d-menu__liste {'),
+      css.indexOf('.ai5d-menu__liste:popover-open'),
+    );
+    expect(base).toContain('max-block-size: calc(100dvh - var(--espace-8));');
+    expect(base).toContain('overflow-y: auto;');
   });
 
   it('ouvre en duree courte, et ne garde qu un fondu sous mouvement reduit', () => {

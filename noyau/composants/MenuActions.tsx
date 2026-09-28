@@ -88,10 +88,21 @@ export interface ProprietesMenuActions {
 const ID_STYLE = 'ai5d-menu-actions';
 
 /*
+  La condition teste la propriete que la regle emploie, position-area, et non anchor-name : Chromium
+  125 a 128 connaissent anchor-name mais ecrivent inset-area (renomme en 129). Tester anchor-name y
+  ignorait position-area et coupait la mesure de repli : le menu s ouvrait en (0, 0), sonde dans
+  Chromium 141 (relecture de la 1.3.0, constat I2). La feuille et ancreConnue() lisent cette chaine.
+*/
+const CONDITION_ANCRE = 'position-area: block-end';
+
+/*
   La prose vit ici, jamais dans la chaine : un accent grave la terminerait.
 
   Le menu ne pose display que sous :popover-open. Une regle d auteur sur .ai5d-menu__liste battrait
   la regle du navigateur qui cache un popover ferme, et le menu resterait affiche.
+
+  La hauteur est bornee a la fenetre, et le menu defile au-dela : un long menu pres du bord ne sort
+  plus de l ecran (relecture de la 1.3.0, constat M8).
 
   L anneau d un element est decale de -2 px, a l interieur : a l exterieur, le bord du menu le
   couperait. L ouverture reprend la duree et la courbe des dialogues, par leurs jetons de base : une
@@ -107,6 +118,8 @@ export const STYLE_MENU = `
   inset: auto;
   min-inline-size: 12rem;
   max-inline-size: 20rem;
+  max-block-size: calc(100dvh - var(--espace-8));
+  overflow-y: auto;
   padding: var(--espace-1);
   background: var(--surface-3);
   color: var(--texte);
@@ -123,7 +136,7 @@ export const STYLE_MENU = `
   from { opacity: 0; transform: translateY(calc(var(--espace-1) * -1)); }
   to { opacity: 1; transform: none; }
 }
-@supports (anchor-name: --a) {
+@supports (${CONDITION_ANCRE}) {
   .ai5d-menu__liste {
     position-area: block-end span-inline-start;
     position-try-fallbacks: flip-block, flip-inline;
@@ -179,7 +192,7 @@ export const STYLE_MENU = `
 /** Vrai quand le moteur place le menu par l'ancre CSS ; faux dans jsdom et les moteurs qui ne la connaissent pas. */
 function ancreConnue(): boolean {
   return typeof CSS !== 'undefined' && typeof CSS.supports === 'function'
-    ? CSS.supports('anchor-name: --a')
+    ? CSS.supports(CONDITION_ANCRE)
     : false;
 }
 
@@ -282,7 +295,8 @@ export function MenuActions({ libelle, actions, declencheur, Lien }: ProprietesM
   /*
     Sans ancre CSS, le menu se place une fois, a l ouverture, en coordonnees de la fenetre : sous le
     declencheur, aligne sur son bord de fin, au-dessus s il ne reste pas la place en bas. L ecart est
-    lu dans le jeton --espace-1, jamais ecrit ici. Un defilement ou un redimensionnement le referme.
+    lu dans le jeton --espace-1, jamais ecrit ici. Un defilement ou un redimensionnement le referme,
+    sauf le defilement du menu lui-meme : un long menu defile sans se refermer sous le doigt.
   */
   useEffect(() => {
     const liste = menu.current;
@@ -291,13 +305,20 @@ export function MenuActions({ libelle, actions, declencheur, Lien }: ProprietesM
 
     const boite = bouton.getBoundingClientRect();
     const ecart = Number.parseFloat(getComputedStyle(liste).getPropertyValue('--espace-1')) || 0;
+    liste.style.maxBlockSize = '';
     const hauteur = liste.offsetHeight;
-    const enBas =
-      window.innerHeight - boite.bottom >= hauteur + ecart || boite.top < hauteur + ecart;
-    liste.style.top = `${enBas ? boite.bottom + ecart : boite.top - hauteur - ecart}px`;
+    const enBas = window.innerHeight - boite.bottom - ecart;
+    const enHaut = boite.top - ecart;
+    // Quand aucun cote n a la place, le menu prend le plus grand, s y borne et defile.
+    const enDessous = enBas >= hauteur || enBas >= enHaut;
+    const place = Math.max(0, enDessous ? enBas : enHaut);
+    if (hauteur > place) liste.style.maxBlockSize = `${place}px`;
+    const rendue = Math.min(hauteur, place);
+    liste.style.top = `${enDessous ? boite.bottom + ecart : boite.top - rendue - ecart}px`;
     liste.style.left = `${Math.max(0, boite.right - liste.offsetWidth)}px`;
 
-    const refermer = () => {
+    const refermer = (evenement: Event) => {
+      if (evenement.target instanceof Node && liste.contains(evenement.target)) return;
       if (ouvertRef.current) liste.hidePopover();
     };
     window.addEventListener('scroll', refermer, { capture: true, passive: true });
