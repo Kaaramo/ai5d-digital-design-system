@@ -3,6 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Icone } from './Icone';
 import type { ComposantLien } from './LiensRail';
 import { feuille } from './feuille';
+import { Pastille } from './Pastille';
 
 /**
  * La navigation entre les sous-pages d'une rubrique.
@@ -66,6 +67,17 @@ import { feuille } from './feuille';
  * App Router, il doit le faire dans un composant CLIENT. Un gabarit partagé n'est pas
  * rejoué quand on passe d'une route sœur à l'autre, et l'onglet actif resterait figé sur la
  * première sous-page ouverte.
+ *
+ * ── LE COMPTEUR, EN v1.3.0 ──────────────────────────────────────────────────
+ * Un nombre après le libellé : ce qui attend un geste sur cette sous-page. Le système ne l'interprète
+ * pas : `compteur={0}` affiche « 0 », et c'est le produit qui décide de ne pas le passer. La pastille
+ * est `neutre`, même sur l'onglet actif, qui se dit déjà par ses trois signaux ; ses chiffres sont
+ * tabulaires, formatés à la française, et elle est masquée aux lecteurs d'écran.
+ *
+ * Le lien porte alors son nom en `aria-label` : « Participants, 25 à traiter ». Un texte hors écran
+ * après le libellé faisait lire « Participants , 25 à traiter » : Chromium et jsdom insèrent une
+ * espace devant un élément sorti du flux (mesuré le 28 septembre 2026). Le nom commence par le
+ * libellé visible, comme l'exige la règle du nom visible inclus dans le nom accessible.
  */
 
 export interface OngletRubrique {
@@ -77,6 +89,8 @@ export interface OngletRubrique {
   href: string;
   /** Une icône Lucide, importée par le consommateur. Facultative. */
   icone?: LucideIcon | undefined;
+  /** Un nombre, affiché après le libellé. Absent : rien. Le produit décide ce qu'il compte. */
+  compteur?: number | undefined;
 }
 
 export interface ProprietesOngletsRubrique {
@@ -88,6 +102,8 @@ export interface ProprietesOngletsRubrique {
   etiquette?: string | undefined;
   /** Le lien du routeur du produit ; `a` par défaut. Avec lui, changer d'onglet ne recharge pas le document. */
   Lien?: ComposantLien | undefined;
+  /** Ce que compte le compteur, lu après lui : « à traiter ». Le même pour tous les onglets. */
+  libelleCompteur?: string | undefined;
   className?: string | undefined;
   style?: CSSProperties | undefined;
 }
@@ -103,6 +119,17 @@ export const ONGLETS_RUBRIQUE_MIN = 2;
 export const ONGLETS_RUBRIQUE_MAX = 6;
 
 const ID_STYLE = 'ai5d-onglets-rubrique';
+
+/** « 1 234 », avec l'espace fine insécable. */
+const FORMAT_COMPTEUR = new Intl.NumberFormat('fr-FR');
+
+/** « Participants, 25 à traiter », ou « Participants, 25 » sans ce que compte le compteur. */
+function nomAvecCompteur(libelle: string, compteur: number, libelleCompteur?: string): string {
+  const nombre = FORMAT_COMPTEUR.format(compteur);
+  return libelleCompteur === undefined
+    ? `${libelle}, ${nombre}`
+    : `${libelle}, ${nombre} ${libelleCompteur}`;
+}
 
 /*
   La prose vit dans le commentaire au-dessus, jamais dans la chaîne ci-dessous : un accent
@@ -183,6 +210,8 @@ const STYLE_ONGLETS = `
   to { opacity: 1; }
 }
 
+.ai5d-onglets-r__compteur { font-variant-numeric: tabular-nums; }
+
 @supports (animation-timeline: scroll()) {
   .ai5d-onglets-r {
     animation: ai5d-onglets-fondu linear both;
@@ -216,6 +245,7 @@ export function OngletsRubrique({
   actif,
   etiquette = 'Sous-pages de la rubrique',
   Lien,
+  libelleCompteur,
   className,
   style,
 }: ProprietesOngletsRubrique) {
@@ -235,10 +265,19 @@ export function OngletsRubrique({
             l'annoncent. L'attribut doit disparaitre, pas valoir faux.
           */
           const courant = onglet.id === actif ? 'page' : undefined;
+          const nom =
+            onglet.compteur === undefined
+              ? undefined
+              : nomAvecCompteur(onglet.libelle, onglet.compteur, libelleCompteur);
           const contenu: ReactNode = (
             <>
               {onglet.icone === undefined ? null : <Icone nom={onglet.icone} taille={16} />}
               <span>{onglet.libelle}</span>
+              {onglet.compteur === undefined ? null : (
+                <Pastille ton="neutre" className="ai5d-onglets-r__compteur" aria-hidden="true">
+                  {FORMAT_COMPTEUR.format(onglet.compteur)}
+                </Pastille>
+              )}
             </>
           );
 
@@ -248,6 +287,7 @@ export function OngletsRubrique({
               href={onglet.href}
               className="ai5d-onglets-r__lien"
               aria-current={courant}
+              aria-label={nom}
             >
               {contenu}
             </a>
@@ -257,6 +297,7 @@ export function OngletsRubrique({
               href={onglet.href}
               className="ai5d-onglets-r__lien"
               aria-current={courant}
+              aria-label={nom}
             >
               {contenu}
             </Lien>

@@ -138,7 +138,7 @@ se coche « écrite, non testée » ; la tâche 17 vérifie tout d'un bloc et vo
 - [x] T5 · `LiensRail` au jeton de survol, commentaire de `LigneLien` · écrite, non testée
 - [x] T6 · `Bandeau` qui se ferme et reçoit le focus · écrite, non testée
 - [x] T7 · `EnteteRubrique` et son action · écrite, non testée
-- [ ] T8 · Le compteur d'onglet
+- [x] T8 · Le compteur d'onglet · écrite, non testée
 - [ ] T9 · `Chiffre` compact et `SqueletteIndicateurs compact`
 - [ ] T10 · `MenuActions`
 - [ ] T11 · `EnteteObjet`

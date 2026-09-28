@@ -262,3 +262,73 @@ describe('OngletsRubrique relie au routeur (1.2.0)', () => {
     expect(reduit).toContain('::after { animation: none; opacity: 1; }');
   });
 });
+
+describe('OngletsRubrique, le compteur (1.3.0)', () => {
+  const SESSION: OngletRubrique[] = [
+    { id: 'vue', libelle: 'Vue d’ensemble', href: '/admin/sessions/7K3F9Q' },
+    {
+      id: 'participants',
+      libelle: 'Participants',
+      href: '/admin/sessions/7K3F9Q/participants',
+      compteur: 25,
+    },
+    {
+      id: 'ressources',
+      libelle: 'Ressources',
+      href: '/admin/sessions/7K3F9Q/ressources',
+      compteur: 2,
+    },
+    { id: 'attestations', libelle: 'Attestations', href: '/admin/sessions/7K3F9Q/attestations' },
+  ];
+
+  it('se lit une fois : « Participants, 25 à traiter »', () => {
+    render(<OngletsRubrique onglets={SESSION} actif="vue" libelleCompteur="à traiter" />);
+    expect(screen.getByRole('link', { name: 'Participants, 25 à traiter' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Ressources, 2 à traiter' })).toBeInTheDocument();
+  });
+
+  it('sans libelleCompteur, le nombre seul', () => {
+    render(<OngletsRubrique onglets={SESSION} actif="vue" />);
+    expect(screen.getByRole('link', { name: 'Participants, 25' })).toBeInTheDocument();
+  });
+
+  it('pose une pastille neutre, masquee aux lecteurs d ecran, en chiffres tabulaires', () => {
+    render(<OngletsRubrique onglets={SESSION} actif="vue" libelleCompteur="à traiter" />);
+    const lien = screen.getByRole('link', { name: 'Participants, 25 à traiter' });
+    const pastille = lien.querySelector('.ai5d-onglets-r__compteur') as HTMLElement;
+    expect(pastille).toHaveTextContent('25');
+    expect(pastille).toHaveAttribute('aria-hidden', 'true');
+    expect(pastille).toHaveAttribute('data-ton', 'neutre');
+    expect(feuille()).toContain(
+      '.ai5d-onglets-r__compteur { font-variant-numeric: tabular-nums; }',
+    );
+  });
+
+  it('formate le nombre a la francaise, et affiche zero quand il est passe', () => {
+    render(
+      <OngletsRubrique
+        onglets={[
+          { id: 'a', libelle: 'Participants', href: '/a', compteur: 1234 },
+          { id: 'b', libelle: 'Ressources', href: '/b', compteur: 0 },
+        ]}
+        actif="a"
+      />,
+    );
+    expect(screen.getByRole('link', { name: 'Participants, 1 234' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Ressources, 0' })).toBeInTheDocument();
+  });
+
+  it('ne rend rien sans compteur', () => {
+    render(<OngletsRubrique onglets={SESSION} actif="vue" />);
+    const lien = screen.getByRole('link', { name: 'Vue d’ensemble' });
+    expect(lien.querySelector('.ai5d-onglets-r__compteur')).toBeNull();
+    expect(lien).not.toHaveAttribute('aria-label');
+  });
+
+  it('sur l onglet actif, la pastille garde le ton neutre', () => {
+    render(<OngletsRubrique onglets={SESSION} actif="participants" libelleCompteur="à traiter" />);
+    const actif = screen.getByRole('link', { name: 'Participants, 25 à traiter' });
+    expect(actif).toHaveAttribute('aria-current', 'page');
+    expect(actif.querySelector('.ai5d-onglets-r__compteur')).toHaveAttribute('data-ton', 'neutre');
+  });
+});
