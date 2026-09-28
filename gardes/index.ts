@@ -418,6 +418,88 @@ export function exceptionsEspacementPerimees(
   return perimees;
 }
 
+/**
+ * Le texte d'un fichier de code sans ses commentaires, chaque caractère d'un commentaire remplacé
+ * par une espace et chaque saut de ligne gardé : les numéros de ligne restent ceux du fichier.
+ * Un commentaire a le droit de citer la forme fautive.
+ */
+function viderCommentairesDeCode(source: string): string {
+  return source
+    .replace(/\/\*[\s\S]*?\*\//g, (commentaire) => commentaire.replace(/[^\n]/g, ' '))
+    .replace(
+      /(^|[^:'"`])\/\/[^\n]*/g,
+      (commentaire, avant: string) => `${avant}${' '.repeat(commentaire.length - avant.length)}`,
+    );
+}
+
+/**
+ * La fin d'une construction ouverte à `debut` : le `>` qui ferme une balise ouvrante JSX, ou la
+ * parenthèse qui ferme un appel. Les accolades, les parenthèses et les chaînes sont suivies, pour
+ * qu'un `>` écrit dans une expression (`() => …`, `a > b`) ne ferme rien.
+ */
+function finDeConstruction(texte: string, debut: number, fermante: '>' | ')'): number {
+  let profondeur = 0;
+  for (let i = debut; i < texte.length; i += 1) {
+    const c = texte[i];
+    if (c === '"' || c === "'" || c === '`') {
+      const fin = texte.indexOf(c, i + 1);
+      if (fin === -1) return texte.length;
+      i = fin;
+      continue;
+    }
+    if (c === '{' || c === '(') profondeur += 1;
+    else if (c === '}' || c === ')') {
+      if (profondeur === 0 && c === fermante) return i;
+      profondeur -= 1;
+    } else if (c === fermante && profondeur === 0) return i;
+  }
+  return texte.length;
+}
+
+/**
+ * Garde 7 - une feuille de composant se pose une fois par document.
+ *
+ * Une balise `<style>` sans `href` ni `precedence` est rendue à chaque instance : cinq cents lignes,
+ * cinq cents copies et autant d'identifiants dupliqués. Seule une feuille hissée se déduplique
+ * (décision 010, mesuré le 28 septembre 2026).
+ *
+ * Elle relève, dans le code, tout élément JSX `<style` dont la balise ouvrante ne porte pas
+ * `precedence`, et tout `createElement('style', …)` dont les propriétés ne la portent pas. La balise
+ * se lit jusqu'au `>` qui la ferme, sur plusieurs lignes au besoin : une lecture ligne à ligne
+ * raterait une déclaration écrite sur deux (constat n° 2 de la relecture de la 1.2.0). Les
+ * commentaires sont ignorés. Une chaîne qui contient le texte `<style` serait relevée : la garde lit
+ * du code, et un produit exclut un tel fichier par `exceptions`.
+ */
+export function verifierFeuilleUnique(racine: string, options: OptionsGarde = {}): Infraction[] {
+  const regle = 'feuille-unique';
+  const extrait = '<style> sans precedence : la feuille est posee a chaque instance';
+  const examinees = { extensions: ['.tsx', '.ts', '.jsx', '.js'], ...options };
+  const infractions: Infraction[] = [];
+
+  for (const fichier of fichiersExamines(racine, examinees)) {
+    const code = viderCommentairesDeCode(readFileSync(join(racine, fichier), 'utf8'));
+    const ligneDe = (position: number) => code.slice(0, position).split('\n').length;
+
+    for (const trouve of code.matchAll(/<style(?=[\s/>])/g)) {
+      const debut = trouve.index ?? 0;
+      const balise = code.slice(debut, finDeConstruction(code, debut + 1, '>') + 1);
+      if (!/\bprecedence\s*=/.test(balise)) {
+        infractions.push({ fichier, ligne: ligneDe(debut), extrait, regle });
+      }
+    }
+
+    for (const trouve of code.matchAll(/createElement\(\s*(['"])style\1\s*,/g)) {
+      const debut = trouve.index ?? 0;
+      const appel = code.slice(debut, finDeConstruction(code, debut + trouve[0].length, ')') + 1);
+      if (!/\bprecedence\b/.test(appel)) {
+        infractions.push({ fichier, ligne: ligneDe(debut), extrait, regle });
+      }
+    }
+  }
+
+  return infractions;
+}
+
 /** Met en forme une liste d'infractions pour un message d'erreur lisible. */
 export function decrire(infractions: Infraction[]): string {
   if (infractions.length === 0) return 'Aucune infraction.';

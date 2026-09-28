@@ -133,7 +133,7 @@ se coche « écrite, non testée » ; la tâche 17 vérifie tout d'un bloc et vo
 
 - [x] T1 · Le suivi, la revérification de Compte, le banc d'essai, les mesures « avant » · fait
 - [x] T2 · Les feuilles hissées : `feuille.ts`, les 21 composants, `texteFeuille`, 52 lectures migrées · écrite, non testée
-- [ ] T3 · La garde `verifierFeuilleUnique`, décision 010
+- [x] T3 · La garde `verifierFeuilleUnique`, décision 010 · écrite, non testée
 - [ ] T4 · `--surface-survol`, l'instantané de la 1.2.0, les contrastes, décision 011
 - [ ] T5 · `LiensRail` au jeton de survol, commentaire de `LigneLien`
 - [ ] T6 · `Bandeau` qui se ferme et reçoit le focus

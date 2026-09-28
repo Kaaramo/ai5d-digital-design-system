@@ -12,6 +12,7 @@ import {
   verifierAucunEspacementEnDur,
   verifierAucuneLargeurFixe,
   verifierAucunJetonDeMarqueRedefini,
+  verifierFeuilleUnique,
   verifierHauteurDeVueDynamique,
   verifierPlancherTactile,
 } from './index';
@@ -465,6 +466,110 @@ ${decrire(infractions)}`,
     expect(
       exceptionsEspacementPerimees(racine, { 'Ecran.tsx': ['14px'], 'Disparu.tsx': ['2px'] }),
     ).toHaveLength(2);
+  });
+});
+
+describe('garde 7 - une feuille par composant, une fois par document', () => {
+  const EXTRAIT = '<style> sans precedence : la feuille est posee a chaque instance';
+
+  it('ne releve aucune infraction dans les composants du depot', () => {
+    const infractions = verifierFeuilleUnique('noyau/composants');
+    expect(infractions.length, `\n${decrire(infractions)}`).toBe(0);
+  });
+
+  it('releve les deux feuilles posees a chaque instance des instantanes de la 1.1.0', () => {
+    // Le temoin : la forme de toutes les versions jusqu a la 1.2.0 comprise.
+    const infractions = verifierFeuilleUnique('tests/instantanes');
+    expect(infractions.map((i) => i.fichier)).toEqual([
+      'Bouton-1.1.0.tsx',
+      'CoquilleRail-1.1.0.tsx',
+    ]);
+  });
+
+  it('releve une balise posee a chaque rendu, avec son message et sa ligne', () => {
+    const racine = depotTemporaire();
+    writeFileSync(
+      join(racine, 'Ligne.tsx'),
+      [
+        "const ID = 'portail-ligne';",
+        'export function Ligne() {',
+        '  return <style id={ID} dangerouslySetInnerHTML={{ __html: CSS }} />;',
+        '}',
+        '',
+      ].join('\n'),
+    );
+    expect(verifierFeuilleUnique(racine)).toEqual([
+      { fichier: 'Ligne.tsx', ligne: 3, extrait: EXTRAIT, regle: 'feuille-unique' },
+    ]);
+  });
+
+  it('lit une balise ouvrante ecrite sur trois lignes jusqu a son chevron', () => {
+    // Constat n° 2 de la relecture de la 1.2.0 : une lecture ligne a ligne rate ce cas.
+    const racine = depotTemporaire();
+    writeFileSync(
+      join(racine, 'Carte.tsx'),
+      [
+        'export const Carte = () => (',
+        '  <style',
+        '    id="portail-carte"',
+        '    dangerouslySetInnerHTML={{ __html: CSS }}',
+        '  />',
+        ');',
+        '',
+      ].join('\n'),
+    );
+    const infractions = verifierFeuilleUnique(racine);
+    expect(infractions).toHaveLength(1);
+    expect(infractions[0]?.ligne).toBe(2);
+  });
+
+  it('accepte une feuille hissee, meme quand une expression de la balise contient un chevron', () => {
+    const racine = depotTemporaire();
+    writeFileSync(
+      join(racine, 'Hissee.tsx'),
+      [
+        'export const Hissee = () => (',
+        '  <style',
+        '    href="portail-hissee"',
+        '    data-rendu={(a: number) => a > 0}',
+        '    precedence="portail"',
+        '  >',
+        '    {CSS}',
+        '  </style>',
+        ');',
+        '',
+      ].join('\n'),
+    );
+    expect(verifierFeuilleUnique(racine)).toEqual([]);
+  });
+
+  it("accepte createElement('style') qui porte precedence, et releve celui qui ne la porte pas", () => {
+    const racine = depotTemporaire();
+    writeFileSync(
+      join(racine, 'feuilles.ts'),
+      [
+        "import { createElement } from 'react';",
+        "export const bonne = createElement('style', { href: ID, precedence: 'portail' }, CSS);",
+        'export const mauvaise = createElement("style", { id: ID }, CSS);',
+        '',
+      ].join('\n'),
+    );
+    const infractions = verifierFeuilleUnique(racine);
+    expect(infractions.map((i) => i.ligne)).toEqual([3]);
+  });
+
+  it('ne releve pas un commentaire qui cite la forme fautive', () => {
+    const racine = depotTemporaire();
+    writeFileSync(
+      join(racine, 'Note.tsx'),
+      [
+        '/* Avant la 1.3.0 : <style id={ID} dangerouslySetInnerHTML={{ __html: CSS }} /> */',
+        '// <style id="ancienne">',
+        "export const note = 'rien';",
+        '',
+      ].join('\n'),
+    );
+    expect(verifierFeuilleUnique(racine)).toEqual([]);
   });
 });
 
