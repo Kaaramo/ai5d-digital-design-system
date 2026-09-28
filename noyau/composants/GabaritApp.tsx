@@ -57,6 +57,9 @@ const STYLE_APP = `
   min-height: 100dvh;
   background: var(--surface-1);
 }
+.ai5d-app[data-barre] {
+  --reserve-barre: calc(${HAUTEUR_BARRE_ONGLETS}px + var(--zone-sure-basse, 0px));
+}
 .ai5d-app__entete {
   position: sticky; top: 0; z-index: 30;
   display: flex; align-items: center; justify-content: space-between; gap: var(--espace-3);
@@ -73,9 +76,9 @@ const STYLE_APP = `
   padding-bottom: calc(var(--rythme-section) + var(--reserve-barre, 0px));
 }
 
-/* La barre basse disparait au palier tablette : sa reserve retombe a zero. */
+/* La barre basse disparait au palier tablette : sa reserve retombe a zero, meme selecteur. */
 @media (min-width: ${TABLETTE}px) {
-  .ai5d-app { --reserve-barre: 0px; }
+  .ai5d-app[data-barre] { --reserve-barre: 0px; }
 }
 
 @media (min-width: ${BUREAU}px) {
@@ -100,25 +103,22 @@ export function GabaritApp({
   const classes = className ? `ai5d-app ${className}` : 'ai5d-app';
 
   /*
-    La réserve basse est posée sur l'élément racine, en variable, pour deux raisons.
-    Elle n'existe que s'il y a une barre, et elle doit retomber à zéro au palier tablette
-    où la barre disparaît. Une variable réglée ici et lue par le contenu tient les deux
-    cas sans dupliquer la mesure.
+    La réserve basse n'existe que s'il y a une barre, et elle retombe à zéro au palier tablette où la
+    barre disparaît. Elle vit dans la feuille, sur `data-barre` : posée en style en ligne jusqu'à la
+    1.2.0, elle battait la règle de palier, et le contenu gardait 56 px de vide en bas sur un bureau
+    (mesuré dans Chromium le 28 septembre 2026). Décision 013.
   */
-  const styleRacine: CSSProperties = {
-    ...(avecBarre
-      ? ({
-          '--reserve-barre': `calc(${HAUTEUR_BARRE_ONGLETS}px + var(--zone-sure-basse, 0px))`,
-        } as CSSProperties)
-      : {}),
-    ...style,
-  };
 
   return (
     <>
       {feuille(ID_STYLE, STYLE_APP)}
 
-      <div className={classes} style={styleRacine} data-gabarit="app">
+      <div
+        className={classes}
+        style={style}
+        data-gabarit="app"
+        data-barre={avecBarre ? '' : undefined}
+      >
         <header className="ai5d-app__entete">
           <Logotype produit={produit} taille={20} />
           {actions === undefined ? null : <div className="ai5d-app__actions">{actions}</div>}

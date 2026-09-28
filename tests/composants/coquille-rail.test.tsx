@@ -131,13 +131,14 @@ describe('CoquilleRail, la structure', () => {
     ).toBe('');
   });
 
-  it('porte la reserve basse en mode complet seulement', () => {
+  it('porte la reserve basse en mode complet seulement, par la feuille (1.3.0, decision 013)', () => {
     const { container, rerender } = coquille();
-    expect(
-      (container.querySelector('[data-coquille="rail"]') as HTMLElement).style.getPropertyValue(
-        '--reserve-barre',
-      ),
-    ).toContain('--hauteur-barre-onglets');
+    const racine = () => container.querySelector('[data-coquille="rail"]') as HTMLElement;
+    expect(racine().style.getPropertyValue('--reserve-barre')).toBe('');
+    expect(racine()).toHaveAttribute('data-mode', 'complet');
+    expect(STYLE_COQUILLE_RAIL.replace(/\s+/g, ' ')).toContain(
+      ".ai5d-coquille-rail[data-mode='complet'] { --reserve-barre: calc(var(--hauteur-barre-onglets) + var(--zone-sure-basse, 0px)); }",
+    );
 
     rerender(
       <CoquilleRail
@@ -149,11 +150,23 @@ describe('CoquilleRail, la structure', () => {
         <p>Le contenu</p>
       </CoquilleRail>,
     );
-    expect(
-      (container.querySelector('[data-coquille="rail"]') as HTMLElement).style.getPropertyValue(
-        '--reserve-barre',
-      ),
-    ).toBe('');
+    expect(racine()).toHaveAttribute('data-mode', 'bureau-seulement');
+    expect(racine().style.getPropertyValue('--reserve-barre')).toBe('');
+  });
+
+  it('remet la reserve a zero au palier tablette, avec le meme selecteur, sans style en ligne', () => {
+    /*
+      Jusqu a la 1.2.0, la reserve etait posee en style en ligne : elle battait la regle de palier,
+      et valait encore 56 px a 1 280 px (mesure du 28 septembre 2026). La remise a zero porte le
+      selecteur de la reserve : plus faible, elle perdrait par la specificite.
+    */
+    const tablette = STYLE_COQUILLE_RAIL.slice(
+      STYLE_COQUILLE_RAIL.indexOf('@media (min-width: 768px)'),
+    ).replace(/\s+/g, ' ');
+    expect(tablette).toContain(
+      ".ai5d-coquille-rail[data-mode='complet'] { --reserve-barre: 0px; }",
+    );
+    expect(code(SOURCE)).not.toMatch(/'--reserve-barre'\s*:/);
   });
 
   it('declare ses deux largeurs une fois, et les emploie aux deux paliers', () => {
@@ -206,10 +219,14 @@ describe('CoquilleRail, ce qu elle refuse de savoir', () => {
   });
 });
 
-/** Le HTML rendu, sans les feuilles injectees : la feuille change en 1.2.0, pas le balisage. */
+/**
+ * Le HTML rendu, sans les feuilles et sans l attribut `style` de la racine : la feuille change en
+ * 1.2.0, pas le balisage ; et la reserve basse quitte le style en ligne en 1.3.0 (decision 013).
+ */
 function sansFeuilles(conteneur: HTMLElement): string {
   const copie = conteneur.cloneNode(true) as HTMLElement;
   copie.querySelectorAll('style').forEach((feuille) => feuille.remove());
+  copie.querySelector('[data-coquille="rail"]')?.removeAttribute('style');
   return copie.innerHTML;
 }
 

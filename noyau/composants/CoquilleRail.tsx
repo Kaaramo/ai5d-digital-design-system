@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Logotype } from './Logotype';
 import { RechargeAuRetour } from './RechargeAuRetour';
@@ -39,6 +39,12 @@ import { feuille } from './feuille';
  * `--reserve-barre` est réglé ici, sous 768 px, et remis à `0px` au-delà. Jamais par un écran : un
  * écran qui la porterait lui-même l'oublierait le jour où quelqu'un en ajoute un, et le dernier
  * élément d'une page longue passerait sous la barre basse, visible et inatteignable.
+ *
+ * Depuis la 1.3.0, elle vit dans la feuille et non plus en style en ligne : une déclaration en ligne
+ * l'emporte sur toute règle de feuille, et la remise à zéro du palier tablette ne s'appliquait
+ * jamais. Mesuré dans Chromium le 28 septembre 2026 : à 1 280 px, elle valait encore 56 px. Le
+ * contenu ne le montrait pas, son rembourrage de palier la recouvrant ; `GabaritApp`, qui avait la
+ * même forme, le montrait. Décision 013.
  *
  * ── LA GARDE DU RETOUR ARRIÈRE ──────────────────────────────────────────────
  * `RechargeAuRetour` est monté par défaut : toute coquille qui affiche une identité en a besoin, et
@@ -141,6 +147,10 @@ export const STYLE_COQUILLE_RAIL = `
   min-height: 100dvh;
   background: var(--surface-1);
 }
+/* La reserve basse n existe qu en mode complet : sans barre basse, elle laisserait un vide. */
+.ai5d-coquille-rail[data-mode='complet'] {
+  --reserve-barre: calc(var(--hauteur-barre-onglets) + var(--zone-sure-basse, 0px));
+}
 .ai5d-coquille-rail__refus { display: none; }
 .ai5d-coquille-rail__cadre {
   display: flex; align-items: flex-start;
@@ -214,8 +224,9 @@ export const STYLE_COQUILLE_RAIL = `
 }
 
 @media (min-width: ${TABLETTE}px) {
-  /* La barre basse se masque toute seule au meme palier : c'est sa propre regle. */
-  .ai5d-coquille-rail { --reserve-barre: 0px; }
+  /* La barre basse se masque toute seule au meme palier : c'est sa propre regle. Meme selecteur
+     que la reserve, sans quoi la remise a zero perdrait par la specificite. */
+  .ai5d-coquille-rail[data-mode='complet'] { --reserve-barre: 0px; }
   .ai5d-coquille-rail[data-mode='complet'] .ai5d-coquille-rail__barre { display: none; }
 
   .ai5d-coquille-rail__rail {
@@ -307,16 +318,6 @@ export function CoquilleRail({
 }: ProprietesCoquilleRail) {
   const complet = mode === 'complet';
 
-  /*
-    La reserve basse n existe qu en mode complet : en mode bureau-seulement il n y a pas de barre
-    basse, et reserver sa hauteur laisserait un vide sous chaque page.
-  */
-  const styleRacine: CSSProperties | undefined = complet
-    ? ({
-        '--reserve-barre': 'calc(var(--hauteur-barre-onglets) + var(--zone-sure-basse, 0px))',
-      } as CSSProperties)
-    : undefined;
-
   /* Le pied compact n existe qu en mode complet : la console n a pas de telephone a servir. */
   const avecPiedCompact = complet && piedCompact !== undefined;
   const typePied = piedContenu !== undefined ? 'complet' : avecPiedCompact ? 'compact' : undefined;
@@ -331,7 +332,6 @@ export function CoquilleRail({
 
       <div
         className="ai5d-coquille-rail"
-        style={styleRacine}
         data-coquille="rail"
         data-mode={mode}
         data-densite={densite}

@@ -141,8 +141,10 @@ describe('GabaritApp', () => {
       </GabaritApp>,
     );
     const racine = container.querySelector('[data-gabarit="app"]');
-    expect(racine?.getAttribute('style')).toContain(
-      `--reserve-barre: calc(${HAUTEUR_BARRE_ONGLETS}px + var(--zone-sure-basse, 0px))`,
+    expect(racine).toHaveAttribute('data-barre', '');
+    expect(racine?.getAttribute('style') ?? '').not.toContain('--reserve-barre');
+    expect(texteFeuille('ai5d-gabarit-app').replace(/\s+/g, ' ')).toContain(
+      `.ai5d-app[data-barre] { --reserve-barre: calc(${HAUTEUR_BARRE_ONGLETS}px + var(--zone-sure-basse, 0px)); }`,
     );
     expect(texteFeuille('ai5d-gabarit-app')).toContain('var(--reserve-barre, 0px)');
   });
@@ -155,6 +157,7 @@ describe('GabaritApp', () => {
     );
     expect(screen.queryByRole('navigation')).toBeNull();
     const racine = container.querySelector('[data-gabarit="app"]');
+    expect(racine).not.toHaveAttribute('data-barre');
     expect(racine?.getAttribute('style') ?? '').not.toContain('--reserve-barre');
   });
 
@@ -166,7 +169,9 @@ describe('GabaritApp', () => {
     );
     const feuilles = texteFeuille('ai5d-gabarit-app');
     expect(feuilles).toMatch(
-      new RegExp(`@media \\(min-width: ${TABLETTE}px\\)[\\s\\S]*?--reserve-barre: 0px`),
+      new RegExp(
+        `@media \\(min-width: ${TABLETTE}px\\) \\{\\s*\\.ai5d-app\\[data-barre\\] \\{ --reserve-barre: 0px; \\}`,
+      ),
     );
   });
 
