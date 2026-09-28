@@ -289,16 +289,41 @@ export function SqueletteListe({
  * La disposition arrive en propriete : deux colonnes sur telephone puis quatre chez un dirigeant,
  * trois d emblee en console. Une valeur par defaut qui ne correspondrait a aucun des deux ferait
  * toujours sauter l un des ecrans.
+ *
+ * `compact` (1.3.0) rend la forme d une rangee de `Chiffre` compacts : des blocs d une ligne, a la
+ * hauteur d une valeur, et non des tuiles de 5rem qui promettraient autre chose.
  */
 export function SqueletteIndicateurs({
   nombre = 4,
   colonnes = 'repeat(2, 1fr)',
   colonnesLarges = 'repeat(4, 1fr)',
+  compact = false,
 }: {
   nombre?: number;
   colonnes?: string;
   colonnesLarges?: string;
+  /** La forme d une rangee de `Chiffre` compacts : des blocs d une ligne, sans tuile. */
+  compact?: boolean;
 }) {
+  if (compact) {
+    return (
+      <div
+        style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--espace-6)' }}
+        data-forme="indicateurs"
+        data-compact=""
+      >
+        {Array.from({ length: nombre }, (_, i) => (
+          <Squelette
+            key={i}
+            hauteur="calc(var(--taille-lg) * var(--interligne-titre))"
+            largeur="10rem"
+            rayon="sm"
+          />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div
       style={{

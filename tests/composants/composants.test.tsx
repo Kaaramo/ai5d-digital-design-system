@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Info, Mail, Shield } from 'lucide-react';
+import type { ComponentProps } from 'react';
 import {
   Bandeau,
   BASCULE_DEUX_COLONNES,
@@ -9,6 +10,7 @@ import {
   Carte,
   CarteAction,
   Champ,
+  Chiffre,
   CHEMIN_TETE,
   Embleme,
   EPAISSEUR_TRAIT,
@@ -19,8 +21,10 @@ import {
   Logotype,
   Pastille,
   PastilleEtat,
+  SqueletteIndicateurs,
   TRANSFORME_TETE,
 } from '../../noyau/composants';
+import type { ComposantLien } from '../../noyau/composants';
 import { texteFeuille } from '../aides/feuille';
 
 describe('Logotype', () => {
@@ -891,5 +895,100 @@ describe('Bandeau qui se ferme et recoit le focus (1.3.0)', () => {
       </Bandeau>,
     );
     expect(screen.getByRole('alert')).toBeInTheDocument();
+  });
+});
+
+describe('Chiffre compact (1.3.0)', () => {
+  it('se lit comme une phrase, sans carte, en chiffres tabulaires', () => {
+    const { container } = render(
+      <Chiffre compact valeur="212" libelle="inscriptions sur 237 personnes" />,
+    );
+    const racine = container.querySelector('.ai5d-chiffre') as HTMLElement;
+    expect(racine.tagName).toBe('SPAN');
+    expect(racine).toHaveAttribute('data-compact', '');
+    expect(racine.textContent).toBe('212inscriptions sur 237 personnes');
+    const css = texteFeuille('ai5d-chiffre').replace(/\s+/g, ' ');
+    expect(css).toContain('.ai5d-chiffre__valeur { font-family: var(--police-titre);');
+    expect(css).toContain('font-size: var(--taille-lg);');
+    expect(css).toContain('font-variant-numeric: tabular-nums;');
+  });
+
+  it('mene a la liste qu il compte quand il porte une adresse, par le lien du produit', () => {
+    const recus: Array<ComponentProps<ComposantLien>> = [];
+    const Lien: ComposantLien = (proprietes) => {
+      recus.push(proprietes);
+      const { children, ...reste } = proprietes;
+      return <a {...reste}>{children}</a>;
+    };
+    render(
+      <Chiffre
+        compact
+        valeur="8"
+        libelle="invitations non acceptées"
+        href="/admin/sessions/7K3F9Q/participants?filtre=invitees"
+        Lien={Lien}
+      />,
+    );
+    expect(screen.getByRole('link', { name: '8 invitations non acceptées' })).toHaveClass(
+      'ai5d-chiffre',
+    );
+    expect(recus.map((recu) => recu.href)).toEqual([
+      '/admin/sessions/7K3F9Q/participants?filtre=invitees',
+    ]);
+  });
+
+  it('en lien : libelle en bleu, souligne au survol des pointeurs fins, appui sans transition', () => {
+    render(<Chiffre compact valeur="8" libelle="invitations non acceptées" href="/invitees" />);
+    const css = texteFeuille('ai5d-chiffre').replace(/\s+/g, ' ');
+    expect(css).toContain('.ai5d-chiffre[href] .ai5d-chiffre__libelle { color: var(--action); }');
+    expect(css).toContain(
+      '@media (hover: hover) { .ai5d-chiffre[href]:hover .ai5d-chiffre__libelle { text-decoration: underline;',
+    );
+    expect(css).toContain(
+      '.ai5d-chiffre[href]:active { background: var(--surface-selection); transition: none; }',
+    );
+    expect(
+      texteFeuille('ai5d-chiffre').replace(/@media \(hover: hover\) \{[\s\S]*?\n\}/, ''),
+    ).not.toContain(':hover');
+  });
+
+  it('sans adresse, ne promet aucun deplacement : ni lien, ni regle qui le vise', () => {
+    render(<Chiffre compact valeur="237" libelle="personnes" />);
+    expect(screen.queryByRole('link')).toBeNull();
+    const regles = texteFeuille('ai5d-chiffre')
+      .split('}')
+      .filter((regle) => /:hover|:active|:focus-visible|--action/.test(regle));
+    for (const regle of regles) expect(regle).toContain('[href]');
+  });
+
+  it('la tuile de la 1.2.0 ne change pas, et ne pose aucune feuille', () => {
+    const { container } = render(
+      <Chiffre valeur="42" libelle="Comptes créés" cible="Cible : 50" />,
+    );
+    expect(container.querySelector('.ai5d-chiffre')).toBeNull();
+    expect(screen.getByText('42')).toHaveStyle({ fontFamily: 'var(--police-titre)' });
+  });
+});
+
+describe('SqueletteIndicateurs compact (1.3.0)', () => {
+  it('rend la forme d une rangee de Chiffre compacts : des blocs d une ligne, sans tuile', () => {
+    const { container } = render(<SqueletteIndicateurs compact nombre={6} />);
+    const rangee = container.querySelector('[data-forme="indicateurs"]') as HTMLElement;
+    expect(rangee).toHaveAttribute('data-compact', '');
+    expect(rangee.style.display).toBe('flex');
+    expect(rangee.style.flexWrap).toBe('wrap');
+    expect(rangee.style.gap).toBe('var(--espace-6)');
+    const blocs = container.querySelectorAll<HTMLElement>('.ai5d-squelette');
+    expect(blocs).toHaveLength(6);
+    expect(blocs[0]?.style.height).toBe('calc(var(--taille-lg) * var(--interligne-titre))');
+    expect(blocs[0]?.style.width).toBe('10rem');
+    expect(blocs[0]).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  it('sans compact, la grille de tuiles de la 1.2.0', () => {
+    const { container } = render(<SqueletteIndicateurs nombre={3} />);
+    const grille = container.querySelector('[data-forme="indicateurs"]') as HTMLElement;
+    expect(grille.style.display).toBe('grid');
+    expect(grille).not.toHaveAttribute('data-compact');
   });
 });
