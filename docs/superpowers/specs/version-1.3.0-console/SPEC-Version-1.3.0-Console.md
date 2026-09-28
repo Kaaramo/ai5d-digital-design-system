@@ -234,6 +234,11 @@ le jour où Compte montre une table. Karamo peut décider autrement ; ce serait 
 
 ### 0.9 Ce qui reste ouvert, et qui le tranche
 
+**Tranché par Karamo le 28 septembre 2026**, avant le plan : points 1 (mineure, `1.3.0`), 2 (le survol
+sombre creuse, `--surface-1`), 3 (`LiensRail` passe au jeton), 4 (`TableauDonnees` reste au Portail,
+décision 009) ; le point 5 est clos par la relecture de Compte. Les points 2 et 3 se revoient encore
+sur les captures avant l’étiquette ; les points 6, 7 et 8 restent ouverts.
+
 1. **Le classement de la version.** Deux changements de rendu sans code dans le produit : la place
    des feuilles (dans `<head>`, une balise au serveur), et, si Karamo les accepte, le survol de
    `LiensRail` (§5.2.3) et la réserve basse (§5.10). Aucune valeur de jeton ne change, aucune
