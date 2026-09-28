@@ -149,6 +149,6 @@ se coche « écrite, non testée » ; la tâche 17 vérifie tout d'un bloc et vo
 - [x] T16 · Les spécimens · vérifiée
 - [x] T17 · Vérification d'un bloc, chaque test vu échouer · vérifiée, preuves dans docs/preuves/1.3.0/
 - [x] T18 · Recette au navigateur, mesures « après », captures, preuves, leçons · faite, preuves dans docs/preuves/1.3.0/
-- [ ] T19 · Relecture du lot contre la SPEC
-- [ ] T20 · Montée d'essai dans le Portail, puis Compte et le SDK
+- [x] T19 · Relecture du lot contre la SPEC · faite, quatre importants et dix mineurs réparés, quatre mineurs reportés (docs/preuves/1.3.0/relecture.md)
+- [x] T20 · Montée d'essai dans le Portail, puis Compte et le SDK · faite dans des copies, sur `6db360a` ; la page de la console sur le poste (étape 5) reste à jouer par Karamo
 - [ ] T21 · Points du §0.9 revus par Karamo, accord explicite, version 1.3.0, étiquette `v1.3.0` et poussée

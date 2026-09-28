@@ -13,6 +13,8 @@
 | Le menu d'actions, moteur par moteur | [`menu-navigateurs.md`](menu-navigateurs.md) |
 | Les captures, et ce qu'elles montrent | [`captures.md`](captures.md) |
 | Le banc d'essai, rejouable | [`banc.mjs`](banc.mjs), [`banc/`](banc/) |
+| La relecture, ses constats, leur réparation ou leur report | [`relecture.md`](relecture.md) |
+| La montée d'essai du Portail, de Compte et du SDK | [`montee-portail.md`](montee-portail.md), [`montee-compte.md`](montee-compte.md), [`montee-sdk.md`](montee-sdk.md) |
 
 ## Écarts avec la SPEC
 
@@ -42,24 +44,37 @@ recopiés, et tout écart trouvé pendant l'exécution, avec son constat.
 | E19 | §5.1.2 : `OngletsRubrique` parmi les porteurs de `ai5d-hors-ecran` | Conséquence d'E6 | `ai5d-hors-ecran` reste partagé par `Bouton`, `LigneLien`, `ValeurCopiable` et `MenuActions` |
 | E20 | §3.15 (README, « Les gardes ») | Constaté à l'exécution de la tâche 15 : la ligne de `verifierFeuilleUnique`, ajoutée après `verifierAucunEspacementEnDur`, devient la dernière de la table, et le paragraphe qui suit, « La dernière admet une liste de valeurs hors échelle », parlerait désormais de la garde 7, qui n'en admet aucune | Le paragraphe nomme sa garde, `verifierAucunEspacementEnDur` ; la table garde l'ordre du plan (tâche 15) |
 
-E20 est né de l'exécution (tâche 15). Aucun autre écart n'est apparu : la vérification d'un bloc
-est passée d'un coup, et chaque mesure du banc a rendu la valeur que le plan attendait.
+| E21 | §5.3.2 : le menu « se place par l'ancre CSS là où le moteur la connaît » | Constaté après la relecture (M8), dans Chromium 141 : placé par l'ancre, un menu plus haut que la place disponible des deux côtés sortait de la fenêtre, borne ou non | `position-try-order: most-block-size` et une hauteur bornée à la zone de l'ancre. Écart assumé : avec l'ancre, un menu qui tiendrait dessous mais aurait plus de place dessus s'ouvre dessus ; le repli préfère dessous quand il tient |
+| E22 | §11.2 : le repli sans ancre « simulé » | La simulation de la tâche 18 ne refusait que `anchor` à `CSS.supports` ; une fois la condition passée à `position-area` (I2), elle ne simulait plus rien | La sonde refuse `anchor` et `position-area` pour le repli, et joue une troisième passe, Chromium 125 à 128 (`anchor-name` connu, `position-area` inconnu) |
+| E23 | §11.1 : les spécimens lisent les vraies feuilles | Le générateur ne résolvait que les constantes numériques exportées ; `STYLE_MENU` interpole désormais `CONDITION_ANCRE` | Le générateur résout aussi une chaîne écrite dans le fichier même, et échoue toujours sur une interpolation inconnue |
+
+E20 est né de l'exécution (tâche 15), E21 à E23 de la relecture (tâche 19). La première vérification
+d'un bloc est passée d'un coup, et chaque mesure du banc a rendu la valeur que le plan attendait.
 
 ## Ce qui n'est pas couvert
 
 - **Firefox et WebKit**, absents de ce poste ; **Safari**, faute d'appareil. Le menu, l'ancre CSS et le
   hissage n'y sont pas constatés. WebKit de Playwright n'est pas Safari.
-- **Le repli sans ancre CSS dans un vrai moteur** : il n'est joué que simulé dans Chromium, et testé
-  dans jsdom.
+- **Le repli sans ancre CSS dans un vrai moteur** : il n'est joué que simulé dans Chromium (sans
+  ancre, puis comme Chromium 125 à 128), et testé dans jsdom. Aucun Chromium 125 à 128 réel n'a été
+  lancé.
+- **Un moteur sans l'API `popover`** (Safari avant 17, Firefox avant 125) : le menu y resterait
+  affiché dans la ligne, et Flèche bas lèverait `showPopover is not a function` (relecture, M9,
+  reporté). Baseline 2024 ; aucun produit ne vise ces moteurs.
 - **Un téléphone réel.** Le doigt est une émulation de Chromium, vérifiée par
   `matchMedia('(pointer: coarse)')` avant chaque capture.
 - **L'ordre de la cascade face à une règle de classe hors couche d'un produit** : aucune n'a été
-  trouvée dans le Portail ; la montée d'essai (`montee-portail.md`) le constate en partie.
-- **Une page de la console rendue sur le poste**, et le compte de ses balises : s'il n'est pas fait à
-  la tâche 20, il reste ici.
+  trouvée dans le Portail ; le sens est sondé sous React 19.2.8 (relecture, M3), pas dans une page de
+  Next rendue.
+- **Une page de la console rendue sur le poste**, et le compte de ses balises (tâche 20, étape 5) :
+  elle se joue sur le poste de Karamo, contre le vrai Compte ; elle n'a pas été jouée.
+- **Le poids du flux RSC de Next** : un composant serveur rendu cinq cents fois y porterait peut-être
+  cinq cents copies du texte de sa feuille. Non mesuré (relecture, hypothèse reportée).
+- **Le dépôt du SDK** : la montée du SDK s'est faite sur son paquet livré, faute d'accès à
+  `Kaaramo/ai5d-auth`.
 - **La construction d'un produit** : aucun `build` n'a été lancé.
-- **Trois gestes du menu non joués au navigateur** : la flèche bas sur le déclencheur, Maj+Tab dans le
-  menu, et Entrée ou Espace sur un élément (choix, fermeture, focus rendu avant `onChoisir`). Ils sont
-  testés dans jsdom, sur la mécanique doublée ; la sonde de Chromium ne les rejoue pas.
+- **Trois gestes du menu non joués par la sonde** : la flèche bas sur le déclencheur, Maj+Tab dans le
+  menu, et Entrée ou Espace sur un élément. Ils sont testés dans jsdom, et la relecture les a joués à
+  la main dans Chromium 141, conformes ([`relecture.md`](relecture.md)) ; la sonde ne les rejoue pas.
 - **La zone sûre basse d'un iPhone** : `env(safe-area-inset-bottom)` vaut zéro dans Chromium de bureau ;
   la réserve à 390 px est mesurée avec une zone sûre nulle.
