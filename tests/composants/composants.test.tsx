@@ -906,7 +906,9 @@ describe('Chiffre compact (1.3.0)', () => {
     const racine = container.querySelector('.ai5d-chiffre') as HTMLElement;
     expect(racine.tagName).toBe('SPAN');
     expect(racine).toHaveAttribute('data-compact', '');
-    expect(racine.textContent).toBe('212inscriptions sur 237 personnes');
+    // Relecture de la 1.3.0, constat M6 : une espace entre la valeur et le libellé, pour le
+    // copier-coller et la recherche dans la page ; dans un conteneur flex, elle n'est pas rendue.
+    expect(racine.textContent).toBe('212 inscriptions sur 237 personnes');
     const css = texteFeuille('ai5d-chiffre').replace(/\s+/g, ' ');
     expect(css).toContain('.ai5d-chiffre__valeur { font-family: var(--police-titre);');
     expect(css).toContain('font-size: var(--taille-lg);');
@@ -958,6 +960,7 @@ describe('Chiffre compact (1.3.0)', () => {
     const regles = texteFeuille('ai5d-chiffre')
       .split('}')
       .filter((regle) => /:hover|:active|:focus-visible|--action/.test(regle));
+    expect(regles.length).toBeGreaterThan(0);
     for (const regle of regles) expect(regle).toContain('[href]');
   });
 

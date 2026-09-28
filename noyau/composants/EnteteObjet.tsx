@@ -139,7 +139,8 @@ export function EnteteObjet({
 
       {avecFil ? (
         <nav aria-label={etiquetteFil}>
-          <ol className="ai5d-entete-objet__fil">
+          {/* `list-style: none` retire la liste sous Safari et VoiceOver : `role` la rend. */}
+          <ol role="list" className="ai5d-entete-objet__fil">
             {fil.map((element) => (
               <li key={element.href}>
                 {Lien === undefined ? (

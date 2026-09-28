@@ -52,7 +52,12 @@ describe('EnteteObjet', () => {
     expect(liens.map((lien) => lien.textContent)).toEqual(['Sessions', 'Prompt Engineering']);
     expect(fil.querySelector('[aria-current]')).toBeNull();
     expect(within(fil).queryByText('Cohorte n° 5')).toBeNull();
-    for (const chevron of fil.querySelectorAll('svg')) {
+    // Relecture de la 1.3.0, constat M5 : `list-style: none` retire la sémantique de liste sous
+    // Safari et VoiceOver ; `role="list"` la rend, comme aux métadonnées.
+    expect(fil.querySelector('ol')).toHaveAttribute('role', 'list');
+    const chevrons = fil.querySelectorAll('svg');
+    expect(chevrons.length).toBeGreaterThan(0);
+    for (const chevron of chevrons) {
       expect(chevron).toHaveAttribute('aria-hidden', 'true');
     }
   });
@@ -101,7 +106,9 @@ describe('EnteteObjet', () => {
       'Du 13 au 15 octobre 2026, heure de Conakry',
       'Présentiel, Conakry',
     ]);
-    for (const icone of liste.querySelectorAll('svg')) {
+    const icones = liste.querySelectorAll('svg');
+    expect(icones.length).toBeGreaterThan(0);
+    for (const icone of icones) {
       expect(icone).toHaveAttribute('aria-hidden', 'true');
     }
   });

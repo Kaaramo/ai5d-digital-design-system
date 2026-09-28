@@ -98,7 +98,8 @@ export const STYLE_CHIFFRE = `
 function ChiffreCompact({ valeur, libelle, href, Lien }: ProprietesChiffreCompact) {
   const contenu = (
     <>
-      <span className="ai5d-chiffre__valeur">{valeur}</span>
+      {/* L'espace se lit au copier-coller et dans la recherche ; en flex, elle n'est pas rendue. */}
+      <span className="ai5d-chiffre__valeur">{valeur}</span>{' '}
       <span className="ai5d-chiffre__libelle">{libelle}</span>
     </>
   );
