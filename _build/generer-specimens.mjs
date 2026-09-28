@@ -72,7 +72,7 @@ function bandeaux() {
     ([ton, texte]) => `
       <div class="bandeau ${ton}">
         <span class="puce"></span>
-        <div><b>${texte}</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>${texte}</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>`,
   ).join('');
 }
@@ -99,6 +99,11 @@ const FEUILLES_DES_COMPOSANTS = [
   'noyau/composants/ListeLignes.tsx',
   'noyau/composants/ListeDefinitions.tsx',
   'noyau/composants/ValeurCopiable.tsx',
+  'noyau/composants/Champ.tsx',
+  'noyau/composants/Bandeau.tsx',
+  'noyau/composants/Chiffre.tsx',
+  'noyau/composants/MenuActions.tsx',
+  'noyau/composants/EnteteObjet.tsx',
 ];
 
 function constantesNumeriques() {
@@ -308,6 +313,153 @@ function selection() {
 </section>`;
 }
 
+/*
+  LES PIECES DE LA 1.3.0, AVEC LES VRAIES FEUILLES DES COMPOSANTS.
+
+  Le balisage reproduit celui des composants ; les etats que le pointeur pose d ordinaire sont forces
+  par `data-force`, pour la capture. Le menu est pose ouvert, hors de la couche superieure : une page
+  statique ne l ouvre pas. Son comportement se prouve sur le banc d essai (docs/preuves/1.3.0/).
+*/
+const STYLE_PASTILLE_NEUTRE =
+  'display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);';
+
+/* Le style en ligne d un Bouton `sm`, recopie des formules de Bouton.tsx. */
+function styleBoutonSm() {
+  return `${styleBouton('calc(var(--hauteur-controle) - 8px)')} font-size: var(--taille-sm);`;
+}
+
+function declencheurMenu(nom) {
+  return `<span class="ai5d-menu"><button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-haspopup="menu" aria-expanded="true" aria-label="Actions pour ${nom}" style="${styleBoutonSm()}"><span class="specimen-icone" aria-hidden="true"></span></button></span>`;
+}
+
+/* Deux gestes, un lien, un filet, un geste grave : l un survole, l autre porte le focus. */
+function menuActions() {
+  return `
+      <div class="specimen-menu" data-specimen="menu">
+        ${declencheurMenu('Aïssatou Camara')}
+        <div class="ai5d-menu__liste specimen-menu__liste" role="menu" aria-label="Actions pour Aïssatou Camara">
+          <button type="button" role="menuitem" tabindex="-1" class="ai5d-menu__element" data-force="survol">Corriger l’adresse</button>
+          <a role="menuitem" tabindex="0" class="ai5d-menu__element" href="#" data-force="focus">Voir la fiche</a>
+          <button type="button" role="menuitem" tabindex="-1" class="ai5d-menu__element">Renvoyer l’invitation</button>
+          <div role="separator" class="ai5d-menu__filet"></div>
+          <button type="button" role="menuitem" tabindex="-1" class="ai5d-menu__element" data-grave="">Retirer de la session</button>
+        </div>
+      </div>`;
+}
+
+const ONGLETS_SESSION = [
+  ['Vue d’ensemble', undefined],
+  ['Participants', 25],
+  ['Invitations', 8],
+  ['Ressources', 2],
+  ['Attestations', undefined],
+  ['Journal', undefined],
+];
+
+/* Six onglets, trois compteurs ; l onglet actif en porte un, qui reste neutre. */
+function ongletsCompteurs() {
+  const liens = ONGLETS_SESSION.map(([libelle, compteur], index) => {
+    const actif = index === 1 ? ' aria-current="page"' : '';
+    if (compteur === undefined) {
+      return `<a class="ai5d-onglets-r__lien" href="#"${actif}><span>${libelle}</span></a>`;
+    }
+    return `<a class="ai5d-onglets-r__lien" href="#"${actif} aria-label="${libelle}, ${compteur} à traiter"><span>${libelle}</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="${STYLE_PASTILLE_NEUTRE}">${compteur}</span></a>`;
+  }).join('');
+  return `<nav class="ai5d-onglets-r" aria-label="Sous-pages de la session">${liens}</nav>`;
+}
+
+function rangeesCompteurs() {
+  return `
+      <div class="specimen-colonne-390" data-specimen="compteurs-390">${ongletsCompteurs()}</div>
+      <div data-specimen="compteurs-large">${ongletsCompteurs()}</div>`;
+}
+
+/* Un bandeau de chaque ton, avec sa fermeture ; celui d attention porte le focus rendu. */
+function bandeauxFermables() {
+  return TONS.map(([ton, texte]) => {
+    const role = ton === 'attention' || ton === 'erreur' ? 'alert' : 'status';
+    const focus = ton === 'attention' ? ' data-force="focus" tabindex="-1"' : '';
+    return `
+      <div class="ai5d-bandeau bandeau ${ton}" role="${role}" data-ton="${ton}"${focus}>
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>${texte}</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="${styleBoutonSm()} align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>`;
+  }).join('');
+}
+
+/* L en-tete de rubrique et son action, recopie du style en ligne d EnteteRubrique.tsx. */
+function enteteRubriqueAction() {
+  return `
+      <header style="display: flex; flex-direction: column; gap: var(--espace-2); padding-bottom: var(--espace-6); border-bottom: 1px solid var(--bordure);">
+        <div style="display: flex; align-items: center; gap: var(--espace-4); flex-wrap: wrap;">
+          <span aria-hidden="true" style="flex-shrink: 0; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--rayon-md); background: var(--surface-1); border: 1px solid var(--bordure); color: var(--texte-fort);"><span class="specimen-icone"></span></span>
+          <h1 style="margin: 0; font-family: var(--police-titre); font-size: var(--taille-2xl); font-weight: var(--graisse-normale); line-height: var(--interligne-titre); color: var(--texte-fort);">Formations</h1>
+          <div style="margin-inline-start: auto;"><a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="md" style="${styleBouton('var(--hauteur-controle)')}">Nouvelle formation${POINTS_BOUTON}</a></div>
+        </div>
+        <p style="margin: 0; margin-left: calc(40px + var(--espace-4)); font-family: var(--police-corps); font-size: var(--taille-sm); line-height: var(--interligne-corps); color: var(--texte-faible);">Les formations du catalogue, et leurs sessions.</p>
+      </header>`;
+}
+
+/* Le pouls : trois Chiffre compacts, deux en lien, l un survole. */
+function pouls() {
+  return `
+      <div class="specimen-pouls" data-specimen="pouls">
+        <a class="ai5d-chiffre" data-compact="" href="#"><span class="ai5d-chiffre__valeur">212</span><span class="ai5d-chiffre__libelle">inscriptions sur 237 personnes</span></a>
+        <a class="ai5d-chiffre" data-compact="" href="#" data-force="survol"><span class="ai5d-chiffre__valeur">8</span><span class="ai5d-chiffre__libelle">invitations non acceptées</span></a>
+        <span class="ai5d-chiffre" data-compact=""><span class="ai5d-chiffre__valeur">15</span><span class="ai5d-chiffre__libelle">octobre, début de la délivrance</span></span>
+      </div>`;
+}
+
+function enteteObjet() {
+  return `
+      <header class="ai5d-entete-objet" data-specimen="entete-objet">
+        <nav aria-label="Fil d’Ariane"><ol class="ai5d-entete-objet__fil">
+          <li><a class="ai5d-entete-objet__lien" href="#">Sessions</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
+          <li><a class="ai5d-entete-objet__lien" href="#">Prompt Engineering</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
+        </ol></nav>
+        <div class="ai5d-entete-objet__tete">
+          <h1 style="${styleTitre('var(--taille-2xl)')}">Cohorte n° 5</h1>
+          <span class="pastille information">En cours</span>
+          <div class="ai5d-entete-objet__gestes">
+            <button type="button" class="ai5d-bouton" data-variante="primaire" data-taille="md" style="${styleBouton('var(--hauteur-controle)')}">Clore la session</button>
+            ${declencheurMenu('la session')}
+          </div>
+        </div>
+        <ul role="list" class="ai5d-entete-objet__meta">
+          <li><span class="specimen-icone" aria-hidden="true"></span><span>Du 13 au 15 octobre 2026, heure de Conakry</span></li>
+          <li><span class="specimen-icone" aria-hidden="true"></span><span>Présentiel, Conakry</span></li>
+        </ul>
+        <div class="ai5d-entete-objet__indicateurs">${pouls()}</div>
+      </header>`;
+}
+
+const STYLE_ENTREE =
+  'width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md);';
+
+/* Un Selecteur sous un Champ : meme classe, meme feuille, memes etats. */
+function selecteurEtChamp() {
+  return `
+      <div class="specimen-champs" data-specimen="selecteur">
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-adresse">Adresse</label><input id="specimen-adresse" class="ai5d-champ__entree" style="${STYLE_ENTREE} padding: 0 14px;" value="aissatou.camara@exemple.invalid" readonly /></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-role">Rôle</label><select id="specimen-role" class="ai5d-champ__entree" style="${STYLE_ENTREE} padding-inline: var(--espace-4);"><option>Membre</option><option>Administrateur</option></select></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-fuseau">Fuseau horaire, en erreur</label><select id="specimen-fuseau" class="ai5d-champ__entree" aria-invalid="true" style="${STYLE_ENTREE} padding-inline: var(--espace-4);"><option value="" disabled selected>Choisissez un fuseau</option></select><span class="message-erreur" role="alert">Choisissez un fuseau horaire.</span></div>
+      </div>`;
+}
+
+/* Une table factice sur --surface-2 : une ligne survolee et deux lignes selectionnees, cote a cote. */
+function tableSurvol() {
+  const ligne = (nom, etat, attributs, coche) =>
+    `<div class="specimen-table__ligne"${attributs}><input type="checkbox"${coche ? ' checked' : ''} aria-label="Sélectionner ${nom}" /><span>${nom}</span><span class="specimen-table__etat">${etat}</span></div>`;
+  return `
+      <div class="specimen-table" data-specimen="survol">
+        ${ligne('Aïssatou Camara', 'Inscrite', '', false)}
+        ${ligne('Mamadou Diallo', 'Survolée', ' data-force="survol"', false)}
+        ${ligne('Fatoumata Bah', 'Sélectionnée', ' data-selectionnee=""', true)}
+        ${ligne('Ibrahima Sow', 'Sélectionnée', ' data-selectionnee=""', true)}
+      </div>`;
+}
+
 function planche(densite, etiquette, produit, usage) {
   return `
   <section class="planche" data-densite="${densite}">
@@ -347,7 +499,7 @@ function planche(densite, etiquette, produit, usage) {
 
         <h3>Typographie</h3>
         <div class="display">Un compte. Tout AI5D.</div>
-        <p class="corps">Inter compose l'interface et les textes longs. Fraunces signe, et ne
+        <p class="corps">Inter compose l’interface et les textes longs. Fraunces signe, et ne
           compose jamais un paragraphe.</p>
         <div class="mono">AI5D-7F3K-92QX</div>
       </div>
@@ -393,6 +545,33 @@ function planche(densite, etiquette, produit, usage) {
 
     <h3>Onglets, sans débordement</h3>
     <div data-specimen="onglets-large">${onglets()}</div>
+
+    <div class="grille">
+      <div class="colonne">
+        <h3>Menu d’actions, ouvert</h3>
+        ${menuActions()}
+
+        <h3>Onglets avec compteurs</h3>
+        ${rangeesCompteurs()}
+
+        <h3>Bandeaux qui se ferment</h3>
+        ${bandeauxFermables()}
+      </div>
+
+      <div class="colonne">
+        <h3>En-tête de rubrique, avec son action</h3>
+        ${enteteRubriqueAction()}
+
+        <h3>En-tête d’objet</h3>
+        ${enteteObjet()}
+
+        <h3>Sélecteur et champ</h3>
+        ${selecteurEtChamp()}
+
+        <h3>Survol et sélection</h3>
+        ${tableSurvol()}
+      </div>
+    </div>
   </section>`;
 }
 
@@ -509,7 +688,27 @@ const STYLE_SPECIMENS = `
 .ai5d-copiable__champ.champ { margin-bottom: 0; }
 .ai5d-copiable__champ.champ input { width: 100%; }
 
+/* Les aides de la page, pour les pieces de la 1.3.0. */
+.specimen-menu { display: flex; flex-direction: column; align-items: flex-end; max-width: 20rem; margin-bottom: 16px; }
+.specimen-menu__liste.ai5d-menu__liste { position: static; display: flex; flex-direction: column; margin-block-start: var(--espace-1); }
+.specimen-bandeau-corps { flex: 1; min-width: 0; color: var(--texte); }
+.ai5d-bandeau.bandeau { align-items: flex-start; }
+.specimen-pouls { display: flex; flex-wrap: wrap; gap: var(--espace-6); }
+.specimen-champs { display: flex; flex-direction: column; gap: 16px; margin-bottom: 16px; }
+.specimen-champ { display: flex; flex-direction: column; gap: 6px; }
+.specimen-etiquette { font-size: var(--taille-sm); font-weight: var(--graisse-moyenne); color: var(--texte); }
+.specimen-table { background: var(--surface-2); border: 1px solid var(--bordure); border-radius: var(--rayon-md); overflow: hidden; }
+.specimen-table__ligne { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--bordure); color: var(--texte-fort); font-size: var(--taille-sm); }
+.specimen-table__ligne:last-child { border-bottom: 0; }
+.specimen-table__etat { margin-left: auto; color: var(--texte-faible); }
+
 /* Les etats que le pointeur pose d ordinaire, forces pour la capture. */
+.ai5d-menu__element[data-force='survol'] { background: var(--surface-survol); }
+.ai5d-menu__element[data-force='focus'] { background: var(--surface-survol); outline: 2px solid var(--action); outline-offset: -2px; }
+.ai5d-bandeau[data-force='focus'] { outline: 2px solid var(--action); outline-offset: 2px; }
+.ai5d-chiffre[data-force='survol'] .ai5d-chiffre__libelle { text-decoration: underline; text-underline-offset: 0.2em; }
+.specimen-table__ligne[data-force='survol'] { background: var(--surface-survol); }
+.specimen-table__ligne[data-selectionnee] { background: var(--surface-selection); }
 .ai5d-ligne[data-force='survol'] { background: var(--surface-chaude); }
 :root[data-theme='dark'] .ai5d-ligne[data-force='survol'] { background: var(--surface-3); }
 @media (prefers-color-scheme: dark) {
@@ -591,7 +790,7 @@ ${selection()}
   await mkdir('specimens', { recursive: true });
   await writeFile('specimens/composants.html', page, 'utf8');
   console.log(
-    'specimens/composants.html ecrit : 4 densites, 3 themes, les pieces de la 1.2.0 avec les feuilles des composants, aucun appel reseau.',
+    'specimens/composants.html ecrit : 4 densites, 3 themes, les pieces de la 1.2.0 et de la 1.3.0 avec les feuilles des composants, aucun appel reseau.',
   );
 }
 

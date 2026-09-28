@@ -273,6 +273,8 @@ h3:first-child { margin-top: 0; }
   to { opacity: 1; }
 }
 
+.ai5d-onglets-r__compteur { font-variant-numeric: tabular-nums; }
+
 @supports (animation-timeline: scroll()) {
   .ai5d-onglets-r {
     animation: ai5d-onglets-fondu linear both;
@@ -304,6 +306,10 @@ h3:first-child { margin-top: 0; }
 .ai5d-coquille-rail {
   min-height: 100dvh;
   background: var(--surface-1);
+}
+/* La reserve basse n existe qu en mode complet : sans barre basse, elle laisserait un vide. */
+.ai5d-coquille-rail[data-mode='complet'] {
+  --reserve-barre: calc(var(--hauteur-barre-onglets) + var(--zone-sure-basse, 0px));
 }
 .ai5d-coquille-rail__refus { display: none; }
 .ai5d-coquille-rail__cadre {
@@ -378,8 +384,9 @@ h3:first-child { margin-top: 0; }
 }
 
 @media (min-width: 768px) {
-  /* La barre basse se masque toute seule au meme palier : c'est sa propre regle. */
-  .ai5d-coquille-rail { --reserve-barre: 0px; }
+  /* La barre basse se masque toute seule au meme palier : c'est sa propre regle. Meme selecteur
+     que la reserve, sans quoi la remise a zero perdrait par la specificite. */
+  .ai5d-coquille-rail[data-mode='complet'] { --reserve-barre: 0px; }
   .ai5d-coquille-rail[data-mode='complet'] .ai5d-coquille-rail__barre { display: none; }
 
   .ai5d-coquille-rail__rail {
@@ -619,6 +626,200 @@ h3:first-child { margin-top: 0; }
   .ai5d-copiable__rangee .ai5d-copiable__champ { flex: 0 0 auto; }
   .ai5d-copiable__rangee .ai5d-bouton { width: 100%; }
 }
+
+
+.ai5d-champ__entree {
+  background: var(--surface-2);
+  color: var(--texte-fort);
+  border: 1px solid var(--bordure-forte);
+  transition: border-color var(--duree-courte) var(--courbe-entree);
+}
+.ai5d-champ__entree:hover:not(:disabled) { border-color: var(--texte-faible); }
+.ai5d-champ__entree:focus-visible {
+  border-color: var(--action);
+  outline: 2px solid var(--action);
+  outline-offset: 1px;
+}
+.ai5d-champ__entree[aria-invalid='true'],
+.ai5d-champ__entree[aria-invalid='true']:hover:not(:disabled) {
+  border-color: var(--erreur);
+}
+.ai5d-champ__entree[aria-invalid='true']:focus-visible {
+  border-color: var(--erreur);
+  outline-color: var(--erreur);
+}
+
+
+.ai5d-bandeau:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
+
+
+.ai5d-chiffre[data-compact] {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--espace-2);
+  border-radius: var(--rayon-sm);
+  color: inherit;
+  text-decoration: none;
+}
+.ai5d-chiffre__valeur {
+  font-family: var(--police-titre);
+  font-weight: var(--graisse-normale);
+  font-size: var(--taille-lg);
+  line-height: var(--interligne-titre);
+  color: var(--texte-fort);
+  font-variant-numeric: tabular-nums;
+}
+.ai5d-chiffre__libelle {
+  font-family: var(--police-corps);
+  font-size: var(--taille-sm);
+  color: var(--texte);
+  font-variant-numeric: tabular-nums;
+}
+.ai5d-chiffre[href] .ai5d-chiffre__libelle { color: var(--action); }
+@media (hover: hover) {
+  .ai5d-chiffre[href]:hover .ai5d-chiffre__libelle {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+}
+.ai5d-chiffre[href]:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
+.ai5d-chiffre[href]:active { background: var(--surface-selection); transition: none; }
+
+
+.ai5d-menu { display: inline-flex; }
+.ai5d-menu > .ai5d-bouton[aria-expanded='true'] { background: var(--surface-selection); }
+
+.ai5d-menu__liste {
+  box-sizing: border-box;
+  margin: 0;
+  inset: auto;
+  min-inline-size: 12rem;
+  max-inline-size: 20rem;
+  padding: var(--espace-1);
+  background: var(--surface-3);
+  color: var(--texte);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon-md);
+  box-shadow: var(--elevation-3);
+}
+.ai5d-menu__liste:popover-open {
+  display: flex;
+  flex-direction: column;
+  animation: ai5d-menu-entree var(--duree-courte) var(--courbe-sortie);
+}
+@keyframes ai5d-menu-entree {
+  from { opacity: 0; transform: translateY(calc(var(--espace-1) * -1)); }
+  to { opacity: 1; transform: none; }
+}
+@supports (anchor-name: --a) {
+  .ai5d-menu__liste {
+    position-area: block-end span-inline-start;
+    position-try-fallbacks: flip-block, flip-inline;
+    margin-block-start: var(--espace-1);
+  }
+}
+
+.ai5d-menu__element {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: var(--hauteur-controle);
+  padding: 0 var(--espace-3);
+  border: 0;
+  border-radius: var(--rayon-sm);
+  background: transparent;
+  color: var(--texte);
+  font-family: var(--police-corps);
+  font-size: var(--taille-sm);
+  font-weight: var(--graisse-normale);
+  line-height: var(--interligne-corps);
+  text-align: start;
+  text-decoration: none;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition: background var(--mouvement-retour);
+}
+@media (hover: hover) {
+  .ai5d-menu__element:not([aria-disabled='true']):hover { background: var(--surface-survol); }
+}
+.ai5d-menu__element:focus-visible {
+  background: var(--surface-survol);
+  outline: 2px solid var(--action);
+  outline-offset: -2px;
+}
+.ai5d-menu__element:not([aria-disabled='true']):active { background: var(--surface-selection); transition: none; }
+.ai5d-menu__element[data-grave] { color: var(--erreur); }
+.ai5d-menu__element[data-grave]:focus-visible { outline-color: var(--erreur); }
+
+.ai5d-menu__filet { block-size: 1px; margin: var(--espace-1) 0; background: var(--bordure); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ai5d-menu__liste:popover-open { animation: ai5d-menu-fondu var(--duree-courte) linear; }
+  @keyframes ai5d-menu-fondu {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}
+
+
+.ai5d-entete-objet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espace-3);
+  padding-bottom: var(--espace-6);
+  border-bottom: 1px solid var(--bordure);
+}
+.ai5d-entete-objet__fil {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espace-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ai5d-entete-objet__fil li { display: inline-flex; align-items: center; gap: var(--espace-2); }
+.ai5d-entete-objet__fil li > svg { color: var(--texte-faible); }
+.ai5d-entete-objet__lien {
+  border-radius: var(--rayon-sm);
+  color: var(--action);
+  font-family: var(--police-corps);
+  font-size: var(--taille-sm);
+  text-decoration: none;
+}
+@media (hover: hover) {
+  .ai5d-entete-objet__lien:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+}
+.ai5d-entete-objet__lien:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
+.ai5d-entete-objet__lien:active { background: var(--surface-selection); transition: none; }
+
+.ai5d-entete-objet__tete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espace-3);
+}
+.ai5d-entete-objet__gestes {
+  display: flex;
+  align-items: center;
+  gap: var(--espace-2);
+  margin-inline-start: auto;
+}
+.ai5d-entete-objet__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espace-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--texte-faible);
+  font-family: var(--police-corps);
+  font-size: var(--taille-sm);
+}
+.ai5d-entete-objet__meta li { display: inline-flex; align-items: center; gap: var(--espace-2); }
 </style>
 <style>
 /* Les aides de la page, pour les pieces de la 1.2.0. Aucune ne remplace la feuille d un composant. */
@@ -637,7 +838,27 @@ h3:first-child { margin-top: 0; }
 .ai5d-copiable__champ.champ { margin-bottom: 0; }
 .ai5d-copiable__champ.champ input { width: 100%; }
 
+/* Les aides de la page, pour les pieces de la 1.3.0. */
+.specimen-menu { display: flex; flex-direction: column; align-items: flex-end; max-width: 20rem; margin-bottom: 16px; }
+.specimen-menu__liste.ai5d-menu__liste { position: static; display: flex; flex-direction: column; margin-block-start: var(--espace-1); }
+.specimen-bandeau-corps { flex: 1; min-width: 0; color: var(--texte); }
+.ai5d-bandeau.bandeau { align-items: flex-start; }
+.specimen-pouls { display: flex; flex-wrap: wrap; gap: var(--espace-6); }
+.specimen-champs { display: flex; flex-direction: column; gap: 16px; margin-bottom: 16px; }
+.specimen-champ { display: flex; flex-direction: column; gap: 6px; }
+.specimen-etiquette { font-size: var(--taille-sm); font-weight: var(--graisse-moyenne); color: var(--texte); }
+.specimen-table { background: var(--surface-2); border: 1px solid var(--bordure); border-radius: var(--rayon-md); overflow: hidden; }
+.specimen-table__ligne { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--bordure); color: var(--texte-fort); font-size: var(--taille-sm); }
+.specimen-table__ligne:last-child { border-bottom: 0; }
+.specimen-table__etat { margin-left: auto; color: var(--texte-faible); }
+
 /* Les etats que le pointeur pose d ordinaire, forces pour la capture. */
+.ai5d-menu__element[data-force='survol'] { background: var(--surface-survol); }
+.ai5d-menu__element[data-force='focus'] { background: var(--surface-survol); outline: 2px solid var(--action); outline-offset: -2px; }
+.ai5d-bandeau[data-force='focus'] { outline: 2px solid var(--action); outline-offset: 2px; }
+.ai5d-chiffre[data-force='survol'] .ai5d-chiffre__libelle { text-decoration: underline; text-underline-offset: 0.2em; }
+.specimen-table__ligne[data-force='survol'] { background: var(--surface-survol); }
+.specimen-table__ligne[data-selectionnee] { background: var(--surface-selection); }
 .ai5d-ligne[data-force='survol'] { background: var(--surface-chaude); }
 :root[data-theme='dark'] .ai5d-ligne[data-force='survol'] { background: var(--surface-3); }
 @media (prefers-color-scheme: dark) {
@@ -742,28 +963,28 @@ h3:first-child { margin-top: 0; }
         
       <div class="bandeau information">
         <span class="puce"></span>
-        <div><b>Information</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Information</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
       <div class="bandeau reussite">
         <span class="puce"></span>
-        <div><b>Adresse vérifiée</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Adresse vérifiée</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
       <div class="bandeau attention">
         <span class="puce"></span>
-        <div><b>Adresse non confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Adresse non confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
       <div class="bandeau erreur">
         <span class="puce"></span>
-        <div><b>Trop de tentatives</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Trop de tentatives</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
       <div class="bandeau neutre">
         <span class="puce"></span>
-        <div><b>Inscription confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Inscription confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
 
         <h3>Typographie</h3>
         <div class="display">Un compte. Tout AI5D.</div>
-        <p class="corps">Inter compose l'interface et les textes longs. Fraunces signe, et ne
+        <p class="corps">Inter compose l’interface et les textes longs. Fraunces signe, et ne
           compose jamais un paragraphe.</p>
         <div class="mono">AI5D-7F3K-92QX</div>
       </div>
@@ -893,6 +1114,113 @@ h3:first-child { margin-top: 0; }
 
     <h3>Onglets, sans débordement</h3>
     <div data-specimen="onglets-large"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+
+    <div class="grille">
+      <div class="colonne">
+        <h3>Menu d’actions, ouvert</h3>
+        
+      <div class="specimen-menu" data-specimen="menu">
+        <span class="ai5d-menu"><button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-haspopup="menu" aria-expanded="true" aria-label="Actions pour Aïssatou Camara" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm);"><span class="specimen-icone" aria-hidden="true"></span></button></span>
+        <div class="ai5d-menu__liste specimen-menu__liste" role="menu" aria-label="Actions pour Aïssatou Camara">
+          <button type="button" role="menuitem" tabindex="-1" class="ai5d-menu__element" data-force="survol">Corriger l’adresse</button>
+          <a role="menuitem" tabindex="0" class="ai5d-menu__element" href="#" data-force="focus">Voir la fiche</a>
+          <button type="button" role="menuitem" tabindex="-1" class="ai5d-menu__element">Renvoyer l’invitation</button>
+          <div role="separator" class="ai5d-menu__filet"></div>
+          <button type="button" role="menuitem" tabindex="-1" class="ai5d-menu__element" data-grave="">Retirer de la session</button>
+        </div>
+      </div>
+
+        <h3>Onglets avec compteurs</h3>
+        
+      <div class="specimen-colonne-390" data-specimen="compteurs-390"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page" aria-label="Participants, 25 à traiter"><span>Participants</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">25</span></a><a class="ai5d-onglets-r__lien" href="#" aria-label="Invitations, 8 à traiter"><span>Invitations</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">8</span></a><a class="ai5d-onglets-r__lien" href="#" aria-label="Ressources, 2 à traiter"><span>Ressources</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">2</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Attestations</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Journal</span></a></nav></div>
+      <div data-specimen="compteurs-large"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page" aria-label="Participants, 25 à traiter"><span>Participants</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">25</span></a><a class="ai5d-onglets-r__lien" href="#" aria-label="Invitations, 8 à traiter"><span>Invitations</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">8</span></a><a class="ai5d-onglets-r__lien" href="#" aria-label="Ressources, 2 à traiter"><span>Ressources</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">2</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Attestations</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Journal</span></a></nav></div>
+
+        <h3>Bandeaux qui se ferment</h3>
+        
+      <div class="ai5d-bandeau bandeau information" role="status" data-ton="information">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Information</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      <div class="ai5d-bandeau bandeau reussite" role="status" data-ton="reussite">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Adresse vérifiée</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      <div class="ai5d-bandeau bandeau attention" role="alert" data-ton="attention" data-force="focus" tabindex="-1">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Adresse non confirmée</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      <div class="ai5d-bandeau bandeau erreur" role="alert" data-ton="erreur">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Trop de tentatives</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      <div class="ai5d-bandeau bandeau neutre" role="status" data-ton="neutre">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Inscription confirmée</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      </div>
+
+      <div class="colonne">
+        <h3>En-tête de rubrique, avec son action</h3>
+        
+      <header style="display: flex; flex-direction: column; gap: var(--espace-2); padding-bottom: var(--espace-6); border-bottom: 1px solid var(--bordure);">
+        <div style="display: flex; align-items: center; gap: var(--espace-4); flex-wrap: wrap;">
+          <span aria-hidden="true" style="flex-shrink: 0; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--rayon-md); background: var(--surface-1); border: 1px solid var(--bordure); color: var(--texte-fort);"><span class="specimen-icone"></span></span>
+          <h1 style="margin: 0; font-family: var(--police-titre); font-size: var(--taille-2xl); font-weight: var(--graisse-normale); line-height: var(--interligne-titre); color: var(--texte-fort);">Formations</h1>
+          <div style="margin-inline-start: auto;"><a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Nouvelle formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a></div>
+        </div>
+        <p style="margin: 0; margin-left: calc(40px + var(--espace-4)); font-family: var(--police-corps); font-size: var(--taille-sm); line-height: var(--interligne-corps); color: var(--texte-faible);">Les formations du catalogue, et leurs sessions.</p>
+      </header>
+
+        <h3>En-tête d’objet</h3>
+        
+      <header class="ai5d-entete-objet" data-specimen="entete-objet">
+        <nav aria-label="Fil d’Ariane"><ol class="ai5d-entete-objet__fil">
+          <li><a class="ai5d-entete-objet__lien" href="#">Sessions</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
+          <li><a class="ai5d-entete-objet__lien" href="#">Prompt Engineering</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
+        </ol></nav>
+        <div class="ai5d-entete-objet__tete">
+          <h1 style="margin: 0; font-family: var(--police-titre); font-weight: var(--graisse-normale); font-size: var(--taille-2xl); line-height: var(--interligne-titre); letter-spacing: var(--lettrage-titre); color: var(--texte-fort); text-wrap: balance; overflow-wrap: break-word;">Cohorte n° 5</h1>
+          <span class="pastille information">En cours</span>
+          <div class="ai5d-entete-objet__gestes">
+            <button type="button" class="ai5d-bouton" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Clore la session</button>
+            <span class="ai5d-menu"><button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-haspopup="menu" aria-expanded="true" aria-label="Actions pour la session" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm);"><span class="specimen-icone" aria-hidden="true"></span></button></span>
+          </div>
+        </div>
+        <ul role="list" class="ai5d-entete-objet__meta">
+          <li><span class="specimen-icone" aria-hidden="true"></span><span>Du 13 au 15 octobre 2026, heure de Conakry</span></li>
+          <li><span class="specimen-icone" aria-hidden="true"></span><span>Présentiel, Conakry</span></li>
+        </ul>
+        <div class="ai5d-entete-objet__indicateurs">
+      <div class="specimen-pouls" data-specimen="pouls">
+        <a class="ai5d-chiffre" data-compact="" href="#"><span class="ai5d-chiffre__valeur">212</span><span class="ai5d-chiffre__libelle">inscriptions sur 237 personnes</span></a>
+        <a class="ai5d-chiffre" data-compact="" href="#" data-force="survol"><span class="ai5d-chiffre__valeur">8</span><span class="ai5d-chiffre__libelle">invitations non acceptées</span></a>
+        <span class="ai5d-chiffre" data-compact=""><span class="ai5d-chiffre__valeur">15</span><span class="ai5d-chiffre__libelle">octobre, début de la délivrance</span></span>
+      </div></div>
+      </header>
+
+        <h3>Sélecteur et champ</h3>
+        
+      <div class="specimen-champs" data-specimen="selecteur">
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-adresse">Adresse</label><input id="specimen-adresse" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding: 0 14px;" value="aissatou.camara@exemple.invalid" readonly /></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-role">Rôle</label><select id="specimen-role" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding-inline: var(--espace-4);"><option>Membre</option><option>Administrateur</option></select></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-fuseau">Fuseau horaire, en erreur</label><select id="specimen-fuseau" class="ai5d-champ__entree" aria-invalid="true" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding-inline: var(--espace-4);"><option value="" disabled selected>Choisissez un fuseau</option></select><span class="message-erreur" role="alert">Choisissez un fuseau horaire.</span></div>
+      </div>
+
+        <h3>Survol et sélection</h3>
+        
+      <div class="specimen-table" data-specimen="survol">
+        <div class="specimen-table__ligne"><input type="checkbox" aria-label="Sélectionner Aïssatou Camara" /><span>Aïssatou Camara</span><span class="specimen-table__etat">Inscrite</span></div>
+        <div class="specimen-table__ligne" data-force="survol"><input type="checkbox" aria-label="Sélectionner Mamadou Diallo" /><span>Mamadou Diallo</span><span class="specimen-table__etat">Survolée</span></div>
+        <div class="specimen-table__ligne" data-selectionnee=""><input type="checkbox" checked aria-label="Sélectionner Fatoumata Bah" /><span>Fatoumata Bah</span><span class="specimen-table__etat">Sélectionnée</span></div>
+        <div class="specimen-table__ligne" data-selectionnee=""><input type="checkbox" checked aria-label="Sélectionner Ibrahima Sow" /><span>Ibrahima Sow</span><span class="specimen-table__etat">Sélectionnée</span></div>
+      </div>
+      </div>
+    </div>
   </section>
 
   <section class="planche" data-densite="equilibre">
@@ -964,28 +1292,28 @@ h3:first-child { margin-top: 0; }
         
       <div class="bandeau information">
         <span class="puce"></span>
-        <div><b>Information</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Information</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
       <div class="bandeau reussite">
         <span class="puce"></span>
-        <div><b>Adresse vérifiée</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Adresse vérifiée</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
       <div class="bandeau attention">
         <span class="puce"></span>
-        <div><b>Adresse non confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Adresse non confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
       <div class="bandeau erreur">
         <span class="puce"></span>
-        <div><b>Trop de tentatives</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Trop de tentatives</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
       <div class="bandeau neutre">
         <span class="puce"></span>
-        <div><b>Inscription confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Inscription confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
 
         <h3>Typographie</h3>
         <div class="display">Un compte. Tout AI5D.</div>
-        <p class="corps">Inter compose l'interface et les textes longs. Fraunces signe, et ne
+        <p class="corps">Inter compose l’interface et les textes longs. Fraunces signe, et ne
           compose jamais un paragraphe.</p>
         <div class="mono">AI5D-7F3K-92QX</div>
       </div>
@@ -1115,6 +1443,113 @@ h3:first-child { margin-top: 0; }
 
     <h3>Onglets, sans débordement</h3>
     <div data-specimen="onglets-large"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+
+    <div class="grille">
+      <div class="colonne">
+        <h3>Menu d’actions, ouvert</h3>
+        
+      <div class="specimen-menu" data-specimen="menu">
+        <span class="ai5d-menu"><button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-haspopup="menu" aria-expanded="true" aria-label="Actions pour Aïssatou Camara" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm);"><span class="specimen-icone" aria-hidden="true"></span></button></span>
+        <div class="ai5d-menu__liste specimen-menu__liste" role="menu" aria-label="Actions pour Aïssatou Camara">
+          <button type="button" role="menuitem" tabindex="-1" class="ai5d-menu__element" data-force="survol">Corriger l’adresse</button>
+          <a role="menuitem" tabindex="0" class="ai5d-menu__element" href="#" data-force="focus">Voir la fiche</a>
+          <button type="button" role="menuitem" tabindex="-1" class="ai5d-menu__element">Renvoyer l’invitation</button>
+          <div role="separator" class="ai5d-menu__filet"></div>
+          <button type="button" role="menuitem" tabindex="-1" class="ai5d-menu__element" data-grave="">Retirer de la session</button>
+        </div>
+      </div>
+
+        <h3>Onglets avec compteurs</h3>
+        
+      <div class="specimen-colonne-390" data-specimen="compteurs-390"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page" aria-label="Participants, 25 à traiter"><span>Participants</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">25</span></a><a class="ai5d-onglets-r__lien" href="#" aria-label="Invitations, 8 à traiter"><span>Invitations</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">8</span></a><a class="ai5d-onglets-r__lien" href="#" aria-label="Ressources, 2 à traiter"><span>Ressources</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">2</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Attestations</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Journal</span></a></nav></div>
+      <div data-specimen="compteurs-large"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page" aria-label="Participants, 25 à traiter"><span>Participants</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">25</span></a><a class="ai5d-onglets-r__lien" href="#" aria-label="Invitations, 8 à traiter"><span>Invitations</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">8</span></a><a class="ai5d-onglets-r__lien" href="#" aria-label="Ressources, 2 à traiter"><span>Ressources</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">2</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Attestations</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Journal</span></a></nav></div>
+
+        <h3>Bandeaux qui se ferment</h3>
+        
+      <div class="ai5d-bandeau bandeau information" role="status" data-ton="information">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Information</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      <div class="ai5d-bandeau bandeau reussite" role="status" data-ton="reussite">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Adresse vérifiée</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      <div class="ai5d-bandeau bandeau attention" role="alert" data-ton="attention" data-force="focus" tabindex="-1">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Adresse non confirmée</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      <div class="ai5d-bandeau bandeau erreur" role="alert" data-ton="erreur">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Trop de tentatives</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      <div class="ai5d-bandeau bandeau neutre" role="status" data-ton="neutre">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Inscription confirmée</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      </div>
+
+      <div class="colonne">
+        <h3>En-tête de rubrique, avec son action</h3>
+        
+      <header style="display: flex; flex-direction: column; gap: var(--espace-2); padding-bottom: var(--espace-6); border-bottom: 1px solid var(--bordure);">
+        <div style="display: flex; align-items: center; gap: var(--espace-4); flex-wrap: wrap;">
+          <span aria-hidden="true" style="flex-shrink: 0; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--rayon-md); background: var(--surface-1); border: 1px solid var(--bordure); color: var(--texte-fort);"><span class="specimen-icone"></span></span>
+          <h1 style="margin: 0; font-family: var(--police-titre); font-size: var(--taille-2xl); font-weight: var(--graisse-normale); line-height: var(--interligne-titre); color: var(--texte-fort);">Formations</h1>
+          <div style="margin-inline-start: auto;"><a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Nouvelle formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a></div>
+        </div>
+        <p style="margin: 0; margin-left: calc(40px + var(--espace-4)); font-family: var(--police-corps); font-size: var(--taille-sm); line-height: var(--interligne-corps); color: var(--texte-faible);">Les formations du catalogue, et leurs sessions.</p>
+      </header>
+
+        <h3>En-tête d’objet</h3>
+        
+      <header class="ai5d-entete-objet" data-specimen="entete-objet">
+        <nav aria-label="Fil d’Ariane"><ol class="ai5d-entete-objet__fil">
+          <li><a class="ai5d-entete-objet__lien" href="#">Sessions</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
+          <li><a class="ai5d-entete-objet__lien" href="#">Prompt Engineering</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
+        </ol></nav>
+        <div class="ai5d-entete-objet__tete">
+          <h1 style="margin: 0; font-family: var(--police-titre); font-weight: var(--graisse-normale); font-size: var(--taille-2xl); line-height: var(--interligne-titre); letter-spacing: var(--lettrage-titre); color: var(--texte-fort); text-wrap: balance; overflow-wrap: break-word;">Cohorte n° 5</h1>
+          <span class="pastille information">En cours</span>
+          <div class="ai5d-entete-objet__gestes">
+            <button type="button" class="ai5d-bouton" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Clore la session</button>
+            <span class="ai5d-menu"><button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-haspopup="menu" aria-expanded="true" aria-label="Actions pour la session" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm);"><span class="specimen-icone" aria-hidden="true"></span></button></span>
+          </div>
+        </div>
+        <ul role="list" class="ai5d-entete-objet__meta">
+          <li><span class="specimen-icone" aria-hidden="true"></span><span>Du 13 au 15 octobre 2026, heure de Conakry</span></li>
+          <li><span class="specimen-icone" aria-hidden="true"></span><span>Présentiel, Conakry</span></li>
+        </ul>
+        <div class="ai5d-entete-objet__indicateurs">
+      <div class="specimen-pouls" data-specimen="pouls">
+        <a class="ai5d-chiffre" data-compact="" href="#"><span class="ai5d-chiffre__valeur">212</span><span class="ai5d-chiffre__libelle">inscriptions sur 237 personnes</span></a>
+        <a class="ai5d-chiffre" data-compact="" href="#" data-force="survol"><span class="ai5d-chiffre__valeur">8</span><span class="ai5d-chiffre__libelle">invitations non acceptées</span></a>
+        <span class="ai5d-chiffre" data-compact=""><span class="ai5d-chiffre__valeur">15</span><span class="ai5d-chiffre__libelle">octobre, début de la délivrance</span></span>
+      </div></div>
+      </header>
+
+        <h3>Sélecteur et champ</h3>
+        
+      <div class="specimen-champs" data-specimen="selecteur">
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-adresse">Adresse</label><input id="specimen-adresse" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding: 0 14px;" value="aissatou.camara@exemple.invalid" readonly /></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-role">Rôle</label><select id="specimen-role" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding-inline: var(--espace-4);"><option>Membre</option><option>Administrateur</option></select></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-fuseau">Fuseau horaire, en erreur</label><select id="specimen-fuseau" class="ai5d-champ__entree" aria-invalid="true" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding-inline: var(--espace-4);"><option value="" disabled selected>Choisissez un fuseau</option></select><span class="message-erreur" role="alert">Choisissez un fuseau horaire.</span></div>
+      </div>
+
+        <h3>Survol et sélection</h3>
+        
+      <div class="specimen-table" data-specimen="survol">
+        <div class="specimen-table__ligne"><input type="checkbox" aria-label="Sélectionner Aïssatou Camara" /><span>Aïssatou Camara</span><span class="specimen-table__etat">Inscrite</span></div>
+        <div class="specimen-table__ligne" data-force="survol"><input type="checkbox" aria-label="Sélectionner Mamadou Diallo" /><span>Mamadou Diallo</span><span class="specimen-table__etat">Survolée</span></div>
+        <div class="specimen-table__ligne" data-selectionnee=""><input type="checkbox" checked aria-label="Sélectionner Fatoumata Bah" /><span>Fatoumata Bah</span><span class="specimen-table__etat">Sélectionnée</span></div>
+        <div class="specimen-table__ligne" data-selectionnee=""><input type="checkbox" checked aria-label="Sélectionner Ibrahima Sow" /><span>Ibrahima Sow</span><span class="specimen-table__etat">Sélectionnée</span></div>
+      </div>
+      </div>
+    </div>
   </section>
 
   <section class="planche" data-densite="modere">
@@ -1186,28 +1621,28 @@ h3:first-child { margin-top: 0; }
         
       <div class="bandeau information">
         <span class="puce"></span>
-        <div><b>Information</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Information</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
       <div class="bandeau reussite">
         <span class="puce"></span>
-        <div><b>Adresse vérifiée</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Adresse vérifiée</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
       <div class="bandeau attention">
         <span class="puce"></span>
-        <div><b>Adresse non confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Adresse non confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
       <div class="bandeau erreur">
         <span class="puce"></span>
-        <div><b>Trop de tentatives</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Trop de tentatives</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
       <div class="bandeau neutre">
         <span class="puce"></span>
-        <div><b>Inscription confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Inscription confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
 
         <h3>Typographie</h3>
         <div class="display">Un compte. Tout AI5D.</div>
-        <p class="corps">Inter compose l'interface et les textes longs. Fraunces signe, et ne
+        <p class="corps">Inter compose l’interface et les textes longs. Fraunces signe, et ne
           compose jamais un paragraphe.</p>
         <div class="mono">AI5D-7F3K-92QX</div>
       </div>
@@ -1337,6 +1772,113 @@ h3:first-child { margin-top: 0; }
 
     <h3>Onglets, sans débordement</h3>
     <div data-specimen="onglets-large"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+
+    <div class="grille">
+      <div class="colonne">
+        <h3>Menu d’actions, ouvert</h3>
+        
+      <div class="specimen-menu" data-specimen="menu">
+        <span class="ai5d-menu"><button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-haspopup="menu" aria-expanded="true" aria-label="Actions pour Aïssatou Camara" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm);"><span class="specimen-icone" aria-hidden="true"></span></button></span>
+        <div class="ai5d-menu__liste specimen-menu__liste" role="menu" aria-label="Actions pour Aïssatou Camara">
+          <button type="button" role="menuitem" tabindex="-1" class="ai5d-menu__element" data-force="survol">Corriger l’adresse</button>
+          <a role="menuitem" tabindex="0" class="ai5d-menu__element" href="#" data-force="focus">Voir la fiche</a>
+          <button type="button" role="menuitem" tabindex="-1" class="ai5d-menu__element">Renvoyer l’invitation</button>
+          <div role="separator" class="ai5d-menu__filet"></div>
+          <button type="button" role="menuitem" tabindex="-1" class="ai5d-menu__element" data-grave="">Retirer de la session</button>
+        </div>
+      </div>
+
+        <h3>Onglets avec compteurs</h3>
+        
+      <div class="specimen-colonne-390" data-specimen="compteurs-390"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page" aria-label="Participants, 25 à traiter"><span>Participants</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">25</span></a><a class="ai5d-onglets-r__lien" href="#" aria-label="Invitations, 8 à traiter"><span>Invitations</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">8</span></a><a class="ai5d-onglets-r__lien" href="#" aria-label="Ressources, 2 à traiter"><span>Ressources</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">2</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Attestations</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Journal</span></a></nav></div>
+      <div data-specimen="compteurs-large"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page" aria-label="Participants, 25 à traiter"><span>Participants</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">25</span></a><a class="ai5d-onglets-r__lien" href="#" aria-label="Invitations, 8 à traiter"><span>Invitations</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">8</span></a><a class="ai5d-onglets-r__lien" href="#" aria-label="Ressources, 2 à traiter"><span>Ressources</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">2</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Attestations</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Journal</span></a></nav></div>
+
+        <h3>Bandeaux qui se ferment</h3>
+        
+      <div class="ai5d-bandeau bandeau information" role="status" data-ton="information">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Information</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      <div class="ai5d-bandeau bandeau reussite" role="status" data-ton="reussite">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Adresse vérifiée</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      <div class="ai5d-bandeau bandeau attention" role="alert" data-ton="attention" data-force="focus" tabindex="-1">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Adresse non confirmée</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      <div class="ai5d-bandeau bandeau erreur" role="alert" data-ton="erreur">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Trop de tentatives</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      <div class="ai5d-bandeau bandeau neutre" role="status" data-ton="neutre">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Inscription confirmée</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      </div>
+
+      <div class="colonne">
+        <h3>En-tête de rubrique, avec son action</h3>
+        
+      <header style="display: flex; flex-direction: column; gap: var(--espace-2); padding-bottom: var(--espace-6); border-bottom: 1px solid var(--bordure);">
+        <div style="display: flex; align-items: center; gap: var(--espace-4); flex-wrap: wrap;">
+          <span aria-hidden="true" style="flex-shrink: 0; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--rayon-md); background: var(--surface-1); border: 1px solid var(--bordure); color: var(--texte-fort);"><span class="specimen-icone"></span></span>
+          <h1 style="margin: 0; font-family: var(--police-titre); font-size: var(--taille-2xl); font-weight: var(--graisse-normale); line-height: var(--interligne-titre); color: var(--texte-fort);">Formations</h1>
+          <div style="margin-inline-start: auto;"><a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Nouvelle formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a></div>
+        </div>
+        <p style="margin: 0; margin-left: calc(40px + var(--espace-4)); font-family: var(--police-corps); font-size: var(--taille-sm); line-height: var(--interligne-corps); color: var(--texte-faible);">Les formations du catalogue, et leurs sessions.</p>
+      </header>
+
+        <h3>En-tête d’objet</h3>
+        
+      <header class="ai5d-entete-objet" data-specimen="entete-objet">
+        <nav aria-label="Fil d’Ariane"><ol class="ai5d-entete-objet__fil">
+          <li><a class="ai5d-entete-objet__lien" href="#">Sessions</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
+          <li><a class="ai5d-entete-objet__lien" href="#">Prompt Engineering</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
+        </ol></nav>
+        <div class="ai5d-entete-objet__tete">
+          <h1 style="margin: 0; font-family: var(--police-titre); font-weight: var(--graisse-normale); font-size: var(--taille-2xl); line-height: var(--interligne-titre); letter-spacing: var(--lettrage-titre); color: var(--texte-fort); text-wrap: balance; overflow-wrap: break-word;">Cohorte n° 5</h1>
+          <span class="pastille information">En cours</span>
+          <div class="ai5d-entete-objet__gestes">
+            <button type="button" class="ai5d-bouton" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Clore la session</button>
+            <span class="ai5d-menu"><button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-haspopup="menu" aria-expanded="true" aria-label="Actions pour la session" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm);"><span class="specimen-icone" aria-hidden="true"></span></button></span>
+          </div>
+        </div>
+        <ul role="list" class="ai5d-entete-objet__meta">
+          <li><span class="specimen-icone" aria-hidden="true"></span><span>Du 13 au 15 octobre 2026, heure de Conakry</span></li>
+          <li><span class="specimen-icone" aria-hidden="true"></span><span>Présentiel, Conakry</span></li>
+        </ul>
+        <div class="ai5d-entete-objet__indicateurs">
+      <div class="specimen-pouls" data-specimen="pouls">
+        <a class="ai5d-chiffre" data-compact="" href="#"><span class="ai5d-chiffre__valeur">212</span><span class="ai5d-chiffre__libelle">inscriptions sur 237 personnes</span></a>
+        <a class="ai5d-chiffre" data-compact="" href="#" data-force="survol"><span class="ai5d-chiffre__valeur">8</span><span class="ai5d-chiffre__libelle">invitations non acceptées</span></a>
+        <span class="ai5d-chiffre" data-compact=""><span class="ai5d-chiffre__valeur">15</span><span class="ai5d-chiffre__libelle">octobre, début de la délivrance</span></span>
+      </div></div>
+      </header>
+
+        <h3>Sélecteur et champ</h3>
+        
+      <div class="specimen-champs" data-specimen="selecteur">
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-adresse">Adresse</label><input id="specimen-adresse" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding: 0 14px;" value="aissatou.camara@exemple.invalid" readonly /></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-role">Rôle</label><select id="specimen-role" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding-inline: var(--espace-4);"><option>Membre</option><option>Administrateur</option></select></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-fuseau">Fuseau horaire, en erreur</label><select id="specimen-fuseau" class="ai5d-champ__entree" aria-invalid="true" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding-inline: var(--espace-4);"><option value="" disabled selected>Choisissez un fuseau</option></select><span class="message-erreur" role="alert">Choisissez un fuseau horaire.</span></div>
+      </div>
+
+        <h3>Survol et sélection</h3>
+        
+      <div class="specimen-table" data-specimen="survol">
+        <div class="specimen-table__ligne"><input type="checkbox" aria-label="Sélectionner Aïssatou Camara" /><span>Aïssatou Camara</span><span class="specimen-table__etat">Inscrite</span></div>
+        <div class="specimen-table__ligne" data-force="survol"><input type="checkbox" aria-label="Sélectionner Mamadou Diallo" /><span>Mamadou Diallo</span><span class="specimen-table__etat">Survolée</span></div>
+        <div class="specimen-table__ligne" data-selectionnee=""><input type="checkbox" checked aria-label="Sélectionner Fatoumata Bah" /><span>Fatoumata Bah</span><span class="specimen-table__etat">Sélectionnée</span></div>
+        <div class="specimen-table__ligne" data-selectionnee=""><input type="checkbox" checked aria-label="Sélectionner Ibrahima Sow" /><span>Ibrahima Sow</span><span class="specimen-table__etat">Sélectionnée</span></div>
+      </div>
+      </div>
+    </div>
   </section>
 
   <section class="planche" data-densite="compact">
@@ -1408,28 +1950,28 @@ h3:first-child { margin-top: 0; }
         
       <div class="bandeau information">
         <span class="puce"></span>
-        <div><b>Information</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Information</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
       <div class="bandeau reussite">
         <span class="puce"></span>
-        <div><b>Adresse vérifiée</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Adresse vérifiée</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
       <div class="bandeau attention">
         <span class="puce"></span>
-        <div><b>Adresse non confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Adresse non confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
       <div class="bandeau erreur">
         <span class="puce"></span>
-        <div><b>Trop de tentatives</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Trop de tentatives</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
       <div class="bandeau neutre">
         <span class="puce"></span>
-        <div><b>Inscription confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l'accompagner.</div>
+        <div><b>Inscription confirmée</b><br />Le texte porte le sens ; la couleur ne fait que l’accompagner.</div>
       </div>
 
         <h3>Typographie</h3>
         <div class="display">Un compte. Tout AI5D.</div>
-        <p class="corps">Inter compose l'interface et les textes longs. Fraunces signe, et ne
+        <p class="corps">Inter compose l’interface et les textes longs. Fraunces signe, et ne
           compose jamais un paragraphe.</p>
         <div class="mono">AI5D-7F3K-92QX</div>
       </div>
@@ -1559,6 +2101,113 @@ h3:first-child { margin-top: 0; }
 
     <h3>Onglets, sans débordement</h3>
     <div data-specimen="onglets-large"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Annonces</span></a><a class="ai5d-onglets-r__lien" href="#" data-en-attente=""><span>Ressources</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Replays</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page"><span>Attestation</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Badge</span></a></nav></div>
+
+    <div class="grille">
+      <div class="colonne">
+        <h3>Menu d’actions, ouvert</h3>
+        
+      <div class="specimen-menu" data-specimen="menu">
+        <span class="ai5d-menu"><button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-haspopup="menu" aria-expanded="true" aria-label="Actions pour Aïssatou Camara" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm);"><span class="specimen-icone" aria-hidden="true"></span></button></span>
+        <div class="ai5d-menu__liste specimen-menu__liste" role="menu" aria-label="Actions pour Aïssatou Camara">
+          <button type="button" role="menuitem" tabindex="-1" class="ai5d-menu__element" data-force="survol">Corriger l’adresse</button>
+          <a role="menuitem" tabindex="0" class="ai5d-menu__element" href="#" data-force="focus">Voir la fiche</a>
+          <button type="button" role="menuitem" tabindex="-1" class="ai5d-menu__element">Renvoyer l’invitation</button>
+          <div role="separator" class="ai5d-menu__filet"></div>
+          <button type="button" role="menuitem" tabindex="-1" class="ai5d-menu__element" data-grave="">Retirer de la session</button>
+        </div>
+      </div>
+
+        <h3>Onglets avec compteurs</h3>
+        
+      <div class="specimen-colonne-390" data-specimen="compteurs-390"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page" aria-label="Participants, 25 à traiter"><span>Participants</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">25</span></a><a class="ai5d-onglets-r__lien" href="#" aria-label="Invitations, 8 à traiter"><span>Invitations</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">8</span></a><a class="ai5d-onglets-r__lien" href="#" aria-label="Ressources, 2 à traiter"><span>Ressources</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">2</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Attestations</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Journal</span></a></nav></div>
+      <div data-specimen="compteurs-large"><nav class="ai5d-onglets-r" aria-label="Sous-pages de la session"><a class="ai5d-onglets-r__lien" href="#"><span>Vue d’ensemble</span></a><a class="ai5d-onglets-r__lien" href="#" aria-current="page" aria-label="Participants, 25 à traiter"><span>Participants</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">25</span></a><a class="ai5d-onglets-r__lien" href="#" aria-label="Invitations, 8 à traiter"><span>Invitations</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">8</span></a><a class="ai5d-onglets-r__lien" href="#" aria-label="Ressources, 2 à traiter"><span>Ressources</span><span class="ai5d-onglets-r__compteur" aria-hidden="true" data-ton="neutre" style="display: inline-flex; align-items: center; padding: 2px 10px; background: var(--surface-chaude); color: var(--texte-faible); font-family: var(--police-corps); font-size: var(--taille-xs); font-weight: var(--graisse-moyenne); line-height: 1.6; border-radius: var(--rayon-plein);">2</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Attestations</span></a><a class="ai5d-onglets-r__lien" href="#"><span>Journal</span></a></nav></div>
+
+        <h3>Bandeaux qui se ferment</h3>
+        
+      <div class="ai5d-bandeau bandeau information" role="status" data-ton="information">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Information</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      <div class="ai5d-bandeau bandeau reussite" role="status" data-ton="reussite">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Adresse vérifiée</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      <div class="ai5d-bandeau bandeau attention" role="alert" data-ton="attention" data-force="focus" tabindex="-1">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Adresse non confirmée</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      <div class="ai5d-bandeau bandeau erreur" role="alert" data-ton="erreur">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Trop de tentatives</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      <div class="ai5d-bandeau bandeau neutre" role="status" data-ton="neutre">
+        <span class="puce"></span>
+        <div class="specimen-bandeau-corps"><b>Inscription confirmée</b><br />Le retour d’un geste, que la personne ferme quand elle l’a lu.</div>
+        <button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-label="Fermer ce message" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm); align-self: flex-start;"><span class="specimen-icone" aria-hidden="true"></span></button>
+      </div>
+      </div>
+
+      <div class="colonne">
+        <h3>En-tête de rubrique, avec son action</h3>
+        
+      <header style="display: flex; flex-direction: column; gap: var(--espace-2); padding-bottom: var(--espace-6); border-bottom: 1px solid var(--bordure);">
+        <div style="display: flex; align-items: center; gap: var(--espace-4); flex-wrap: wrap;">
+          <span aria-hidden="true" style="flex-shrink: 0; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--rayon-md); background: var(--surface-1); border: 1px solid var(--bordure); color: var(--texte-fort);"><span class="specimen-icone"></span></span>
+          <h1 style="margin: 0; font-family: var(--police-titre); font-size: var(--taille-2xl); font-weight: var(--graisse-normale); line-height: var(--interligne-titre); color: var(--texte-fort);">Formations</h1>
+          <div style="margin-inline-start: auto;"><a class="ai5d-bouton" href="#" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Nouvelle formation<span class="ai5d-bouton__points ai5d-bouton__points--attente" aria-hidden="true"><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span><span class="ai5d-bouton__point"></span></span></a></div>
+        </div>
+        <p style="margin: 0; margin-left: calc(40px + var(--espace-4)); font-family: var(--police-corps); font-size: var(--taille-sm); line-height: var(--interligne-corps); color: var(--texte-faible);">Les formations du catalogue, et leurs sessions.</p>
+      </header>
+
+        <h3>En-tête d’objet</h3>
+        
+      <header class="ai5d-entete-objet" data-specimen="entete-objet">
+        <nav aria-label="Fil d’Ariane"><ol class="ai5d-entete-objet__fil">
+          <li><a class="ai5d-entete-objet__lien" href="#">Sessions</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
+          <li><a class="ai5d-entete-objet__lien" href="#">Prompt Engineering</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
+        </ol></nav>
+        <div class="ai5d-entete-objet__tete">
+          <h1 style="margin: 0; font-family: var(--police-titre); font-weight: var(--graisse-normale); font-size: var(--taille-2xl); line-height: var(--interligne-titre); letter-spacing: var(--lettrage-titre); color: var(--texte-fort); text-wrap: balance; overflow-wrap: break-word;">Cohorte n° 5</h1>
+          <span class="pastille information">En cours</span>
+          <div class="ai5d-entete-objet__gestes">
+            <button type="button" class="ai5d-bouton" data-variante="primaire" data-taille="md" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: var(--hauteur-controle); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer;">Clore la session</button>
+            <span class="ai5d-menu"><button type="button" class="ai5d-bouton" data-variante="discret" data-taille="sm" aria-haspopup="menu" aria-expanded="true" aria-label="Actions pour la session" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2); height: calc(var(--hauteur-controle) - 8px); min-height: var(--cible-tactile); min-width: var(--cible-tactile); padding: 0 20px; font-family: var(--police-corps); font-size: var(--taille-md); font-weight: var(--graisse-semi); line-height: 1; border-radius: var(--rayon-md); cursor: pointer; font-size: var(--taille-sm);"><span class="specimen-icone" aria-hidden="true"></span></button></span>
+          </div>
+        </div>
+        <ul role="list" class="ai5d-entete-objet__meta">
+          <li><span class="specimen-icone" aria-hidden="true"></span><span>Du 13 au 15 octobre 2026, heure de Conakry</span></li>
+          <li><span class="specimen-icone" aria-hidden="true"></span><span>Présentiel, Conakry</span></li>
+        </ul>
+        <div class="ai5d-entete-objet__indicateurs">
+      <div class="specimen-pouls" data-specimen="pouls">
+        <a class="ai5d-chiffre" data-compact="" href="#"><span class="ai5d-chiffre__valeur">212</span><span class="ai5d-chiffre__libelle">inscriptions sur 237 personnes</span></a>
+        <a class="ai5d-chiffre" data-compact="" href="#" data-force="survol"><span class="ai5d-chiffre__valeur">8</span><span class="ai5d-chiffre__libelle">invitations non acceptées</span></a>
+        <span class="ai5d-chiffre" data-compact=""><span class="ai5d-chiffre__valeur">15</span><span class="ai5d-chiffre__libelle">octobre, début de la délivrance</span></span>
+      </div></div>
+      </header>
+
+        <h3>Sélecteur et champ</h3>
+        
+      <div class="specimen-champs" data-specimen="selecteur">
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-adresse">Adresse</label><input id="specimen-adresse" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding: 0 14px;" value="aissatou.camara@exemple.invalid" readonly /></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-role">Rôle</label><select id="specimen-role" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding-inline: var(--espace-4);"><option>Membre</option><option>Administrateur</option></select></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-fuseau">Fuseau horaire, en erreur</label><select id="specimen-fuseau" class="ai5d-champ__entree" aria-invalid="true" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding-inline: var(--espace-4);"><option value="" disabled selected>Choisissez un fuseau</option></select><span class="message-erreur" role="alert">Choisissez un fuseau horaire.</span></div>
+      </div>
+
+        <h3>Survol et sélection</h3>
+        
+      <div class="specimen-table" data-specimen="survol">
+        <div class="specimen-table__ligne"><input type="checkbox" aria-label="Sélectionner Aïssatou Camara" /><span>Aïssatou Camara</span><span class="specimen-table__etat">Inscrite</span></div>
+        <div class="specimen-table__ligne" data-force="survol"><input type="checkbox" aria-label="Sélectionner Mamadou Diallo" /><span>Mamadou Diallo</span><span class="specimen-table__etat">Survolée</span></div>
+        <div class="specimen-table__ligne" data-selectionnee=""><input type="checkbox" checked aria-label="Sélectionner Fatoumata Bah" /><span>Fatoumata Bah</span><span class="specimen-table__etat">Sélectionnée</span></div>
+        <div class="specimen-table__ligne" data-selectionnee=""><input type="checkbox" checked aria-label="Sélectionner Ibrahima Sow" /><span>Ibrahima Sow</span><span class="specimen-table__etat">Sélectionnée</span></div>
+      </div>
+      </div>
+    </div>
   </section>
 
 <section class="specimen-selection" data-specimen="selection" aria-label="Sélection de texte et curseur">

@@ -146,7 +146,7 @@ se coche « écrite, non testée » ; la tâche 17 vérifie tout d'un bloc et vo
 - [x] T13 · La réserve basse dans la feuille, décision 013 · écrite, non testée
 - [x] T14 · L'index · écrite, non testée
 - [x] T15 · Journal, guide de montée, README, NOYAU, formulations, décision 012, sans la version · écrite, non testée
-- [ ] T16 · Les spécimens
+- [x] T16 · Les spécimens · écrite, page engendrée et regardée
 - [ ] T17 · Vérification d'un bloc, chaque test vu échouer
 - [ ] T18 · Recette au navigateur, mesures « après », captures, preuves, leçons
 - [ ] T19 · Relecture du lot contre la SPEC
