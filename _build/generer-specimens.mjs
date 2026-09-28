@@ -86,7 +86,8 @@ function pastilles() {
 
   Pour elles, la page ne recopie pas la feuille : elle lit les constantes STYLE_ des composants et
   resout leurs rares interpolations numeriques (TABLETTE, LARGEUR_RAIL_TABLETTE, 480...) depuis les
-  constantes exportees du noyau. Seul le balisage est reproduit. Une interpolation inconnue fait
+  constantes exportees du noyau, et une chaine ecrite dans le fichier meme (CONDITION_ANCRE de
+  MenuActions, relecture de la 1.3.0, constat I2). Seul le balisage est reproduit. Une interpolation inconnue fait
   echouer la generation, plutot que d ecrire une feuille fausse.
 */
 const FEUILLES_DES_COMPOSANTS = [
@@ -124,12 +125,15 @@ function feuillesDesComposants() {
   const constantes = constantesNumeriques();
   return FEUILLES_DES_COMPOSANTS.map((chemin) => {
     const source = readFileSync(chemin, 'utf8');
+    const locales = new Map(
+      [...source.matchAll(/^(?:export )?const ([A-Z_]+) = '([^']*)';$/gm)].map((m) => [m[1], m[2]]),
+    );
     const feuilles = [...source.matchAll(/const STYLE_[A-Z_]+ = `([\s\S]*?)`;/g)].map((m) => m[1]);
     if (feuilles.length === 0) throw new Error(`${chemin} : aucune feuille STYLE_ trouvee`);
     return feuilles
       .map((css) =>
         css.replace(/\$\{([A-Z_]+)\}/g, (_, nom) => {
-          const valeur = constantes.get(nom);
+          const valeur = locales.get(nom) ?? constantes.get(nom);
           if (valeur === undefined) throw new Error(`${chemin} : constante ${nom} introuvable`);
           return valeur;
         }),
@@ -405,16 +409,16 @@ function enteteRubriqueAction() {
 function pouls() {
   return `
       <div class="specimen-pouls" data-specimen="pouls">
-        <a class="ai5d-chiffre" data-compact="" href="#"><span class="ai5d-chiffre__valeur">212</span><span class="ai5d-chiffre__libelle">inscriptions sur 237 personnes</span></a>
-        <a class="ai5d-chiffre" data-compact="" href="#" data-force="survol"><span class="ai5d-chiffre__valeur">8</span><span class="ai5d-chiffre__libelle">invitations non acceptées</span></a>
-        <span class="ai5d-chiffre" data-compact=""><span class="ai5d-chiffre__valeur">15</span><span class="ai5d-chiffre__libelle">octobre, début de la délivrance</span></span>
+        <a class="ai5d-chiffre" data-compact="" href="#"><span class="ai5d-chiffre__valeur">212</span> <span class="ai5d-chiffre__libelle">inscriptions sur 237 personnes</span></a>
+        <a class="ai5d-chiffre" data-compact="" href="#" data-force="survol"><span class="ai5d-chiffre__valeur">8</span> <span class="ai5d-chiffre__libelle">invitations non acceptées</span></a>
+        <span class="ai5d-chiffre" data-compact=""><span class="ai5d-chiffre__valeur">15</span> <span class="ai5d-chiffre__libelle">octobre, début de la délivrance</span></span>
       </div>`;
 }
 
 function enteteObjet() {
   return `
       <header class="ai5d-entete-objet" data-specimen="entete-objet">
-        <nav aria-label="Fil d’Ariane"><ol class="ai5d-entete-objet__fil">
+        <nav aria-label="Fil d’Ariane"><ol role="list" class="ai5d-entete-objet__fil">
           <li><a class="ai5d-entete-objet__lien" href="#">Sessions</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
           <li><a class="ai5d-entete-objet__lien" href="#">Prompt Engineering</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
         </ol></nav>
@@ -442,8 +446,8 @@ function selecteurEtChamp() {
   return `
       <div class="specimen-champs" data-specimen="selecteur">
         <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-adresse">Adresse</label><input id="specimen-adresse" class="ai5d-champ__entree" style="${STYLE_ENTREE} padding: 0 14px;" value="aissatou.camara@exemple.invalid" readonly /></div>
-        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-role">Rôle</label><select id="specimen-role" class="ai5d-champ__entree" style="${STYLE_ENTREE} padding-inline: var(--espace-4);"><option>Membre</option><option>Administrateur</option></select></div>
-        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-fuseau">Fuseau horaire, en erreur</label><select id="specimen-fuseau" class="ai5d-champ__entree" aria-invalid="true" style="${STYLE_ENTREE} padding-inline: var(--espace-4);"><option value="" disabled selected>Choisissez un fuseau</option></select><span class="message-erreur" role="alert">Choisissez un fuseau horaire.</span></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-role">Rôle</label><select id="specimen-role" class="ai5d-champ__entree" style="${STYLE_ENTREE} padding: 0 14px;"><option>Membre</option><option>Administrateur</option></select></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-fuseau">Fuseau horaire, en erreur</label><select id="specimen-fuseau" class="ai5d-champ__entree" aria-invalid="true" style="${STYLE_ENTREE} padding: 0 14px;"><option value="" disabled selected>Choisissez un fuseau</option></select><span class="message-erreur" role="alert">Choisissez un fuseau horaire.</span></div>
       </div>`;
 }
 

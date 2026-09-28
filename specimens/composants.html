@@ -696,6 +696,8 @@ h3:first-child { margin-top: 0; }
   inset: auto;
   min-inline-size: 12rem;
   max-inline-size: 20rem;
+  max-block-size: calc(100dvh - var(--espace-8));
+  overflow-y: auto;
   padding: var(--espace-1);
   background: var(--surface-3);
   color: var(--texte);
@@ -712,11 +714,13 @@ h3:first-child { margin-top: 0; }
   from { opacity: 0; transform: translateY(calc(var(--espace-1) * -1)); }
   to { opacity: 1; transform: none; }
 }
-@supports (anchor-name: --a) {
+@supports (position-area: block-end) {
   .ai5d-menu__liste {
     position-area: block-end span-inline-start;
     position-try-fallbacks: flip-block, flip-inline;
+    position-try-order: most-block-size;
     margin-block-start: var(--espace-1);
+    max-block-size: calc(100% - var(--espace-1));
   }
 }
 
@@ -1179,7 +1183,7 @@ h3:first-child { margin-top: 0; }
         <h3>En-tête d’objet</h3>
         
       <header class="ai5d-entete-objet" data-specimen="entete-objet">
-        <nav aria-label="Fil d’Ariane"><ol class="ai5d-entete-objet__fil">
+        <nav aria-label="Fil d’Ariane"><ol role="list" class="ai5d-entete-objet__fil">
           <li><a class="ai5d-entete-objet__lien" href="#">Sessions</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
           <li><a class="ai5d-entete-objet__lien" href="#">Prompt Engineering</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
         </ol></nav>
@@ -1197,9 +1201,9 @@ h3:first-child { margin-top: 0; }
         </ul>
         <div class="ai5d-entete-objet__indicateurs">
       <div class="specimen-pouls" data-specimen="pouls">
-        <a class="ai5d-chiffre" data-compact="" href="#"><span class="ai5d-chiffre__valeur">212</span><span class="ai5d-chiffre__libelle">inscriptions sur 237 personnes</span></a>
-        <a class="ai5d-chiffre" data-compact="" href="#" data-force="survol"><span class="ai5d-chiffre__valeur">8</span><span class="ai5d-chiffre__libelle">invitations non acceptées</span></a>
-        <span class="ai5d-chiffre" data-compact=""><span class="ai5d-chiffre__valeur">15</span><span class="ai5d-chiffre__libelle">octobre, début de la délivrance</span></span>
+        <a class="ai5d-chiffre" data-compact="" href="#"><span class="ai5d-chiffre__valeur">212</span> <span class="ai5d-chiffre__libelle">inscriptions sur 237 personnes</span></a>
+        <a class="ai5d-chiffre" data-compact="" href="#" data-force="survol"><span class="ai5d-chiffre__valeur">8</span> <span class="ai5d-chiffre__libelle">invitations non acceptées</span></a>
+        <span class="ai5d-chiffre" data-compact=""><span class="ai5d-chiffre__valeur">15</span> <span class="ai5d-chiffre__libelle">octobre, début de la délivrance</span></span>
       </div></div>
       </header>
 
@@ -1207,8 +1211,8 @@ h3:first-child { margin-top: 0; }
         
       <div class="specimen-champs" data-specimen="selecteur">
         <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-adresse">Adresse</label><input id="specimen-adresse" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding: 0 14px;" value="aissatou.camara@exemple.invalid" readonly /></div>
-        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-role">Rôle</label><select id="specimen-role" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding-inline: var(--espace-4);"><option>Membre</option><option>Administrateur</option></select></div>
-        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-fuseau">Fuseau horaire, en erreur</label><select id="specimen-fuseau" class="ai5d-champ__entree" aria-invalid="true" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding-inline: var(--espace-4);"><option value="" disabled selected>Choisissez un fuseau</option></select><span class="message-erreur" role="alert">Choisissez un fuseau horaire.</span></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-role">Rôle</label><select id="specimen-role" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding: 0 14px;"><option>Membre</option><option>Administrateur</option></select></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-fuseau">Fuseau horaire, en erreur</label><select id="specimen-fuseau" class="ai5d-champ__entree" aria-invalid="true" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding: 0 14px;"><option value="" disabled selected>Choisissez un fuseau</option></select><span class="message-erreur" role="alert">Choisissez un fuseau horaire.</span></div>
       </div>
 
         <h3>Survol et sélection</h3>
@@ -1508,7 +1512,7 @@ h3:first-child { margin-top: 0; }
         <h3>En-tête d’objet</h3>
         
       <header class="ai5d-entete-objet" data-specimen="entete-objet">
-        <nav aria-label="Fil d’Ariane"><ol class="ai5d-entete-objet__fil">
+        <nav aria-label="Fil d’Ariane"><ol role="list" class="ai5d-entete-objet__fil">
           <li><a class="ai5d-entete-objet__lien" href="#">Sessions</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
           <li><a class="ai5d-entete-objet__lien" href="#">Prompt Engineering</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
         </ol></nav>
@@ -1526,9 +1530,9 @@ h3:first-child { margin-top: 0; }
         </ul>
         <div class="ai5d-entete-objet__indicateurs">
       <div class="specimen-pouls" data-specimen="pouls">
-        <a class="ai5d-chiffre" data-compact="" href="#"><span class="ai5d-chiffre__valeur">212</span><span class="ai5d-chiffre__libelle">inscriptions sur 237 personnes</span></a>
-        <a class="ai5d-chiffre" data-compact="" href="#" data-force="survol"><span class="ai5d-chiffre__valeur">8</span><span class="ai5d-chiffre__libelle">invitations non acceptées</span></a>
-        <span class="ai5d-chiffre" data-compact=""><span class="ai5d-chiffre__valeur">15</span><span class="ai5d-chiffre__libelle">octobre, début de la délivrance</span></span>
+        <a class="ai5d-chiffre" data-compact="" href="#"><span class="ai5d-chiffre__valeur">212</span> <span class="ai5d-chiffre__libelle">inscriptions sur 237 personnes</span></a>
+        <a class="ai5d-chiffre" data-compact="" href="#" data-force="survol"><span class="ai5d-chiffre__valeur">8</span> <span class="ai5d-chiffre__libelle">invitations non acceptées</span></a>
+        <span class="ai5d-chiffre" data-compact=""><span class="ai5d-chiffre__valeur">15</span> <span class="ai5d-chiffre__libelle">octobre, début de la délivrance</span></span>
       </div></div>
       </header>
 
@@ -1536,8 +1540,8 @@ h3:first-child { margin-top: 0; }
         
       <div class="specimen-champs" data-specimen="selecteur">
         <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-adresse">Adresse</label><input id="specimen-adresse" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding: 0 14px;" value="aissatou.camara@exemple.invalid" readonly /></div>
-        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-role">Rôle</label><select id="specimen-role" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding-inline: var(--espace-4);"><option>Membre</option><option>Administrateur</option></select></div>
-        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-fuseau">Fuseau horaire, en erreur</label><select id="specimen-fuseau" class="ai5d-champ__entree" aria-invalid="true" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding-inline: var(--espace-4);"><option value="" disabled selected>Choisissez un fuseau</option></select><span class="message-erreur" role="alert">Choisissez un fuseau horaire.</span></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-role">Rôle</label><select id="specimen-role" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding: 0 14px;"><option>Membre</option><option>Administrateur</option></select></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-fuseau">Fuseau horaire, en erreur</label><select id="specimen-fuseau" class="ai5d-champ__entree" aria-invalid="true" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding: 0 14px;"><option value="" disabled selected>Choisissez un fuseau</option></select><span class="message-erreur" role="alert">Choisissez un fuseau horaire.</span></div>
       </div>
 
         <h3>Survol et sélection</h3>
@@ -1837,7 +1841,7 @@ h3:first-child { margin-top: 0; }
         <h3>En-tête d’objet</h3>
         
       <header class="ai5d-entete-objet" data-specimen="entete-objet">
-        <nav aria-label="Fil d’Ariane"><ol class="ai5d-entete-objet__fil">
+        <nav aria-label="Fil d’Ariane"><ol role="list" class="ai5d-entete-objet__fil">
           <li><a class="ai5d-entete-objet__lien" href="#">Sessions</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
           <li><a class="ai5d-entete-objet__lien" href="#">Prompt Engineering</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
         </ol></nav>
@@ -1855,9 +1859,9 @@ h3:first-child { margin-top: 0; }
         </ul>
         <div class="ai5d-entete-objet__indicateurs">
       <div class="specimen-pouls" data-specimen="pouls">
-        <a class="ai5d-chiffre" data-compact="" href="#"><span class="ai5d-chiffre__valeur">212</span><span class="ai5d-chiffre__libelle">inscriptions sur 237 personnes</span></a>
-        <a class="ai5d-chiffre" data-compact="" href="#" data-force="survol"><span class="ai5d-chiffre__valeur">8</span><span class="ai5d-chiffre__libelle">invitations non acceptées</span></a>
-        <span class="ai5d-chiffre" data-compact=""><span class="ai5d-chiffre__valeur">15</span><span class="ai5d-chiffre__libelle">octobre, début de la délivrance</span></span>
+        <a class="ai5d-chiffre" data-compact="" href="#"><span class="ai5d-chiffre__valeur">212</span> <span class="ai5d-chiffre__libelle">inscriptions sur 237 personnes</span></a>
+        <a class="ai5d-chiffre" data-compact="" href="#" data-force="survol"><span class="ai5d-chiffre__valeur">8</span> <span class="ai5d-chiffre__libelle">invitations non acceptées</span></a>
+        <span class="ai5d-chiffre" data-compact=""><span class="ai5d-chiffre__valeur">15</span> <span class="ai5d-chiffre__libelle">octobre, début de la délivrance</span></span>
       </div></div>
       </header>
 
@@ -1865,8 +1869,8 @@ h3:first-child { margin-top: 0; }
         
       <div class="specimen-champs" data-specimen="selecteur">
         <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-adresse">Adresse</label><input id="specimen-adresse" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding: 0 14px;" value="aissatou.camara@exemple.invalid" readonly /></div>
-        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-role">Rôle</label><select id="specimen-role" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding-inline: var(--espace-4);"><option>Membre</option><option>Administrateur</option></select></div>
-        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-fuseau">Fuseau horaire, en erreur</label><select id="specimen-fuseau" class="ai5d-champ__entree" aria-invalid="true" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding-inline: var(--espace-4);"><option value="" disabled selected>Choisissez un fuseau</option></select><span class="message-erreur" role="alert">Choisissez un fuseau horaire.</span></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-role">Rôle</label><select id="specimen-role" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding: 0 14px;"><option>Membre</option><option>Administrateur</option></select></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-fuseau">Fuseau horaire, en erreur</label><select id="specimen-fuseau" class="ai5d-champ__entree" aria-invalid="true" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding: 0 14px;"><option value="" disabled selected>Choisissez un fuseau</option></select><span class="message-erreur" role="alert">Choisissez un fuseau horaire.</span></div>
       </div>
 
         <h3>Survol et sélection</h3>
@@ -2166,7 +2170,7 @@ h3:first-child { margin-top: 0; }
         <h3>En-tête d’objet</h3>
         
       <header class="ai5d-entete-objet" data-specimen="entete-objet">
-        <nav aria-label="Fil d’Ariane"><ol class="ai5d-entete-objet__fil">
+        <nav aria-label="Fil d’Ariane"><ol role="list" class="ai5d-entete-objet__fil">
           <li><a class="ai5d-entete-objet__lien" href="#">Sessions</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
           <li><a class="ai5d-entete-objet__lien" href="#">Prompt Engineering</a><span class="specimen-chevron" aria-hidden="true">›</span></li>
         </ol></nav>
@@ -2184,9 +2188,9 @@ h3:first-child { margin-top: 0; }
         </ul>
         <div class="ai5d-entete-objet__indicateurs">
       <div class="specimen-pouls" data-specimen="pouls">
-        <a class="ai5d-chiffre" data-compact="" href="#"><span class="ai5d-chiffre__valeur">212</span><span class="ai5d-chiffre__libelle">inscriptions sur 237 personnes</span></a>
-        <a class="ai5d-chiffre" data-compact="" href="#" data-force="survol"><span class="ai5d-chiffre__valeur">8</span><span class="ai5d-chiffre__libelle">invitations non acceptées</span></a>
-        <span class="ai5d-chiffre" data-compact=""><span class="ai5d-chiffre__valeur">15</span><span class="ai5d-chiffre__libelle">octobre, début de la délivrance</span></span>
+        <a class="ai5d-chiffre" data-compact="" href="#"><span class="ai5d-chiffre__valeur">212</span> <span class="ai5d-chiffre__libelle">inscriptions sur 237 personnes</span></a>
+        <a class="ai5d-chiffre" data-compact="" href="#" data-force="survol"><span class="ai5d-chiffre__valeur">8</span> <span class="ai5d-chiffre__libelle">invitations non acceptées</span></a>
+        <span class="ai5d-chiffre" data-compact=""><span class="ai5d-chiffre__valeur">15</span> <span class="ai5d-chiffre__libelle">octobre, début de la délivrance</span></span>
       </div></div>
       </header>
 
@@ -2194,8 +2198,8 @@ h3:first-child { margin-top: 0; }
         
       <div class="specimen-champs" data-specimen="selecteur">
         <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-adresse">Adresse</label><input id="specimen-adresse" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding: 0 14px;" value="aissatou.camara@exemple.invalid" readonly /></div>
-        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-role">Rôle</label><select id="specimen-role" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding-inline: var(--espace-4);"><option>Membre</option><option>Administrateur</option></select></div>
-        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-fuseau">Fuseau horaire, en erreur</label><select id="specimen-fuseau" class="ai5d-champ__entree" aria-invalid="true" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding-inline: var(--espace-4);"><option value="" disabled selected>Choisissez un fuseau</option></select><span class="message-erreur" role="alert">Choisissez un fuseau horaire.</span></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-role">Rôle</label><select id="specimen-role" class="ai5d-champ__entree" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding: 0 14px;"><option>Membre</option><option>Administrateur</option></select></div>
+        <div class="specimen-champ"><label class="specimen-etiquette" for="specimen-fuseau">Fuseau horaire, en erreur</label><select id="specimen-fuseau" class="ai5d-champ__entree" aria-invalid="true" style="width: 100%; height: var(--hauteur-controle); min-height: var(--cible-tactile); font-family: var(--police-corps); font-size: var(--taille-md); border-radius: var(--rayon-md); padding: 0 14px;"><option value="" disabled selected>Choisissez un fuseau</option></select><span class="message-erreur" role="alert">Choisissez un fuseau horaire.</span></div>
       </div>
 
         <h3>Survol et sélection</h3>

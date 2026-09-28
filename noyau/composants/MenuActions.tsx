@@ -102,7 +102,9 @@ const CONDITION_ANCRE = 'position-area: block-end';
   la regle du navigateur qui cache un popover ferme, et le menu resterait affiche.
 
   La hauteur est bornee a la fenetre, et le menu defile au-dela : un long menu pres du bord ne sort
-  plus de l ecran (relecture de la 1.3.0, constat M8).
+  plus de l ecran (relecture de la 1.3.0, constat M8). Place par l ancre, il prend le cote qui a le
+  plus de place (position-try-order) et s y borne : sans cela, un menu plus haut que la place d un
+  cote comme de l autre debordait de la fenetre (mesure dans Chromium 141, fenetre de 180 px).
 
   L anneau d un element est decale de -2 px, a l interieur : a l exterieur, le bord du menu le
   couperait. L ouverture reprend la duree et la courbe des dialogues, par leurs jetons de base : une
@@ -140,7 +142,9 @@ export const STYLE_MENU = `
   .ai5d-menu__liste {
     position-area: block-end span-inline-start;
     position-try-fallbacks: flip-block, flip-inline;
+    position-try-order: most-block-size;
     margin-block-start: var(--espace-1);
+    max-block-size: calc(100% - var(--espace-1));
   }
 }
 

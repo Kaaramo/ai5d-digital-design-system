@@ -397,6 +397,9 @@ describe('MenuActions : la feuille', () => {
     );
     expect(base).toContain('max-block-size: calc(100dvh - var(--espace-8));');
     expect(base).toContain('overflow-y: auto;');
+    const ancre = css.slice(css.indexOf('@supports (position-area: block-end)'));
+    expect(ancre).toContain('position-try-order: most-block-size;');
+    expect(ancre).toContain('max-block-size: calc(100% - var(--espace-1));');
   });
 
   it('ouvre en duree courte, et ne garde qu un fondu sous mouvement reduit', () => {
