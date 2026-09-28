@@ -164,6 +164,7 @@ tâche 18.
 | E17 | §10 : « chaque composant de la liste du §0.4 rendu deux fois ne pose qu'une feuille par clé » | Au client, la feuille reste dans `document.head` après le démontage (constaté) : un second rendu ne prouverait rien pour un composant déjà rendu dans le même fichier | La preuve composant par composant se fait au serveur (`renderToString` de deux instances : une balise, les clés attendues) ; la preuve client porte sur cinq cents boutons (tâche 2) |
 | E18 | §11.1 : « l'apostrophe droite du constat n° 9 » | Il y en a **deux** dans la page des spécimens : « l'accompagner » et « l'interface » | Les deux corrigées (tâche 16) |
 | E19 | §5.1.2 : `OngletsRubrique` parmi les porteurs de `ai5d-hors-ecran` | Conséquence d'E6 | `ai5d-hors-ecran` reste partagé par `Bouton`, `LigneLien`, `ValeurCopiable` et `MenuActions` |
+| E20 | §3.15 (README, « Les gardes ») | Constaté à l'exécution de la tâche 15 : la ligne de `verifierFeuilleUnique`, ajoutée après `verifierAucunEspacementEnDur`, devient la dernière de la table, et le paragraphe qui suit, « La dernière admet une liste de valeurs hors échelle », parlerait désormais de la garde 7, qui n'en admet aucune | Le paragraphe nomme sa garde, `verifierAucunEspacementEnDur` ; la table garde l'ordre du plan (tâche 15) |
 
 ---
 

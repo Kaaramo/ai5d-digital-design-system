@@ -55,3 +55,25 @@ n'a pas eu lieu. Les libellés par défaut du bouton sont « Copier » et « Cop
 | Situation                       | Formulation                                               | La règle derrière                                                                                                  |
 | ------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | Lien qui ouvre un nouvel onglet | « (s’ouvre dans un nouvel onglet) », lue après le libellé | On prévient avant que le contexte change ; le système l'ajoute seul à tout lien sortant de `Bouton` et `LigneLien` |
+
+## Menus
+
+| Situation        | Formulation                                                   | La règle derrière                                                                                  |
+| ---------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Nom d'un menu    | « Actions pour Aïssatou Camara », « Actions de la formation » | L'objet est nommé ; jamais « Plus » ni « Options » seuls                                           |
+| Action d'un menu | « Corriger l’adresse », « Révoquer l’attestation »            | Un verbe suivi de son objet ; un geste qui défait se range après un filet, et son libellé le nomme |
+
+Une action indisponible est absente du menu, jamais grisée ; un menu sans action n'est pas rendu.
+
+## Retours
+
+| Situation             | Formulation           | La règle derrière                                                               |
+| --------------------- | --------------------- | ------------------------------------------------------------------------------- |
+| Fermer un bandeau     | « Fermer ce message » | Le bouton dit ce qu'il ferme ; le système ne ferme jamais un retour de lui-même |
+| Nom d'un fil d'Ariane | « Fil d’Ariane »      | Le nom de la navigation, lu avant ses liens                                     |
+
+## Compteurs
+
+| Situation            | Formulation                    | La règle derrière                                                               |
+| -------------------- | ------------------------------ | ------------------------------------------------------------------------------- |
+| Compteur d'un onglet | « Participants, 25 à traiter » | Le libellé, le nombre, puis ce qu'il compte ; le nombre ne s'entend qu'une fois |

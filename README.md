@@ -13,7 +13,7 @@
 ![pnpm](https://img.shields.io/badge/pnpm-051C2C?style=for-the-badge&logo=pnpm&logoColor=white)
 
 ![Version](https://img.shields.io/badge/version-1.2.0-2251FF?style=flat-square&labelColor=051C2C)
-![Composants](https://img.shields.io/badge/composants-39-2251FF?style=flat-square&labelColor=051C2C)
+![Composants](https://img.shields.io/badge/composants-42-2251FF?style=flat-square&labelColor=051C2C)
 
 </div>
 
@@ -91,6 +91,10 @@ Le paquet livre du TypeScript et du JSX non transpilés. Sous Next.js :
 transpilePackages: ['@ai5d/design-system'],
 ```
 
+Les composants posent leurs feuilles d'états dans le `<head>` du document, une fois chacune, quel
+que soit le nombre d'instances (React 19, `precedence="ai5d"`, décision 010). Un produit qui compte
+ses feuilles dans une recette lit `PRECEDENCE_FEUILLES`.
+
 L'épinglage est une règle et non une précaution. Sans lui, une correction de jeton arriverait dans
 un produit au prochain `pnpm install`, sans que personne l'ait décidé, et une correction de jeton
 change le rendu de tous les écrans.
@@ -132,23 +136,23 @@ Deux règles les rendent inoffensives. **La densité change l'espace entre les c
 taille du texte**, sans quoi le profil compact devient illisible en six mois. Et **le plancher
 tactile de 44 px prime sur les quatre profils**, exprimé une seule fois en requête média.
 
-## Les 39 composants
+## Les 42 composants
 
 Neuf familles. Le détail de ce que chacun garantit est dans [`noyau/NOYAU.md`](noyau/NOYAU.md).
 
 <div align="center">
 
-| Famille                | Composants                                                                                                                     |
-| :--------------------- | :----------------------------------------------------------------------------------------------------------------------------- |
-| **Marque**             | `Logotype` · `Embleme` · `Icone`                                                                                               |
-| **Saisie et action**   | `Bouton` · `Champ` · `ValeurCopiable`                                                                                          |
-| **États et signaux**   | `Pastille` · `PastilleEtat` · `Bandeau` · `TempsRelatif` · `Chiffre` · `Avatar`                                                |
-| **Contenu**            | `Carte` · `CarteAction` · `GrilleCartes` · `EnteteRubrique` · `EnteteCarte` · `EtatVide` · `TitreSection` · `ListeDefinitions` |
-| **Coquilles**          | `CoquilleRail` · `GabaritAuth` · `GabaritApp` · `GabaritSeuil`                                                                 |
-| **Navigation**         | `LiensRail` · `BarreOnglets` · `OngletsRubrique` · `SelecteurTheme` · `LigneLien` · `ListeLignes`                              |
-| **Document**           | `GabaritDocument` · `SommaireDocument` · `BlocDocument` · `DeplierDocument`                                                    |
-| **Dialogues**          | `BoiteConfirmation` · `BoiteMotif`                                                                                             |
-| **Attente et session** | `Squelette` · `SigneAnime` · `RechargeAuRetour`                                                                                |
+| Famille                | Composants                                                                                                                                     |
+| :--------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Marque**             | `Logotype` · `Embleme` · `Icone`                                                                                                               |
+| **Saisie et action**   | `Bouton` · `Champ` · `Selecteur` · `ValeurCopiable`                                                                                            |
+| **États et signaux**   | `Pastille` · `PastilleEtat` · `Bandeau` · `TempsRelatif` · `Chiffre` · `Avatar`                                                                |
+| **Contenu**            | `Carte` · `CarteAction` · `GrilleCartes` · `EnteteRubrique` · `EnteteObjet` · `EnteteCarte` · `EtatVide` · `TitreSection` · `ListeDefinitions` |
+| **Coquilles**          | `CoquilleRail` · `GabaritAuth` · `GabaritApp` · `GabaritSeuil`                                                                                 |
+| **Navigation**         | `LiensRail` · `BarreOnglets` · `OngletsRubrique` · `MenuActions` · `SelecteurTheme` · `LigneLien` · `ListeLignes`                              |
+| **Document**           | `GabaritDocument` · `SommaireDocument` · `BlocDocument` · `DeplierDocument`                                                                    |
+| **Dialogues**          | `BoiteConfirmation` · `BoiteMotif`                                                                                                             |
+| **Attente et session** | `Squelette` · `SigneAnime` · `RechargeAuRetour`                                                                                                |
 
 </div>
 
@@ -160,25 +164,27 @@ import { LOGOTYPE } from '@ai5d/design-system/logotype';
 
 ## Les gardes
 
-Six vérifications livrées par le système, à brancher dans l'intégration continue de chaque produit.
+Sept vérifications livrées par le système, à brancher dans l'intégration continue de chaque produit.
 Elles remplacent la discipline humaine, celle qui a produit les quatre écarts du tableau plus haut.
 
 ```ts
 import { decrire, verifierAucunEspacementEnDur } from '@ai5d/design-system/gardes';
 ```
 
-| Garde                                | Ce qu'elle empêche                                                  |
-| :----------------------------------- | :------------------------------------------------------------------ |
-| `verifierAucuneCouleurEnDur`         | Qu'un écran décide une couleur dans son coin                        |
-| `verifierAucunJetonDeMarqueRedefini` | Qu'un produit dérive la marque en surchargeant `--marque-*`         |
-| `verifierPlancherTactile`            | Qu'un profil dense casse l'accessibilité tactile                    |
-| `verifierAucuneLargeurFixe`          | Qu'une largeur figée empêche une page de descendre sur un téléphone |
-| `verifierHauteurDeVueDynamique`      | Qu'un `100vh` se fasse couper par la barre d'adresse mobile         |
-| `verifierAucunEspacementEnDur`       | Qu'un espacement en pixels ignore l'échelle et les densités         |
+| Garde                                | Ce qu'elle empêche                                                       |
+| :----------------------------------- | :----------------------------------------------------------------------- |
+| `verifierAucuneCouleurEnDur`         | Qu'un écran décide une couleur dans son coin                             |
+| `verifierAucunJetonDeMarqueRedefini` | Qu'un produit dérive la marque en surchargeant `--marque-*`              |
+| `verifierPlancherTactile`            | Qu'un profil dense casse l'accessibilité tactile                         |
+| `verifierAucuneLargeurFixe`          | Qu'une largeur figée empêche une page de descendre sur un téléphone      |
+| `verifierHauteurDeVueDynamique`      | Qu'un `100vh` se fasse couper par la barre d'adresse mobile              |
+| `verifierAucunEspacementEnDur`       | Qu'un espacement en pixels ignore l'échelle et les densités              |
+| `verifierFeuilleUnique`              | Qu'une feuille se pose à chaque instance, cinq cents fois dans une table |
 
-La dernière admet une liste de valeurs **hors échelle**, nommées fichier par fichier : un écart de
-2 px qu'aucun jeton n'offre est une décision de dessin, pas une faute. Une valeur que l'échelle
-offre, elle, n'a aucune excuse, et une exception qui ne désigne plus rien est refusée.
+`verifierAucunEspacementEnDur` admet une liste de valeurs **hors échelle**, nommées fichier par
+fichier : un écart de 2 px qu'aucun jeton n'offre est une décision de dessin, pas une faute. Une
+valeur que l'échelle offre, elle, n'a aucune excuse, et une exception qui ne désigne plus rien est
+refusée.
 
 Le système se les applique d'abord à lui-même. Et le contraste de chaque jeton sémantique est
 recalculé à chaque exécution des tests, contre toutes les surfaces où il a le droit d'apparaître.
@@ -211,7 +217,7 @@ flowchart TD
         direction TB
         Noyau["<b>noyau/</b><br/>jetons · polices · paliers · thème<br/>composants · voix"]
         Densites["<b>densites/</b><br/>4 profils · plancher tactile"]
-        Gardes["<b>gardes/</b><br/>6 vérifications distribuées"]
+        Gardes["<b>gardes/</b><br/>7 vérifications distribuées"]
         Noyau --- Densites --- Gardes
     end
 
@@ -272,7 +278,7 @@ ai5d-digital-design-system/
 │   ├── polices/              woff2 locaux
 │   └── composants/           les composants et leur index
 ├── densites/                 4 profils, plancher tactile
-├── gardes/                   les 6 vérifications distribuées
+├── gardes/                   les 7 vérifications distribuées
 ├── outils/                   contraste WCAG, analyseur de jetons
 ├── tests/
 ├── specimens/                la preuve visuelle
@@ -292,10 +298,10 @@ d'authentification ne doit émettre aucune requête vers un tiers.
 
 | Document                                         | Ce qu'il porte                                                                                   |
 | :----------------------------------------------- | :----------------------------------------------------------------------------------------------- |
-| [`noyau/NOYAU.md`](noyau/NOYAU.md)               | Les jetons et leurs contrastes, la typographie, les 39 composants, la voix                       |
+| [`noyau/NOYAU.md`](noyau/NOYAU.md)               | Les jetons et leurs contrastes, la typographie, les 42 composants, la voix                       |
 | [`noyau/PALIERS.md`](noyau/PALIERS.md)           | Mobile d'abord : les paliers, les règles, la coquille d'application                              |
 | [`noyau/formulations.md`](noyau/formulations.md) | Les formulations de référence                                                                    |
-| [`CHANGELOG.md`](CHANGELOG.md)                   | Une entrée par changement, le guide de migration vers `1.0.0` et le guide de montée vers `1.2.0` |
+| [`CHANGELOG.md`](CHANGELOG.md)                   | Une entrée par changement, le guide de migration vers `1.0.0` et le guide de montée vers `1.3.0` |
 | [`docs/decisions/`](docs/decisions/)             | Les arbitrages, avec l'option écartée et pourquoi                                                |
 
 ## Licence

@@ -35,17 +35,24 @@ divergé. Voir [`docs/decisions/001`](../docs/decisions/001-copie-verifiee-des-j
 La marque institutionnelle n'a ni papier tiède ni mode sombre : ces jetons n'ont pas
 d'équivalent amont.
 
-| Jeton              | Clair          | Sombre    | Rôle                        |
-| ------------------ | -------------- | --------- | --------------------------- |
-| `--surface-1`      | `#FAF7F2`      | `#0B1620` | Fond de page                |
-| `--surface-2`      | `var(--blanc)` | `#11212D` | Cartes, panneaux, champs    |
-| `--surface-3`      | `var(--blanc)` | `#172C3B` | Menus, dialogues, flottants |
-| `--surface-chaude` | `#F4EFE7`      | `#171F26` | Lectures longues            |
-| `--bordure`        | `#E7E0D6`      | `#22323F` | Filets courants             |
-| `--bordure-forte`  | `#D5CCBE`      | `#2E4252` | Filets appuyés              |
+| Jeton              | Clair                   | Sombre             | Rôle                                      |
+| ------------------ | ----------------------- | ------------------ | ----------------------------------------- |
+| `--surface-1`      | `#FAF7F2`               | `#0B1620`          | Fond de page                              |
+| `--surface-2`      | `var(--blanc)`          | `#11212D`          | Cartes, panneaux, champs                  |
+| `--surface-3`      | `var(--blanc)`          | `#172C3B`          | Menus, dialogues, flottants               |
+| `--surface-chaude` | `#F4EFE7`               | `#171F26`          | Lectures longues                          |
+| `--surface-survol` | `var(--surface-chaude)` | `var(--surface-1)` | Survol sur `--surface-2` ou `--surface-3` |
+| `--bordure`        | `#E7E0D6`               | `#22323F`          | Filets courants                           |
+| `--bordure-forte`  | `#D5CCBE`               | `#2E4252`          | Filets appuyés                            |
 
 Le blanc pur durcit. Sur les pages qui se lisent vraiment — journal de sécurité, mentions
 légales, liste des sessions — le papier tiède fait baisser la garde.
+
+**Le survol, depuis la 1.3.0.** `--surface-survol` est le survol d'un élément posé sur `--surface-2`
+ou `--surface-3` : une ligne de table, un élément de menu, un lien du rail. En sombre, il creuse d'un
+cran là où la sélection éclaire, et les deux ne se confondent plus. Il ne vaut pas pour un élément
+posé à même la page, où il se confondrait avec elle en sombre : `LigneLien` garde ses règles.
+Décision 011.
 
 ### 1.3 Le texte et les sémantiques — divergents, et c'est mesuré
 
@@ -86,6 +93,10 @@ Comme les quatre autres, il porte toujours un mot : le composant n'existe pas sa
 en clair et en sombre, et échoue sous 4,5. Le nombre de paires se lit dans ce test et nulle part
 ailleurs : écrit ici, il avait déjà vieilli une fois. C'est ce test qui aurait attrapé, dès le premier
 jour, les quatre défauts trouvés le 5 septembre 2026.
+
+**Une paire interdite.** Un texte en `--attention` ne se pose pas en texte nu sur une surface
+survolée : 4,39 en clair. Il garde son fond `--attention-fond` (4,54). Le test en fait un témoin qui
+doit rester sous 4,5.
 
 ---
 
@@ -131,6 +142,9 @@ La durée et la courbe qu'ils portent peuvent changer sans qu'un seul appel chan
 Sous `prefers-reduced-motion`, leurs durées tombent à 100 ms d'elles-mêmes ; ce qui se déplace reste à
 supprimer par chaque feuille. Les composants antérieurs à la 1.2.0 ne sont pas migrés.
 
+Le menu d'actions s'ouvre en `var(--duree-courte) var(--courbe-sortie)`, comme les dialogues, par ces
+jetons de base : une ouverture n'est pas un départ, et `--mouvement-sortie` ne lui revient pas.
+
 **La durée longue** (800 ms, 0 ms sous mouvement réduit) suit une règle réécrite en 1.2.0,
 décision 006 :
 
@@ -138,7 +152,7 @@ décision 006 :
 
 ---
 
-## 3. Les 39 composants
+## 3. Les 42 composants
 
 Neuf familles. Le nombre et les noms sont vérifiés par `tests/documentation.test.ts` : chaque fichier
 de `composants/` doit figurer ici, et le nombre de ce titre doit être celui des fichiers.
@@ -157,18 +171,19 @@ de `composants/` doit figurer ici, et le nombre de ce titre doit être celui des
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Bouton`         | Variantes, trois tailles, hauteur pilotée par la densité, plancher tactile respecté, `aria-busy` en chargement. Avec `href`, un vrai lien aux mêmes classes et états |
 | `Champ`          | Libellé **toujours** lié par `htmlFor`, aide et erreur reliées par `aria-describedby`, erreur jamais portée par la seule couleur                                     |
+| `Selecteur`      | Un `<select>` natif, jamais un menu dessiné. Libellé lié, masqué au besoin sans quitter l'arbre d'accessibilité ; même classe et même feuille que `Champ`            |
 | `ValeurCopiable` | Une valeur en clair, copiée d'un geste. Si la copie échoue, la valeur est sélectionnée et le geste manuel nommé : jamais une copie annoncée qui n'a pas eu lieu      |
 
 ### États et signaux
 
-| Composant      | Ce qu'il garantit                                                                                 |
-| -------------- | ------------------------------------------------------------------------------------------------- |
-| `Pastille`     | Un état compact, qui contient toujours du texte. Cinq tons, dont `neutre`, « rien à signaler »    |
-| `PastilleEtat` | Une `Pastille` précédée d'un point en `currentColor` : un état courant, et non une étiquette      |
-| `Bandeau`      | Une icône **et** un texte. `role="alert"` pour attention et erreur, `role="status"` pour le reste |
-| `TempsRelatif` | Un temps relatif calculé au client, la date absolue dans le HTML pour qui n'a pas de JavaScript   |
-| `Chiffre`      | Un chiffre, son libellé, et sa cible quand le produit en fixe une                                 |
-| `Avatar`       | La photo d'une personne, ou ses initiales. Une photo qui ne charge pas retombe sur les initiales  |
+| Composant      | Ce qu'il garantit                                                                                                                                                          |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Pastille`     | Un état compact, qui contient toujours du texte. Cinq tons, dont `neutre`, « rien à signaler »                                                                             |
+| `PastilleEtat` | Une `Pastille` précédée d'un point en `currentColor` : un état courant, et non une étiquette                                                                               |
+| `Bandeau`      | Une icône **et** un texte. `role="alert"` pour attention et erreur, `role="status"` pour le reste. Se ferme par `onFermer`, jamais de lui-même ; reçoit le focus par `ref` |
+| `TempsRelatif` | Un temps relatif calculé au client, la date absolue dans le HTML pour qui n'a pas de JavaScript                                                                            |
+| `Chiffre`      | Un chiffre, son libellé, et sa cible quand le produit en fixe une. En `compact`, une ligne qui se lit comme une phrase, en lien vers la liste qu'elle compte               |
+| `Avatar`       | La photo d'une personne, ou ses initiales. Une photo qui ne charge pas retombe sur les initiales                                                                           |
 
 ### Contenu
 
@@ -177,7 +192,8 @@ de `composants/` doit figurer ici, et le nombre de ce titre doit être celui des
 | `Carte`            | Padding piloté par la densité. Rend un `<button>` quand elle est cliquable, jamais une `<div>`                                |
 | `CarteAction`      | Le motif « une carte, une action » : bouton qui **nomme sa destination**                                                      |
 | `GrilleCartes`     | Une grille qui se règle sur la largeur disponible, par requête de conteneur                                                   |
-| `EnteteRubrique`   | Icône encadrée, titre `h1`, intention alignée sur le titre, filet                                                             |
+| `EnteteRubrique`   | Icône encadrée, titre `h1`, intention alignée sur le titre, filet ; une `action` à droite du titre, au-dessus du filet        |
+| `EnteteObjet`      | Le fil d'Ariane jusqu'au parent, un seul `h1`, l'état, l'action et le menu, les faits, le pouls, un filet                     |
 | `EnteteCarte`      | Icône encadrée, titre `h2`, description, ton `danger` rare, emplacement à droite dans le flux                                 |
 | `EtatVide`         | Ce qui est vide, si c'est normal, et quoi faire : la commande dans son propre bloc                                            |
 | `TitreSection`     | Le niveau (plan du document) et la taille (écran) séparés et obligatoires ; Fraunces 400, jamais de faux gras, jamais tronqué |
@@ -194,14 +210,15 @@ de `composants/` doit figurer ici, et le nombre de ce titre doit être celui des
 
 ### Navigation
 
-| Composant         | Ce qu'il garantit                                                                                                                 |
-| ----------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `LiensRail`       | Les liens du rail. Reçoit la rubrique active et le lien du produit ; actif sur `--surface-selection`, `aria-current`              |
-| `BarreOnglets`    | La navigation basse. Trois à cinq onglets, icône **et** mot, zone sûre réservée, lien du produit, disparaît dès 768 px            |
-| `OngletsRubrique` | Les sous-pages d'une rubrique, deux à six. Des **liens**, jamais un `tablist` ; un fondu au bord qui cache un onglet, sans script |
-| `SelecteurTheme`  | Clair, sombre, système, en groupe radio. 44 px au doigt, libellés visibles sur demande, cookie partagé sur le domaine             |
-| `LigneLien`       | Une ligne entière, un seul lien. Hauteur `--ligne-liste`, appui immédiat, attente visible ; ni chevron ni routeur pour un fichier |
-| `ListeLignes`     | Une `<ul role="list">`, un filet entre les lignes, et aux bords sur demande                                                       |
+| Composant         | Ce qu'il garantit                                                                                                                                                       |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `LiensRail`       | Les liens du rail. Reçoit la rubrique active et le lien du produit ; actif sur `--surface-selection`, `aria-current`                                                    |
+| `BarreOnglets`    | La navigation basse. Trois à cinq onglets, icône **et** mot, zone sûre réservée, lien du produit, disparaît dès 768 px                                                  |
+| `OngletsRubrique` | Les sous-pages d'une rubrique, deux à six. Des **liens**, jamais un `tablist` ; un fondu au bord qui cache un onglet, sans script ; un compteur par onglet, lu une fois |
+| `MenuActions`     | Un menu d'actions dans la couche supérieure : flèches, Début, Fin, Échap, fermeture au clic extérieur, focus rendu ; les gestes graves après un filet                   |
+| `SelecteurTheme`  | Clair, sombre, système, en groupe radio. 44 px au doigt, libellés visibles sur demande, cookie partagé sur le domaine                                                   |
+| `LigneLien`       | Une ligne entière, un seul lien. Hauteur `--ligne-liste`, appui immédiat, attente visible ; ni chevron ni routeur pour un fichier                                       |
+| `ListeLignes`     | Une `<ul role="list">`, un filet entre les lignes, et aux bords sur demande                                                                                             |
 
 ### Document
 
@@ -221,11 +238,11 @@ de `composants/` doit figurer ici, et le nombre de ce titre doit être celui des
 
 ### Attente et session
 
-| Composant          | Ce qu'il garantit                                                                                         |
-| ------------------ | --------------------------------------------------------------------------------------------------------- |
-| `Squelette`        | La forme de ce qui arrive, jamais celle de ce qui est déjà là                                             |
-| `SigneAnime`       | La marque entourée de deux anneaux contrarotatifs ; l'emplacement porte la taille de la marque            |
-| `RechargeAuRetour` | Redemande la page quand le navigateur la ressort de son cache : aucune identité visible après déconnexion |
+| Composant          | Ce qu'il garantit                                                                                                          |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| `Squelette`        | La forme de ce qui arrive, jamais celle de ce qui est déjà là ; `SqueletteIndicateurs compact` pour une rangée de chiffres |
+| `SigneAnime`       | La marque entourée de deux anneaux contrarotatifs ; l'emplacement porte la taille de la marque                             |
+| `RechargeAuRetour` | Redemande la page quand le navigateur la ressort de son cache : aucune identité visible après déconnexion                  |
 
 `GabaritAuth` est dans le noyau et non dans l'écosystème parce que tout produit peut avoir à
 afficher un écran de session expirée, même si le portail Compte porte l'essentiel des flux.
@@ -240,6 +257,11 @@ On y arrive déjà décidé.
 
 Les composants ne dépendent d'aucun framework de style : leurs styles passent par les
 variables CSS, de sorte qu'un projet sans Tailwind les rend correctement.
+
+**Une feuille par composant, depuis la 1.3.0.** Chaque feuille d'états passe par `feuille(id, css)`,
+qui la pose une fois dans le `<head>` du document, quel que soit le nombre d'instances ; au serveur,
+toutes les feuilles du système tiennent dans une balise `data-precedence="ai5d"`. La septième garde,
+`verifierFeuilleUnique`, refuse toute balise qui se poserait à chaque instance. Décision 010.
 
 ---
 

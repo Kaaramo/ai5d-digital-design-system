@@ -7,6 +7,107 @@ modifie le rendu de tous les produits qui consomment le système.
 
 ---
 
+## 1.3.0 · 28 septembre 2026
+
+Ce que la console du Portail demandait et qu'un deuxième produit partage, et le correctif d'un défaut
+que tous les produits portaient : chaque instance d'un composant posait sa propre feuille. Aucune
+valeur de jeton ne change : `tests/non-regression.test.ts` le prouve contre un instantané de la 1.2.0.
+
+### Ce qui change à l'écran, sans une ligne de code dans le produit
+
+1. **Une feuille par composant, quel que soit le nombre d'instances.** Les feuilles du système se
+   hissent dans `<head>` : cinq cents boutons et un champ posaient 501 balises identiques, ils en
+   posent une au serveur et deux au client (mesuré dans Chromium, `docs/preuves/1.3.0/feuilles.md`).
+   Au serveur, toutes les feuilles du système tiennent dans une balise
+   `<style data-precedence="ai5d">`. Décision 010.
+2. **Le survol du rail** prend `--surface-survol` : en sombre, il creuse au lieu d'imiter la rubrique
+   active ; au doigt, il ne reste plus collé après un toucher. Décision 011.
+3. **Au-delà de 768 px, `GabaritApp` avec onglets s'arrête où son contenu s'arrête** : la réserve de la
+   barre basse retombe enfin à zéro, 56 px de moins sous le contenu. `CoquilleRail` corrige la même
+   faute sans changement visible. Décision 013.
+
+### Ajouts
+
+- `MenuActions` : un menu d'actions au clavier, dans la couche supérieure, les gestes graves à part.
+- `EnteteObjet` : le fil, le titre, l'état, l'action et le menu, les faits, le pouls.
+- `Selecteur` : un `<select>` natif qui partage la classe et la feuille de `Champ`.
+- `Bandeau` : `onFermer`, `libelleFermer`, `ref`.
+- `EnteteRubrique` : `action` ; son type est exporté, `ProprietesEnteteRubrique`.
+- `OngletsRubrique` : `compteur` par onglet, `libelleCompteur`.
+- `Chiffre` : forme `compact`, en lien avec `href` et `Lien` ; `ProprietesChiffre` exporté.
+  `SqueletteIndicateurs` : `compact`.
+- `--surface-survol`, et `PRECEDENCE_FEUILLES`.
+- La garde `verifierFeuilleUnique`, la septième.
+
+### Compatibilité
+
+Aucune propriété retirée, aucune variante renommée. `ProprietesChiffre` devient une union : les appels
+existants compilent tels quels, `cible` et `mise` gardant leur forme exacte.
+
+Les feuilles ne sont plus dans le conteneur du composant mais dans `<head>`, sans `id`. Un test de
+produit qui lisait une feuille du système dans son conteneur ou par son identifiant la lit désormais
+par `style[data-href~="ai5d-…"]`. Une règle de classe d'un produit, hors couche et de même spécificité
+qu'une règle du système, peut voir son ordre s'inverser ; les utilitaires de Tailwind 4, rangés dans
+une couche, ne changent pas. Une politique de sécurité du contenu à nonce devrait fournir le nonce au
+rendu de React ; aucun produit n'est dans ce cas.
+
+La racine de `CoquilleRail` ne porte plus d'attribut `style` ; celle de `GabaritApp` porte
+`data-barre` quand elle a des onglets, et `--reserve-barre` se lit dans la feuille.
+
+### Guide de montée
+
+#### Pour tout produit
+
+1. Remplacer l'étiquette :
+   `"@ai5d/design-system": "github:Kaaramo/ai5d-digital-design-system#v1.3.0"`, puis `pnpm install`.
+2. Relancer sa vérification d'un bloc. Un test qui lit une feuille du système dans son conteneur la
+   lit dans `document.head`.
+3. Si le produit a des règles de classe hors couche qui visent les classes `ai5d-…`, les relire.
+4. Regarder à l'écran les trois différences ci-dessus.
+
+Aucune adoption n'est obligatoire.
+
+#### AI5D Portail, de 1.2.0 à 1.3.0 (P10)
+
+| Pièce de P10 §7.2                 | Ce que la 1.3.0 livre                                                                      | Ce que P10 écrit dans `components/`                                                                                                                                                                   |
+| --------------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 `TableauDonnees`                | `--surface-survol`, et `feuille` comme modèle                                              | `TableauDonnees`, API de P10 §7.2, feuille sous la précédence `portail`                                                                                                                               |
+| 2 `BarreActionsGroupees`          |                                                                                            | Le composant, API de P10                                                                                                                                                                              |
+| 3 `PucesFiltre`, `RechercheTable` |                                                                                            | Les deux ; le compte `attention` d'une puce garde son fond `--attention-fond` au survol                                                                                                               |
+| 4 `MenuActions`                   | Le composant ; chaque action est un lien **ou** un geste                                   | Rien                                                                                                                                                                                                  |
+| 5 `EnteteObjet`                   | Le composant                                                                               | Rien                                                                                                                                                                                                  |
+| 6 `EnteteRubrique`, `action`      | L'emplacement                                                                              | Rien                                                                                                                                                                                                  |
+| 7 Compteur d'onglet               | Le compteur ; `libelleCompteur="à traiter"`, et ne passer le compteur qu'au-dessus de zéro | Rien                                                                                                                                                                                                  |
+| 8 `--surface-survol`              | Le jeton, sur `--surface-2` et `--surface-3` seulement                                     | Rien                                                                                                                                                                                                  |
+| 9 Injection unique                | Le correctif                                                                               | `components/champs/commun.tsx:90-92` sur le même mécanisme, précédence `portail` ; IP19 peut appeler `verifierFeuilleUnique` ; la recette de la table compte les clés de `data-href`, pas les balises |
+| 10 `Annonce`                      | `Bandeau` qui se ferme                                                                     | `RegionRetour` composé sur `Bandeau` : collée, remplacement, code d'adresse, focus                                                                                                                    |
+| 11 `Chiffre` compact              | La forme compacte et son squelette                                                         | La rangée, et le second lien de la rangée 2 du pouls                                                                                                                                                  |
+| 12 `BarreEnregistrement`          |                                                                                            | Le composant, API de P10                                                                                                                                                                              |
+| 13 Champs                         | `Selecteur`                                                                                | `CaseACocher`, `ChoixSegmente`, `ZoneTexte`                                                                                                                                                           |
+
+`--largeur-lecture` n'existe pas : P10 lit `LARGEUR_LECTURE` (`lib/mesures.ts`). `ValeurCopiable` rend
+toujours un `Bouton` `neutre` `md`. Les treize écarts entre le contrat de P10 et cette version sont au
+§17 de la SPEC de la 1.3.0.
+
+#### AI5D Compte, de 1.1.0 à 1.3.0
+
+La montée traverse la 1.2.0 : son guide est plus bas. Relu au commit `1ef7ef2`.
+
+| Ce que Compte fait aujourd'hui                                                                     | Ce que la 1.3.0 permet                             | Obligatoire |
+| -------------------------------------------------------------------------------------------------- | -------------------------------------------------- | ----------- |
+| `EnteteConsole.tsx:25-34`, un titre, un fil et une action écrits à la main, rendus sur sept écrans | `EnteteObjet`, ou `EnteteRubrique` avec `action`   | Non         |
+| `Selecteur.tsx:19-35`, un `<select>` natif stylé en ligne, rendu sept fois                         | `Selecteur`, avec `libelleMasque` et `invite`      | Non         |
+| `Annonce.tsx:18-20`, un `Bandeau` de réussite sans fermeture                                       | `Bandeau` avec `onFermer`                          | Non         |
+| `app/admin/comptes/[id]/ActionsCompte.tsx:139`, `:143`, deux `Bouton` directs                      | `MenuActions`, si plusieurs gestes s'y rassemblent | Non         |
+
+#### Le SDK `@ai5d/auth`
+
+Rien n'est requis : il déclare le système en dépendance de pair `*`. `UserButton.tsx:100-139` pourra
+passer à `MenuActions` avec `declencheur` dans une version du SDK : le clavier, la fermeture au
+toucher extérieur et une largeur en `rem` lui viendraient avec.
+
+---
+
 ## 1.2.0 · 26 septembre 2026
 
 Ce que l'espace participant du Portail demandait, et le correctif d'un défaut que tous les produits
