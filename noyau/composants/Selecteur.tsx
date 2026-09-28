@@ -5,7 +5,7 @@
 */
 import { useId } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
-import { ID_STYLE_CHAMP, STYLE_CHAMP } from './Champ';
+import { ECART_LIBELLE_CHAMP, ID_STYLE_CHAMP, RETRAIT_CHAMP, STYLE_CHAMP } from './Champ';
 import { feuille } from './feuille';
 
 /**
@@ -102,7 +102,7 @@ export function Selecteur({
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--espace-2)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: ECART_LIBELLE_CHAMP }}>
       {feuille(ID_STYLE_CHAMP, STYLE_CHAMP)}
 
       <label htmlFor={identifiant} style={libelleMasque ? LIBELLE_MASQUE : LIBELLE}>
@@ -123,12 +123,15 @@ export function Selecteur({
           width: '100%',
           height: 'var(--hauteur-controle)',
           minHeight: 'var(--cible-tactile)',
-          paddingInline: 'var(--espace-4)',
+          paddingLeft: RETRAIT_CHAMP,
+          paddingRight: RETRAIT_CHAMP,
           fontFamily: 'var(--police-corps)',
           fontSize: 'var(--taille-md)',
           borderRadius: 'var(--rayon-md)',
-          // L'estompage du Portail, en ligne : la feuille de `Champ` ne connaît pas l'état désactivé,
-          // et l'y ajouter changerait le rendu de tous les champs.
+          // L'estompage du Portail, en ligne, par exception à la SPEC §5.0.2 (écart E7) : la feuille de
+          // `Champ` ne connaît pas l'état désactivé, et l'y ajouter changerait le rendu de tous les
+          // champs d'un produit, ce que cette version ne promet pas. Le jour où `STYLE_CHAMP` porte une
+          // règle `:disabled`, cet estompage la rejoint et `Champ` en profite.
           opacity: desactive ? 0.6 : undefined,
           cursor: desactive ? 'not-allowed' : undefined,
         }}

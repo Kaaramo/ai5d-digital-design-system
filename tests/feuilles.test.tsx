@@ -2,15 +2,18 @@ import { describe, expect, it } from 'vitest';
 import { render } from '@testing-library/react';
 import { renderToString } from 'react-dom/server';
 import type { ReactElement } from 'react';
-import { Home, Shield, User } from 'lucide-react';
+import { Calendar, Home, Shield, User } from 'lucide-react';
 import {
+  Bandeau,
   BarreOnglets,
   BoiteConfirmation,
   BoiteMotif,
   Bouton,
   CarteAction,
   Champ,
+  Chiffre,
   CoquilleRail,
+  EnteteObjet,
   GabaritApp,
   GabaritAuth,
   GabaritDocument,
@@ -20,8 +23,10 @@ import {
   LigneLien,
   ListeDefinitions,
   ListeLignes,
+  MenuActions,
   OngletsRubrique,
   PRECEDENCE_FEUILLES,
+  Selecteur,
   SelecteurTheme,
   SigneAnime,
   Squelette,
@@ -225,6 +230,52 @@ const CAS: Array<{ nom: string; cles: string[]; element: ReactElement }> = [
       />
     ),
   },
+  // Les pièces de la 1.3.0 (relecture, constat I3) : sans elles, un Selecteur seul pouvait ne poser
+  // aucune feuille sans qu un test le dise.
+  {
+    nom: 'Bandeau refermable',
+    cles: ['ai5d-bandeau', 'ai5d-bouton'],
+    element: <Bandeau onFermer={RIEN}>Les invitations sont parties.</Bandeau>,
+  },
+  {
+    nom: 'Chiffre compact',
+    cles: ['ai5d-chiffre'],
+    element: <Chiffre compact valeur="212" libelle="inscriptions" href="/admin/inscriptions" />,
+  },
+  {
+    nom: 'EnteteObjet',
+    cles: ['ai5d-entete-objet'],
+    element: (
+      <EnteteObjet
+        titre="Cohorte n° 5"
+        fil={[{ libelle: 'Sessions', href: '/admin/sessions' }]}
+        metadonnees={[{ icone: Calendar, texte: 'Du 13 au 15 octobre 2026' }]}
+      />
+    ),
+  },
+  {
+    nom: 'MenuActions',
+    cles: ['ai5d-menu-actions', 'ai5d-bouton'],
+    element: (
+      <MenuActions
+        libelle="Actions pour Aïssatou Camara"
+        actions={[{ id: 'bloquer', libelle: 'Bloquer', onChoisir: RIEN }]}
+      />
+    ),
+  },
+  {
+    nom: 'Selecteur seul',
+    cles: ['ai5d-champ'],
+    element: (
+      <Selecteur
+        libelle="Rôle"
+        valeur="membre"
+        onChange={RIEN}
+        nom="role"
+        options={[{ valeur: 'membre', libelle: 'Membre' }]}
+      />
+    ),
+  },
 ];
 
 /** Les clés de la balise unique qu un rendu serveur pose, dans l ordre de `data-href`. */
@@ -256,7 +307,7 @@ describe('au client, cinq cents boutons posent une seule feuille', () => {
 });
 
 describe('au serveur, toutes les feuilles du système tiennent dans une balise', () => {
-  it('cinq cents boutons et un champ : une balise, deux clés, un sélecteur > intact', () => {
+  it('cinq cents boutons et un champ : une balise, deux clés, un sélecteur descendant intact', () => {
     const html = renderToString(
       <div>
         {Array.from({ length: 500 }, (_, i) => (
@@ -268,10 +319,21 @@ describe('au serveur, toutes les feuilles du système tiennent dans une balise',
     expect(html.match(/<style/g)).toHaveLength(1);
     expect(clesServeur(html)).toEqual(['ai5d-bouton', 'ai5d-champ']);
     expect(html).not.toMatch(/<style[^>]* id=/);
-    // Le rendu serveur n échappe que `<style` et `</style` : un combinateur d enfant passe tel quel.
     expect(html).toContain(
       '.ai5d-bouton:is([data-en-attente], :has([data-en-attente])) .ai5d-bouton__points--attente',
     );
+  });
+
+  it('un combinateur d enfant > passe tel quel, sans devenir &gt;', () => {
+    // Relecture de la 1.3.0, constat M2 : le rendu serveur n échappe que `<style` et `</style`.
+    const html = renderToString(
+      <MenuActions
+        libelle="Actions"
+        actions={[{ id: 'a', libelle: 'Bloquer', onChoisir: RIEN }]}
+      />,
+    );
+    expect(html).toContain(".ai5d-menu > .ai5d-bouton[aria-expanded='true']");
+    expect(html).not.toContain('&gt;');
   });
 
   it('PRECEDENCE_FEUILLES vaut ai5d', () => {

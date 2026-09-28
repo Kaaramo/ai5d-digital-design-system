@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
+import { renderToString } from 'react-dom/server';
 import { Champ } from '../../noyau/composants/Champ';
 import { Selecteur } from '../../noyau/composants/Selecteur';
 import { texteFeuille } from '../aides/feuille';
@@ -139,6 +140,23 @@ describe('Selecteur', () => {
     expect(select.style.opacity).toBe('0.6');
   });
 
+  it('pose seul la feuille de Champ : un rendu serveur sans Champ porte la cle ai5d-champ', () => {
+    // Relecture de la 1.3.0, constat I3 : rendu a cote d un Champ, le test trouvait la feuille de
+    // Champ, et un Selecteur qui ne posait plus la sienne restait vert.
+    const html = renderToString(
+      <Selecteur
+        libelle="Rôle"
+        valeur="membre"
+        onChange={rien}
+        nom="role"
+        options={[{ valeur: 'membre', libelle: 'Membre' }]}
+      />,
+    );
+    expect(html.match(/<style/g)).toHaveLength(1);
+    expect(/<style data-precedence="ai5d" data-href="([^"]*)">/.exec(html)?.[1]).toBe('ai5d-champ');
+    expect(html).toContain('.ai5d-champ__entree:focus-visible');
+  });
+
   it('partage la classe et la feuille de Champ : une seule feuille pour les deux', () => {
     render(
       <>
@@ -158,6 +176,30 @@ describe('Selecteur', () => {
     expect(texteFeuille('ai5d-champ')).toContain('.ai5d-champ__entree:focus-visible');
     expect(screen.getByLabelText('Rôle').style.height).toBe('var(--hauteur-controle)');
     expect(screen.getByLabelText('Rôle').style.minHeight).toBe('var(--cible-tactile)');
+  });
+
+  it('s aligne sur Champ : meme ecart sous le libelle, meme retrait du texte', () => {
+    // Relecture de la 1.3.0, constat M7 : un <select> pose sous un <input> decalait son texte de
+    // 2 px, et son libelle de 2 px de plus.
+    render(
+      <>
+        <Champ libelle="Adresse" />
+        <Selecteur
+          libelle="Rôle"
+          valeur="membre"
+          onChange={rien}
+          nom="role"
+          options={[{ valeur: 'membre', libelle: 'Membre' }]}
+        />
+      </>,
+    );
+    const entree = screen.getByLabelText('Adresse');
+    const select = screen.getByLabelText('Rôle');
+    const cadreChamp = screen.getByText('Adresse').parentElement as HTMLElement;
+    const cadreSelecteur = select.parentElement as HTMLElement;
+    expect(cadreSelecteur.style.gap).toBe(cadreChamp.style.gap);
+    expect(select.style.paddingLeft).toBe(entree.style.paddingLeft);
+    expect(select.style.paddingRight).toBe(entree.style.paddingRight);
   });
 
   it('se declare module client', () => {

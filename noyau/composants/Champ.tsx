@@ -40,6 +40,14 @@ export const TAILLE_ICONE_CHAMP = 20;
 const RETRAIT = 14;
 const ESPACE_ICONE = RETRAIT + TAILLE_ICONE_CHAMP + 10;
 
+/**
+ * Le retrait du texte dans le cadre et l'écart entre le libellé et le contrôle, repris par
+ * `Selecteur` : un `<select>` posé sous un `<input>` aligne son texte et son libellé sur lui
+ * (relecture de la 1.3.0, constat M7).
+ */
+export const RETRAIT_CHAMP = `${RETRAIT}px`;
+export const ECART_LIBELLE_CHAMP = '6px';
+
 /** La clé de la feuille des champs, partagée avec `Selecteur` : une seule feuille pour les deux. */
 export const ID_STYLE_CHAMP = 'ai5d-champ';
 
@@ -159,7 +167,10 @@ export function Champ({
     <>
       {feuille(ID_STYLE_CHAMP, STYLE_CHAMP)}
 
-      <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+      <div
+        className={className}
+        style={{ display: 'flex', flexDirection: 'column', gap: ECART_LIBELLE_CHAMP }}
+      >
         <label
           htmlFor={identifiant}
           style={{
