@@ -470,7 +470,8 @@ ${decrire(infractions)}`,
 });
 
 describe('garde 7 - une feuille par composant, une fois par document', () => {
-  const EXTRAIT = '<style> sans precedence : la feuille est posee a chaque instance';
+  const EXTRAIT = '<style> sans href ni precedence : la feuille est posee a chaque instance';
+  const EXTRAIT_ESPACE = '<style> dont le href contient une espace : React refuse de la hisser';
 
   it('ne releve aucune infraction dans les composants du depot', () => {
     const infractions = verifierFeuilleUnique('noyau/composants');
@@ -556,6 +557,43 @@ describe('garde 7 - une feuille par composant, une fois par document', () => {
     );
     const infractions = verifierFeuilleUnique(racine);
     expect(infractions.map((i) => i.ligne)).toEqual([3]);
+  });
+
+  it('releve une feuille qui porte precedence sans href : React ne la hisse ni ne la deduplique', () => {
+    // Relecture de la 1.3.0, constat I1 : trois `<style precedence="portail">` sans `href` rendent
+    // trois balises dans le corps, sans erreur ; la garde repondait « Aucune infraction ».
+    const racine = depotTemporaire();
+    writeFileSync(
+      join(racine, 'Ligne.tsx'),
+      [
+        'export const Ligne = () => (',
+        '  <style precedence="portail">{CSS}</style>',
+        ');',
+        "export const appel = createElement('style', { precedence: 'portail' }, CSS);",
+        '',
+      ].join('\n'),
+    );
+    expect(verifierFeuilleUnique(racine)).toEqual([
+      { fichier: 'Ligne.tsx', ligne: 2, extrait: EXTRAIT, regle: 'feuille-unique' },
+      { fichier: 'Ligne.tsx', ligne: 4, extrait: EXTRAIT, regle: 'feuille-unique' },
+    ]);
+  });
+
+  it('releve un href litteral qui contient une espace, que React refuse de hisser', () => {
+    const racine = depotTemporaire();
+    writeFileSync(
+      join(racine, 'Carte.tsx'),
+      [
+        'export const Carte = () => <style href="portail carte" precedence="portail">{CSS}</style>;',
+        'export const Fiche = () => <style href={\'portail-fiche\'} precedence="portail">{CSS}</style>;',
+        "export const appel = createElement('style', { href: 'portail ligne', precedence: 'portail' }, CSS);",
+        '',
+      ].join('\n'),
+    );
+    expect(verifierFeuilleUnique(racine)).toEqual([
+      { fichier: 'Carte.tsx', ligne: 1, extrait: EXTRAIT_ESPACE, regle: 'feuille-unique' },
+      { fichier: 'Carte.tsx', ligne: 3, extrait: EXTRAIT_ESPACE, regle: 'feuille-unique' },
+    ]);
   });
 
   it('ne releve pas un commentaire qui cite la forme fautive', () => {

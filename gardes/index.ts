@@ -461,10 +461,13 @@ function finDeConstruction(texte: string, debut: number, fermante: '>' | ')'): n
  *
  * Une balise `<style>` sans `href` ni `precedence` est rendue à chaque instance : cinq cents lignes,
  * cinq cents copies et autant d'identifiants dupliqués. Seule une feuille hissée se déduplique
- * (décision 010, mesuré le 28 septembre 2026).
+ * (décision 010, mesuré le 28 septembre 2026). React ne hisse que si les DEUX sont posés : une balise
+ * qui porte `precedence` sans `href` reste dans le corps, une par instance, sans erreur ; et il refuse
+ * un `href` qui contient une espace (relecture de la 1.3.0, constat I1, sondé sur React 19.2.8).
  *
- * Elle relève, dans le code, tout élément JSX `<style` dont la balise ouvrante ne porte pas
- * `precedence`, et tout `createElement('style', …)` dont les propriétés ne la portent pas. La balise
+ * Elle relève, dans le code, tout élément JSX `<style` dont la balise ouvrante ne porte pas `href`
+ * et `precedence`, et tout `createElement('style', …)` dont les propriétés ne les portent pas ; puis
+ * tout `href` écrit en littéral qui contient une espace. Un `href` calculé ne se lit pas ici. La balise
  * se lit jusqu'au `>` qui la ferme, sur plusieurs lignes au besoin : une lecture ligne à ligne
  * raterait une déclaration écrite sur deux (constat n° 2 de la relecture de la 1.2.0). Les
  * commentaires sont ignorés. Une chaîne qui contient le texte `<style` serait relevée : la garde lit
@@ -472,7 +475,8 @@ function finDeConstruction(texte: string, debut: number, fermante: '>' | ')'): n
  */
 export function verifierFeuilleUnique(racine: string, options: OptionsGarde = {}): Infraction[] {
   const regle = 'feuille-unique';
-  const extrait = '<style> sans precedence : la feuille est posee a chaque instance';
+  const extrait = '<style> sans href ni precedence : la feuille est posee a chaque instance';
+  const extraitEspace = '<style> dont le href contient une espace : React refuse de la hisser';
   const examinees = { extensions: ['.tsx', '.ts', '.jsx', '.js'], ...options };
   const infractions: Infraction[] = [];
 
@@ -483,16 +487,20 @@ export function verifierFeuilleUnique(racine: string, options: OptionsGarde = {}
     for (const trouve of code.matchAll(/<style(?=[\s/>])/g)) {
       const debut = trouve.index ?? 0;
       const balise = code.slice(debut, finDeConstruction(code, debut + 1, '>') + 1);
-      if (!/\bprecedence\s*=/.test(balise)) {
+      if (!/(?<![\w-])precedence\s*=/.test(balise) || !/(?<![\w-])href\s*=/.test(balise)) {
         infractions.push({ fichier, ligne: ligneDe(debut), extrait, regle });
+      } else if (/(?<![\w-])href\s*=\s*\{?\s*(['"`])[^'"`]*\s[^'"`]*\1/.test(balise)) {
+        infractions.push({ fichier, ligne: ligneDe(debut), extrait: extraitEspace, regle });
       }
     }
 
     for (const trouve of code.matchAll(/createElement\(\s*(['"])style\1\s*,/g)) {
       const debut = trouve.index ?? 0;
       const appel = code.slice(debut, finDeConstruction(code, debut + trouve[0].length, ')') + 1);
-      if (!/\bprecedence\b/.test(appel)) {
+      if (!/(?<![\w-])precedence\b/.test(appel) || !/(?<![\w-])href\b/.test(appel)) {
         infractions.push({ fichier, ligne: ligneDe(debut), extrait, regle });
+      } else if (/(?<![\w-])href\s*:\s*(['"`])[^'"`]*\s[^'"`]*\1/.test(appel)) {
+        infractions.push({ fichier, ligne: ligneDe(debut), extrait: extraitEspace, regle });
       }
     }
   }
