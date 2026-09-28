@@ -141,7 +141,7 @@ se coche « écrite, non testée » ; la tâche 17 vérifie tout d'un bloc et vo
 - [x] T8 · Le compteur d'onglet · écrite, non testée
 - [x] T9 · `Chiffre` compact et `SqueletteIndicateurs compact` · écrite, non testée
 - [x] T10 · `MenuActions` · écrite, non testée
-- [ ] T11 · `EnteteObjet`
+- [x] T11 · `EnteteObjet` · écrite, non testée
 - [ ] T12 · `Selecteur`
 - [ ] T13 · La réserve basse dans la feuille, décision 013
 - [ ] T14 · L'index
