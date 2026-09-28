@@ -1,4 +1,3 @@
-```markdown
 # 010 · Les feuilles se hissent
 
 **Date :** 28 septembre 2026 · **Statut :** appliquée · **Version :** 1.3.0
@@ -27,8 +26,9 @@ feuilles d'une précédence tiennent dans une balise. React 19 est déjà exigé
 pose `<style href={id} precedence="ai5d">`. Le texte passe en enfant. `PRECEDENCE_FEUILLES` est
 exporté pour qu'un produit compte les feuilles du système ; `feuille` ne l'est pas : un produit pose
 les siennes sous sa propre précédence (le Portail : `portail`). La septième garde,
-`verifierFeuilleUnique`, refuse toute balise `<style>` ou tout `createElement('style')` sans
-`precedence`.
+`verifierFeuilleUnique`, refuse toute balise `<style>` ou tout `createElement('style')` qui ne porte
+pas `href` et `precedence`, et tout `href` littéral qui contient une espace : React ne hisse ni ne
+déduplique une balise sans `href`, et refuse un `href` à espace (relecture de la 1.3.0, constat I1).
 
 ## Conséquences
 
@@ -39,6 +39,13 @@ les siennes sous sa propre précédence (le Portail : `portail`). La septième g
   recette compte les clés, pas les balises.
 - Démontée, une feuille reste dans `<head>` : elle ne coûte rien, et la retirer ferait clignoter la
   prochaine instance.
-- L'ordre dans la cascade change face à une règle de classe d'un produit, hors couche et de même
-  spécificité ; face aux utilitaires de Tailwind 4, rangés dans une couche, rien ne change.
+- L'ordre dans la cascade peut changer face à une règle de classe d'un produit, hors couche et de
+  même spécificité ; face aux utilitaires de Tailwind 4, rangés dans une couche, rien ne change. Le
+  sens est mesuré (sonde React 19.2.8, relecture de la 1.3.0, constat M3). Sous Next, qui pose ses
+  feuilles en `precedence="next"` en production, la feuille du système reste **après** celles du
+  produit, comme en 1.2.0 ; en développement, une feuille de page découverte après un composant du
+  système passe après lui. Hors de Next, ou en rendu client seul, elle est insérée **en tête** de
+  `<head>`, avant les feuilles du produit, qui l'emportent alors à spécificité égale.
+- Un produit qui pose ses propres feuilles hissées (le Portail, sous `portail`) les voit rangées selon
+  l'ordre où React découvre chaque précédence, jamais selon son nom.
 - Une politique de sécurité du contenu à nonce devra fournir le nonce au rendu de React.

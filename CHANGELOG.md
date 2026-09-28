@@ -37,7 +37,8 @@ valeur de jeton ne change : `tests/non-regression.test.ts` le prouve contre un i
 - `Chiffre` : forme `compact`, en lien avec `href` et `Lien` ; `ProprietesChiffre` exporté.
   `SqueletteIndicateurs` : `compact`.
 - `--surface-survol`, et `PRECEDENCE_FEUILLES`.
-- La garde `verifierFeuilleUnique`, la septième.
+- La garde `verifierFeuilleUnique`, la septième : elle relève toute feuille qui ne porte pas `href` et
+  `precedence`, et tout `href` littéral qui contient une espace.
 
 ### Compatibilité
 
@@ -47,9 +48,14 @@ existants compilent tels quels, `cible` et `mise` gardant leur forme exacte.
 Les feuilles ne sont plus dans le conteneur du composant mais dans `<head>`, sans `id`. Un test de
 produit qui lisait une feuille du système dans son conteneur ou par son identifiant la lit désormais
 par `style[data-href~="ai5d-…"]`. Une règle de classe d'un produit, hors couche et de même spécificité
-qu'une règle du système, peut voir son ordre s'inverser ; les utilitaires de Tailwind 4, rangés dans
-une couche, ne changent pas. Une politique de sécurité du contenu à nonce devrait fournir le nonce au
-rendu de React ; aucun produit n'est dans ce cas.
+qu'une règle du système, peut voir son ordre changer, dans un sens mesuré : sous Next, qui pose ses
+feuilles en `precedence="next"` en production, la feuille du système reste après celles du produit,
+comme en 1.2.0 (en développement, une feuille de page découverte après un composant du système passe
+après lui) ; hors de Next, ou en rendu client seul, elle est insérée en tête de `<head>`, avant les
+feuilles du produit, qui l'emportent alors à spécificité égale. Les utilitaires de Tailwind 4, rangés
+dans une couche, ne changent pas. Un produit qui pose ses propres feuilles hissées les voit rangées
+selon l'ordre où React découvre chaque précédence, jamais selon son nom. Une politique de sécurité du
+contenu à nonce devrait fournir le nonce au rendu de React ; aucun produit n'est dans ce cas.
 
 La racine de `CoquilleRail` ne porte plus d'attribut `style` ; celle de `GabaritApp` porte
 `data-barre` quand elle a des onglets, et `--reserve-barre` se lit dans la feuille.
@@ -99,6 +105,20 @@ La montée traverse la 1.2.0 : son guide est plus bas. Relu au commit `1ef7ef2`.
 | `Selecteur.tsx:19-35`, un `<select>` natif stylé en ligne, rendu sept fois                         | `Selecteur`, avec `libelleMasque` et `invite`      | Non         |
 | `Annonce.tsx:18-20`, un `Bandeau` de réussite sans fermeture                                       | `Bandeau` avec `onFermer`                          | Non         |
 | `app/admin/comptes/[id]/ActionsCompte.tsx:139`, `:143`, deux `Bouton` directs                      | `MenuActions`, si plusieurs gestes s'y rassemblent | Non         |
+
+**Trois lectures de Compte rougissent à la montée**, parce qu'elles lisent l'intérieur du système.
+Constatées à la montée d'essai du 28 septembre 2026, Compte au commit `1ef7ef2`
+(`docs/preuves/1.3.0/montee-compte.md`) ; aucune ne dit un défaut du rendu. Chacune se réécrit ainsi :
+
+| Test de Compte                                | Ce qu'il lit                                                                                   | Pourquoi il rougit                                                                                    | Sa réécriture                                                                                  |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `tests/unites/coquille.test.tsx:107`          | La chaîne `.ai5d-coquille-rail { --reserve-barre: 0px; }` dans le `CoquilleRail.tsx` installé  | La remise à zéro porte désormais la spécificité de ce qu'elle annule (décision 013)                   | `expect(rail).toContain(".ai5d-coquille-rail[data-mode='complet'] { --reserve-barre: 0px; }")` |
+| `tests/unites/coquille-document.test.tsx:185` | `container.querySelector('style')?.textContent` sur `GabaritDocument`, puis `minmax(0, 720px)` | La feuille est hissée dans `<head>` : le conteneur n'en a plus, la chaîne lue est vide (décision 010) | `document.head.querySelector('style[data-href~="ai5d-gabarit-document"]')?.textContent ?? ''`  |
+| `tests/unites/coquille-document.test.tsx:192` | La même lecture, puis `::details-content` et `@media print`                                    | Idem                                                                                                  | Idem                                                                                           |
+
+Une quatrième suit la montée d'elle-même : `tests/invariants/socle.test.ts:82` compare l'étiquette
+demandée à la version installée ; elle passe dès que `apps/compte/package.json` porte `#v1.3.0` et que
+`pnpm install` a posé la 1.3.0.
 
 #### Le SDK `@ai5d/auth`
 

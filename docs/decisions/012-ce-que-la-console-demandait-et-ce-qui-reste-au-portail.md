@@ -1,4 +1,3 @@
-```markdown
 # 012 · Ce que la console demandait, et ce qui reste au Portail
 
 **Date :** 28 septembre 2026 · **Statut :** appliquée · **Version :** 1.3.0

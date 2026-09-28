@@ -505,8 +505,9 @@ Désormais elle est dans `<head>`, à une place que React choisit par précéden
 Une balise `<style>` hissée reste une feuille en ligne. Le Portail autorise `style-src 'self'
 'unsafe-inline'` (`lib/securite/csp.ts:32`) : rien ne change. Un produit qui passerait à des feuilles
 à nonce devrait fournir le nonce au rendu de React ; React refuse sinon d’inclure la feuille (message
-constaté dans `react-dom-server.node.development.js`). Aucun produit n’est dans ce cas (Compte : non
-revérifié).
+constaté dans `react-dom-server.node.development.js`). Aucun produit n’est dans ce cas : Compte pose
+lui aussi `style-src 'self' 'unsafe-inline'` (`apps/compte/middleware.ts:126`, relu au commit
+`1ef7ef2` à la relecture de la 1.3.0, constat M13), et rien ne change pour lui.
 
 #### 5.1.5 La garde distribuée `verifierFeuilleUnique`
 
@@ -525,8 +526,13 @@ export function verifierFeuilleUnique(racine: string, options?: OptionsGarde): I
 
 | Relevé dans un `.tsx` | Infraction (`extrait`) |
 | --------------------- | ---------------------- |
-| Un élément JSX `<style` dont la balise ouvrante ne porte pas `precedence` | `<style> sans precedence : la feuille est posee a chaque instance` |
-| `createElement('style'` sans `precedence` dans ses propriétés | idem |
+| Un élément JSX `<style` dont la balise ouvrante ne porte pas `href` et `precedence` | `<style> sans href ni precedence : la feuille est posee a chaque instance` |
+| `createElement('style'` sans `href` et `precedence` dans ses propriétés | idem |
+| Un `href` écrit en littéral qui contient une espace, dans l’un ou l’autre | `<style> dont le href contient une espace : React refuse de la hisser` |
+
+Les deux attributs, et non `precedence` seul : React ne hisse ni ne déduplique une balise qui porte
+`precedence` sans `href`, et la rend à chaque instance sans erreur ; il refuse un `href` qui contient
+une espace (relecture de la 1.3.0, constat I1, sondé sur React 19.2.8).
 
 La balise ouvrante se lit jusqu’au `>` qui la ferme, sur plusieurs lignes au besoin (constat n° 2 de
 la relecture de la 1.2.0 : une lecture ligne à ligne rate une déclaration sur deux lignes). Le système
