@@ -3,6 +3,7 @@ import { Logotype } from './Logotype';
 import { BarreOnglets, HAUTEUR_BARRE_ONGLETS } from './BarreOnglets';
 import type { Onglet } from './BarreOnglets';
 import { BUREAU, TABLETTE } from '../paliers';
+import { feuille } from './feuille';
 
 /**
  * La coquille d'application : en-tête collant, contenu défilant, barre d'onglets.
@@ -72,6 +73,11 @@ const STYLE_APP = `
   padding-bottom: calc(var(--rythme-section) + var(--reserve-barre, 0px));
 }
 
+/* La barre basse disparait au palier tablette : sa reserve retombe a zero. */
+@media (min-width: ${TABLETTE}px) {
+  .ai5d-app { --reserve-barre: 0px; }
+}
+
 @media (min-width: ${BUREAU}px) {
   .ai5d-app__contenu {
     max-width: var(--contenu-max);
@@ -110,14 +116,7 @@ export function GabaritApp({
 
   return (
     <>
-      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_APP }} />
-      {avecBarre ? (
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `@media (min-width: ${TABLETTE}px) { .ai5d-app { --reserve-barre: 0px; } }`,
-          }}
-        />
-      ) : null}
+      {feuille(ID_STYLE, STYLE_APP)}
 
       <div className={classes} style={styleRacine} data-gabarit="app">
         <header className="ai5d-app__entete">

@@ -6,6 +6,7 @@ import {
   ListeDefinitions,
   type Definition,
 } from '../../noyau/composants/ListeDefinitions';
+import { texteFeuille } from '../aides/feuille';
 
 const FAITS: Definition[] = [
   { libelle: 'Session', valeur: 'Orange Guinée · octobre 2026' },
@@ -14,7 +15,7 @@ const FAITS: Definition[] = [
 ];
 
 function feuille(): string {
-  return (document.getElementById('ai5d-definitions')?.innerHTML ?? '').replace(/\s+/g, ' ');
+  return texteFeuille('ai5d-definitions').replace(/\s+/g, ' ');
 }
 
 describe('ListeDefinitions (1.2.0)', () => {

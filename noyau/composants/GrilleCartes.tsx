@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
+import { feuille } from './feuille';
 
 /**
  * La grille qui apparie des cartes courtes.
@@ -71,7 +72,7 @@ export function GrilleCartes({ colonnes = 2, children, className, style }: Propr
 
   return (
     <>
-      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_GRILLE }} />
+      {feuille(ID_STYLE, STYLE_GRILLE)}
 
       <div className={classes} style={style} data-grille="cartes">
         <div className="ai5d-grille-cartes__pistes">{children}</div>

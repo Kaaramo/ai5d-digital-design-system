@@ -8,6 +8,7 @@ import {
   lienNatif,
   relSur,
 } from './lien';
+import { feuille } from './feuille';
 
 /**
  * Le bouton du registre applicatif.
@@ -390,7 +391,7 @@ function BoutonAction({
 
   return (
     <>
-      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_BOUTON }} />
+      {feuille(ID_STYLE, STYLE_BOUTON)}
 
       <button
         type={type}
@@ -439,7 +440,7 @@ function BoutonLien({
   ...reste
 }: ProprietesBoutonLien) {
   const classe = className === undefined ? 'ai5d-bouton' : `ai5d-bouton ${className}`;
-  const feuille = <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_BOUTON }} />;
+  const feuilleBouton = feuille(ID_STYLE, STYLE_BOUTON);
 
   if (disabled === true || chargement) {
     const inerte = Object.fromEntries(
@@ -447,7 +448,7 @@ function BoutonLien({
     );
     return (
       <>
-        {feuille}
+        {feuilleBouton}
         <a
           {...inerte}
           role="link"
@@ -490,10 +491,8 @@ function BoutonLien({
 
   return (
     <>
-      {feuille}
-      {nouvelOnglet ? (
-        <style id={ID_STYLE_HORS_ECRAN} dangerouslySetInnerHTML={{ __html: STYLE_HORS_ECRAN }} />
-      ) : null}
+      {feuilleBouton}
+      {nouvelOnglet ? feuille(ID_STYLE_HORS_ECRAN, STYLE_HORS_ECRAN) : null}
 
       {Lien === undefined || lienNatif({ download, target }) ? (
         <a

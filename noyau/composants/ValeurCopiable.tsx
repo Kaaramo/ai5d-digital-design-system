@@ -8,6 +8,7 @@ import { Champ } from './Champ';
 import { DUREE_SUCCES_COPIE_MS } from './copie';
 import { Icone } from './Icone';
 import { CLASSE_HORS_ECRAN, ID_STYLE_HORS_ECRAN, STYLE_HORS_ECRAN } from './lien';
+import { feuille } from './feuille';
 
 /**
  * Une valeur qui se copie d'un geste, ou se sélectionne quand la copie échoue.
@@ -135,8 +136,8 @@ export function ValeurCopiable({
 
   return (
     <>
-      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_COPIABLE }} />
-      <style id={ID_STYLE_HORS_ECRAN} dangerouslySetInnerHTML={{ __html: STYLE_HORS_ECRAN }} />
+      {feuille(ID_STYLE, STYLE_COPIABLE)}
+      {feuille(ID_STYLE_HORS_ECRAN, STYLE_HORS_ECRAN)}
 
       <div className="ai5d-copiable">
         <div className="ai5d-copiable__rangee">

@@ -14,6 +14,7 @@ import { useId } from 'react';
 import type { CSSProperties, InputHTMLAttributes, ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { EPAISSEUR_TRAIT } from './Icone';
+import { feuille } from './feuille';
 
 /**
  * Le champ de saisie du registre applicatif.
@@ -155,7 +156,7 @@ export function Champ({
 
   return (
     <>
-      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_CHAMP }} />
+      {feuille(ID_STYLE, STYLE_CHAMP)}
 
       <div className={className} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
         <label

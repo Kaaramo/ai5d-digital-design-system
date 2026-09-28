@@ -10,6 +10,7 @@ import {
   lienNatif,
   relSur,
 } from './lien';
+import { feuille } from './feuille';
 
 /**
  * Une ligne qui mène quelque part : une formation, une ressource, un replay.
@@ -192,10 +193,8 @@ export function LigneLien({
 
   return (
     <>
-      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_LIGNE_LIEN }} />
-      {externe ? (
-        <style id={ID_STYLE_HORS_ECRAN} dangerouslySetInnerHTML={{ __html: STYLE_HORS_ECRAN }} />
-      ) : null}
+      {feuille(ID_STYLE, STYLE_LIGNE_LIEN)}
+      {externe ? feuille(ID_STYLE_HORS_ECRAN, STYLE_HORS_ECRAN) : null}
 
       {Lien === undefined || sansChevron ? (
         <a

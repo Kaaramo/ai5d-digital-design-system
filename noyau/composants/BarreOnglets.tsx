@@ -3,6 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Icone } from './Icone';
 import type { ComposantLien } from './LiensRail';
 import { TABLETTE } from '../paliers';
+import { feuille } from './feuille';
 
 /**
  * La navigation basse d'une coquille d'application.
@@ -143,7 +144,7 @@ export function BarreOnglets({
 
   return (
     <>
-      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_BARRE }} />
+      {feuille(ID_STYLE, STYLE_BARRE)}
 
       <nav className={classes} style={style} aria-label={etiquette} data-onglets={onglets.length}>
         {onglets.map((onglet) => {

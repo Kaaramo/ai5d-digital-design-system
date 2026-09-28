@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
+import { feuille } from './feuille';
 
 /**
  * Des faits, en libellés et valeurs alignés : la fiche d'une attestation, d'un compte, d'une session.
@@ -76,7 +77,7 @@ export function ListeDefinitions({
 }: ProprietesListeDefinitions) {
   return (
     <>
-      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_DEFINITIONS }} />
+      {feuille(ID_STYLE, STYLE_DEFINITIONS)}
 
       <div
         className={className === undefined ? 'ai5d-definitions' : `ai5d-definitions ${className}`}

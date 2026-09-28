@@ -11,6 +11,7 @@ import {
   type Theme,
 } from '../theme';
 import { Icone } from './Icone';
+import { feuille } from './feuille';
 
 /**
  * Le choix du thème : clair, sombre, ou celui de l'appareil.
@@ -172,7 +173,7 @@ export function SelecteurTheme({
 
   return (
     <>
-      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_SELECTEUR_THEME }} />
+      {feuille(ID_STYLE, STYLE_SELECTEUR_THEME)}
 
       <div
         className="ai5d-theme"

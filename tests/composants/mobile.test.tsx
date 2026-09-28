@@ -15,17 +15,13 @@ import {
 } from '../../noyau/composants';
 import type { Onglet } from '../../noyau/composants';
 import { BUREAU, TABLETTE } from '../../noyau/paliers';
+import { texteFeuille } from '../aides/feuille';
 
 /**
  * jsdom n'evalue pas les requetes media. Ces tests lisent donc la regle CSS injectee par
  * le composant : ils prouvent que la regle est ECRITE, pas qu'elle s'applique a 768 px.
  * Le rendu se verifie a l'ecran, et nulle part ailleurs. C'est dit aussi dans PALIERS.md.
  */
-function styleInjecte(id: string): string {
-  const balise = document.getElementById(id);
-  expect(balise, `la feuille ${id} n est pas injectee`).not.toBeNull();
-  return balise?.innerHTML ?? '';
-}
 
 const ONGLETS: Onglet[] = [
   { id: 'accueil', libelle: 'Accueil', icone: Home },
@@ -66,7 +62,7 @@ describe('BarreOnglets', () => {
     // actif porte aussi aria-current et une graisse de libelle differente.
     const css = (() => {
       render(<BarreOnglets onglets={ONGLETS} actif="accueil" />);
-      return styleInjecte('ai5d-barre-onglets');
+      return texteFeuille('ai5d-barre-onglets');
     })();
     expect(css).toContain('font-weight: var(--graisse-normale)');
     expect(css).toMatch(/\[aria-current\][\s\S]*?font-weight: var\(--graisse-semi\)/);
@@ -74,19 +70,19 @@ describe('BarreOnglets', () => {
 
   it('respecte le plancher tactile sur chaque onglet', () => {
     render(<BarreOnglets onglets={ONGLETS} actif="accueil" />);
-    expect(styleInjecte('ai5d-barre-onglets')).toContain('min-height: var(--cible-tactile)');
+    expect(texteFeuille('ai5d-barre-onglets')).toContain('min-height: var(--cible-tactile)');
   });
 
   it('reserve la zone sure du bas, sans quoi le dernier onglet est inatteignable', () => {
     render(<BarreOnglets onglets={ONGLETS} actif="accueil" />);
-    expect(styleInjecte('ai5d-barre-onglets')).toContain(
+    expect(texteFeuille('ai5d-barre-onglets')).toContain(
       'padding-bottom: var(--zone-sure-basse, 0px)',
     );
   });
 
   it('disparait a partir du palier tablette', () => {
     render(<BarreOnglets onglets={ONGLETS} actif="accueil" />);
-    const css = styleInjecte('ai5d-barre-onglets');
+    const css = texteFeuille('ai5d-barre-onglets');
     expect(css).toContain(`@media (min-width: ${TABLETTE}px)`);
     expect(css).toMatch(new RegExp(`@media \\(min-width: ${TABLETTE}px\\)[\\s\\S]*?display: none`));
   });
@@ -148,7 +144,7 @@ describe('GabaritApp', () => {
     expect(racine?.getAttribute('style')).toContain(
       `--reserve-barre: calc(${HAUTEUR_BARRE_ONGLETS}px + var(--zone-sure-basse, 0px))`,
     );
-    expect(styleInjecte('ai5d-gabarit-app')).toContain('var(--reserve-barre, 0px)');
+    expect(texteFeuille('ai5d-gabarit-app')).toContain('var(--reserve-barre, 0px)');
   });
 
   it('ne reserve rien et ne rend aucune barre sans onglets', () => {
@@ -163,12 +159,12 @@ describe('GabaritApp', () => {
   });
 
   it('remet la reserve a zero au palier tablette, ou la barre disparait', () => {
-    const { container } = render(
+    render(
       <GabaritApp onglets={ONGLETS} actif="accueil">
         <p>Contenu</p>
       </GabaritApp>,
     );
-    const feuilles = [...container.querySelectorAll('style')].map((s) => s.innerHTML).join('\n');
+    const feuilles = texteFeuille('ai5d-gabarit-app');
     expect(feuilles).toMatch(
       new RegExp(`@media \\(min-width: ${TABLETTE}px\\)[\\s\\S]*?--reserve-barre: 0px`),
     );
@@ -180,7 +176,7 @@ describe('GabaritApp', () => {
         <p>Contenu</p>
       </GabaritApp>,
     );
-    const css = styleInjecte('ai5d-gabarit-app');
+    const css = texteFeuille('ai5d-gabarit-app');
     expect(css).toContain(`@media (min-width: ${BUREAU}px)`);
     expect(css).toContain('max-width: var(--contenu-max)');
     expect(css).toContain('margin-inline: auto');
@@ -192,7 +188,7 @@ describe('GabaritApp', () => {
         <p>Contenu</p>
       </GabaritApp>,
     );
-    expect(styleInjecte('ai5d-gabarit-app')).toContain(
+    expect(texteFeuille('ai5d-gabarit-app')).toContain(
       `height: calc(${HAUTEUR_ENTETE}px + var(--zone-sure-haute, 0px))`,
     );
   });
@@ -203,7 +199,7 @@ describe('GabaritApp', () => {
         <p>Contenu</p>
       </GabaritApp>,
     );
-    const css = styleInjecte('ai5d-gabarit-app');
+    const css = texteFeuille('ai5d-gabarit-app');
     expect(css).toContain('min-height: 100dvh');
     expect(css).not.toMatch(/\d+vh\b/);
   });
@@ -250,7 +246,7 @@ describe('CarteAction', () => {
 
   it('rend le bouton pleine largeur sous le palier compact, naturel au-dela', () => {
     render(<CarteAction icone={User} titre="Profil" action="Mon profil" />);
-    const css = styleInjecte('ai5d-carte-action');
+    const css = texteFeuille('ai5d-carte-action');
     expect(css).toContain('.ai5d-carte-action__action > * { width: 100%; }');
     expect(css).toMatch(/@media \(min-width: 640px\)[\s\S]*?width: auto/);
   });
@@ -258,7 +254,7 @@ describe('CarteAction', () => {
   it('donne a la pastille une largeur figee, legitime sous le plancher de 320 px', () => {
     expect(TAILLE_PASTILLE_ICONE).toBeLessThan(320);
     render(<CarteAction icone={User} titre="Profil" action="Mon profil" />);
-    expect(styleInjecte('ai5d-carte-action')).toContain(`width: ${TAILLE_PASTILLE_ICONE}px`);
+    expect(texteFeuille('ai5d-carte-action')).toContain(`width: ${TAILLE_PASTILLE_ICONE}px`);
   });
 
   it('appelle onAction au clic', async () => {
@@ -284,7 +280,7 @@ describe('CarteAction', () => {
     // et le vert comme le jaune sont des jetons semantiques : les rendre decoratifs les
     // viderait de leur sens partout ailleurs.
     render(<CarteAction icone={User} titre="Profil" action="Mon profil" />);
-    const css = styleInjecte('ai5d-carte-action');
+    const css = texteFeuille('ai5d-carte-action');
     expect(css).not.toMatch(/--reussite|--attention|--erreur/);
     expect(css).toContain('background: var(--surface-chaude)');
   });
@@ -319,7 +315,7 @@ describe('CarteAction', () => {
     const tete = container.querySelector('.ai5d-carte-action__tete');
     expect(tete?.children).toHaveLength(2);
     expect(tete?.firstElementChild?.className).toContain('ai5d-carte-action__pastille');
-    expect(styleInjecte('ai5d-carte-action')).toContain('justify-content: space-between');
+    expect(texteFeuille('ai5d-carte-action')).toContain('justify-content: space-between');
   });
 
   it('un etat ne teinte toujours pas la carte', () => {
@@ -333,7 +329,7 @@ describe('CarteAction', () => {
         etat={{ ton: 'reussite', libelle: 'Vérifiée' }}
       />,
     );
-    const css = styleInjecte('ai5d-carte-action');
+    const css = texteFeuille('ai5d-carte-action');
     expect(css).not.toMatch(/--reussite|--attention|--erreur/);
     expect(css).toContain('background: var(--surface-chaude)');
   });

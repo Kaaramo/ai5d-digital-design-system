@@ -11,6 +11,7 @@ import {
   type OngletRubrique,
 } from '../../noyau/composants/OngletsRubrique';
 import type { ComposantLien } from '../../noyau/composants/LiensRail';
+import { texteFeuille } from '../aides/feuille';
 
 /**
  * `OngletsRubrique` — des liens qui decoupent une rubrique.
@@ -105,7 +106,7 @@ describe('OngletsRubrique', () => {
       plupart des gens, et disparaitrait pour les autres.
     */
     render(<OngletsRubrique onglets={TROIS} actif="connexion" />);
-    const feuille = document.getElementById('ai5d-onglets-rubrique')?.innerHTML ?? '';
+    const feuille = texteFeuille('ai5d-onglets-rubrique');
     const regleActive = feuille.slice(feuille.indexOf("[aria-current='page']"));
 
     expect(regleActive).toContain('var(--action)');
@@ -115,7 +116,7 @@ describe('OngletsRubrique', () => {
 
   it('defile horizontalement, ascenseur masque, quand la place manque', () => {
     render(<OngletsRubrique onglets={TROIS} actif="connexion" />);
-    const feuille = document.getElementById('ai5d-onglets-rubrique')?.innerHTML ?? '';
+    const feuille = texteFeuille('ai5d-onglets-rubrique');
     expect(feuille).toContain('overflow-x: auto');
     expect(feuille).toContain('scrollbar-width: none');
   });
@@ -131,7 +132,7 @@ describe('OngletsRubrique', () => {
     expect(container.querySelector('.ai5d-onglets-r__voile')).toBeNull();
     expect(screen.getByRole('navigation').children).toHaveLength(TROIS.length);
 
-    const feuille = document.getElementById('ai5d-onglets-rubrique')?.innerHTML ?? '';
+    const feuille = texteFeuille('ai5d-onglets-rubrique');
     const supports = feuille.indexOf('@supports (animation-timeline: scroll())');
     expect(supports).toBeGreaterThan(-1);
     expect(feuille.indexOf('linear-gradient')).toBeGreaterThan(supports);
@@ -139,7 +140,7 @@ describe('OngletsRubrique', () => {
 
   it("n'ecrit aucune couleur en dur dans sa feuille", () => {
     render(<OngletsRubrique onglets={TROIS} actif="connexion" />);
-    const feuille = document.getElementById('ai5d-onglets-rubrique')?.innerHTML ?? '';
+    const feuille = texteFeuille('ai5d-onglets-rubrique');
     expect(feuille).not.toMatch(/#[0-9a-fA-F]{3,8}/);
   });
 
@@ -154,7 +155,7 @@ describe('OngletsRubrique', () => {
     expect(HAUTEUR_ONGLETS).toBe(44);
 
     render(<OngletsRubrique onglets={TROIS} actif="connexion" />);
-    const feuille = document.getElementById('ai5d-onglets-rubrique')?.innerHTML ?? '';
+    const feuille = texteFeuille('ai5d-onglets-rubrique');
     expect(feuille).toContain(`height: ${HAUTEUR_ONGLETS}px`);
   });
 });
@@ -169,7 +170,7 @@ const SIX: OngletRubrique[] = [
 ];
 
 function feuilleBrute(): string {
-  return document.getElementById('ai5d-onglets-rubrique')?.innerHTML ?? '';
+  return texteFeuille('ai5d-onglets-rubrique');
 }
 
 function feuille(): string {

@@ -132,7 +132,7 @@ SPEC et user stories : `docs/superpowers/specs/version-1.3.0-console/`. Plan :
 se coche « écrite, non testée » ; la tâche 17 vérifie tout d'un bloc et voit chaque test échouer.
 
 - [x] T1 · Le suivi, la revérification de Compte, le banc d'essai, les mesures « avant » · fait
-- [ ] T2 · Les feuilles hissées : `feuille.ts`, les 21 composants, `texteFeuille`, 52 lectures migrées
+- [x] T2 · Les feuilles hissées : `feuille.ts`, les 21 composants, `texteFeuille`, 52 lectures migrées · écrite, non testée
 - [ ] T3 · La garde `verifierFeuilleUnique`, décision 010
 - [ ] T4 · `--surface-survol`, l'instantané de la 1.2.0, les contrastes, décision 011
 - [ ] T5 · `LiensRail` au jeton de survol, commentaire de `LigneLien`

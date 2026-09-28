@@ -1,4 +1,5 @@
 import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
+import { feuille } from './feuille';
 
 /**
  * UN BLOC D ATTENTE A LA FORME DE CE QUI ARRIVE.
@@ -81,7 +82,7 @@ export function Squelette({
 
   return (
     <>
-      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_SQUELETTE }} />
+      {feuille(ID_STYLE, STYLE_SQUELETTE)}
       <span
         aria-hidden="true"
         className={className === undefined ? 'ai5d-squelette' : `ai5d-squelette ${className}`}

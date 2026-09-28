@@ -7,6 +7,7 @@ import { Icone } from './Icone';
 import { Pastille } from './Pastille';
 import type { TonSemantique } from './Pastille';
 import { COMPACT } from '../paliers';
+import { feuille } from './feuille';
 
 /**
  * Le motif « une carte, une action ».
@@ -125,7 +126,7 @@ export function CarteAction({
 }: ProprietesCarteAction) {
   return (
     <>
-      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_CARTE }} />
+      {feuille(ID_STYLE, STYLE_CARTE)}
 
       <Carte className={className} style={style} data-carte="action">
         <div className="ai5d-carte-action__tete">

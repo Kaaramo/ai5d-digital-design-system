@@ -1,5 +1,6 @@
 import { Children, isValidElement } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
+import { feuille } from './feuille';
 
 /**
  * La liste qui range des `LigneLien`, avec un filet entre chaque.
@@ -45,7 +46,7 @@ export function ListeLignes({
 
   return (
     <>
-      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_LISTE_LIGNES }} />
+      {feuille(ID_STYLE, STYLE_LISTE_LIGNES)}
 
       <ul
         role="list"

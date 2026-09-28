@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { Bandeau } from './Bandeau';
 import { Bouton } from './Bouton';
 import { ID_STYLE_BOITE, STYLE_BOITE, useDialogueModal } from './dialogue';
+import { feuille } from './feuille';
 
 /**
  * La boîte de confirmation d'une action grave.
@@ -56,7 +57,7 @@ export function BoiteConfirmation({
 
   return (
     <>
-      <style id={ID_STYLE_BOITE} dangerouslySetInnerHTML={{ __html: STYLE_BOITE }} />
+      {feuille(ID_STYLE_BOITE, STYLE_BOITE)}
 
       <dialog
         ref={reference}

@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Icone } from './Icone';
 import type { ComposantLien } from './LiensRail';
+import { feuille } from './feuille';
 
 /**
  * La navigation entre les sous-pages d'une rubrique.
@@ -220,7 +221,7 @@ export function OngletsRubrique({
 }: ProprietesOngletsRubrique) {
   return (
     <>
-      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_ONGLETS }} />
+      {feuille(ID_STYLE, STYLE_ONGLETS)}
 
       <nav
         aria-label={etiquette}

@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
+import { feuille } from './feuille';
 
 /**
  * LA MARQUE, ENTOUREE DE DEUX ANNEAUX QUI TOURNENT EN SENS INVERSE.
@@ -93,7 +94,7 @@ export interface ProprietesSigneAnime {
 export function SigneAnime({ marque, className, style }: ProprietesSigneAnime) {
   return (
     <>
-      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_SIGNE }} />
+      {feuille(ID_STYLE, STYLE_SIGNE)}
       <div
         className={className === undefined ? 'ai5d-signe' : `ai5d-signe ${className}`}
         style={style}

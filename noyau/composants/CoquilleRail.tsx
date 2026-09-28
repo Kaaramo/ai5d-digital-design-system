@@ -3,6 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Logotype } from './Logotype';
 import { RechargeAuRetour } from './RechargeAuRetour';
 import { BUREAU, TABLETTE } from '../paliers';
+import { feuille } from './feuille';
 
 /**
  * La coquille de tout écran de produit qui porte une navigation de rubriques.
@@ -324,7 +325,7 @@ export function CoquilleRail({
 
   return (
     <>
-      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_COQUILLE_RAIL }} />
+      {feuille(ID_STYLE, STYLE_COQUILLE_RAIL)}
 
       {rechargerAuRetour ? <RechargeAuRetour /> : null}
 

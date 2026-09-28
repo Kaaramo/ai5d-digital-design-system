@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { Logotype } from './Logotype';
+import { feuille } from './feuille';
 
 /**
  * Le gabarit des écrans de compte : connexion, inscription, oubli,
@@ -132,7 +133,7 @@ export function GabaritAuth({
 
   return (
     <>
-      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_GABARIT }} />
+      {feuille(ID_STYLE, STYLE_GABARIT)}
 
       <div className={classes} style={style} data-gabarit="auth">
         {/*

@@ -20,6 +20,7 @@ import {
   relSur,
 } from '../../noyau/composants/lien';
 import { Bouton as Bouton110 } from '../instantanes/Bouton-1.1.0';
+import { texteFeuille } from '../aides/feuille';
 
 /**
  * `Bouton` rendu en lien (SPEC 1.2.0, §5.2).
@@ -31,7 +32,7 @@ import { Bouton as Bouton110 } from '../instantanes/Bouton-1.1.0';
  */
 
 function feuille(): string {
-  return document.getElementById('ai5d-bouton')?.innerHTML ?? '';
+  return texteFeuille('ai5d-bouton');
 }
 
 /** Un lien de produit qui retient ce qu'il reçoit, et le transmet tout entier, comme `Link` de Next. */
@@ -167,7 +168,7 @@ describe('Bouton avec une adresse : un lien, avec les classes et les etats d un 
     expect(lien).toHaveAttribute('target', '_blank');
     expect(lien).toHaveAttribute('rel', 'noopener noreferrer');
     expect(lien.querySelector(`.${CLASSE_HORS_ECRAN}`)).toHaveTextContent(MENTION_NOUVEL_ONGLET);
-    expect(document.getElementById('ai5d-hors-ecran')).not.toBeNull();
+    expect(texteFeuille('ai5d-hors-ecran')).toContain('.ai5d-hors-ecran');
   });
 
   it('complete le rel du produit sans doublon, quelle que soit sa casse', () => {

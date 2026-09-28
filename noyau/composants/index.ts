@@ -23,6 +23,12 @@
  * vivent dans la couche écosystème, parce qu'ils lisent la session et les droits.
  */
 
+/**
+ * La precedence des feuilles hissees du systeme, pour qu un produit les compte dans sa recette. La
+ * fonction `feuille` n est pas exportee : un produit pose ses feuilles sous sa propre precedence.
+ */
+export { PRECEDENCE_FEUILLES } from './feuille';
+
 export { Avatar, initiales } from './Avatar';
 export type { ProprietesAvatar } from './Avatar';
 

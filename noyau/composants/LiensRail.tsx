@@ -7,6 +7,7 @@ import type {
 } from 'react';
 import type { Rubrique } from './CoquilleRail';
 import { Icone } from './Icone';
+import { feuille } from './feuille';
 
 /**
  * Les liens du rail d'une coquille, à partir de 768 px.
@@ -138,7 +139,7 @@ export function LiensRail({
 }: ProprietesLiensRail) {
   return (
     <>
-      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_LIENS_RAIL }} />
+      {feuille(ID_STYLE, STYLE_LIENS_RAIL)}
 
       <nav className="ai5d-liens-rail" aria-label={etiquette}>
         {rubriques.map((rubrique) => (

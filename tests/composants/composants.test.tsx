@@ -21,6 +21,7 @@ import {
   PastilleEtat,
   TRANSFORME_TETE,
 } from '../../noyau/composants';
+import { texteFeuille } from '../aides/feuille';
 
 describe('Logotype', () => {
   it('rend les trois parties du mot', () => {
@@ -110,8 +111,8 @@ describe('Bouton', () => {
       garde donc la MEME propriete a son nouvel endroit, la feuille injectee, plutot que
       de disparaitre avec l'attribut qu'il lisait.
     */
-    const { container } = render(<Bouton variante="primaire">A</Bouton>);
-    const css = (container.querySelector('#ai5d-bouton')?.innerHTML ?? '').replace(/\s+/g, ' ');
+    render(<Bouton variante="primaire">A</Bouton>);
+    const css = texteFeuille('ai5d-bouton').replace(/\s+/g, ' ');
 
     expect(css).toContain("[data-variante='primaire'] { background: var(--action);");
     expect(css).toContain("[data-variante='secondaire'] { background: transparent;");
@@ -140,8 +141,8 @@ describe('Bouton', () => {
     // Ce n'est pas un detail de nommage. En mode sombre, --erreur vaut un rouge clair,
     // et --texte-sur-action y vaut du blanc : le rapport tombe a 2,89. Le jeton dedie
     // bascule en encre, et le test garde ce choix.
-    const { container } = render(<Bouton variante="danger">Supprimer</Bouton>);
-    const css = container.querySelector('#ai5d-bouton')?.innerHTML ?? '';
+    render(<Bouton variante="danger">Supprimer</Bouton>);
+    const css = texteFeuille('ai5d-bouton');
     const regleDanger = css.split('}').find((r) => r.includes("[data-variante='danger'] {")) ?? '';
     expect(regleDanger).toContain('color: var(--texte-sur-erreur)');
     expect(regleDanger).not.toContain('--texte-sur-action');
@@ -163,8 +164,8 @@ describe('Bouton', () => {
 
       Le contour garde la COULEUR, donc l avertissement, et lui retire le POIDS.
     */
-    const { container } = render(<Bouton variante="danger-contour">Retirer Google</Bouton>);
-    const css = container.querySelector('#ai5d-bouton')?.innerHTML ?? '';
+    render(<Bouton variante="danger-contour">Retirer Google</Bouton>);
+    const css = texteFeuille('ai5d-bouton');
     const regle =
       css.split('}').find((r) => r.includes("[data-variante='danger-contour'] {")) ?? '';
 
@@ -178,8 +179,8 @@ describe('Bouton', () => {
   it('danger-contour ne devient pas un aplat au survol', () => {
     // Le survol pose `--erreur-fond`, une teinte tres pale, et ne touche ni la bordure ni
     // le texte. Un survol qui passerait a `--erreur` plein annulerait la variante.
-    const { container } = render(<Bouton variante="danger-contour">Retirer</Bouton>);
-    const css = (container.querySelector('#ai5d-bouton')?.innerHTML ?? '').replace(/\s+/g, ' ');
+    render(<Bouton variante="danger-contour">Retirer</Bouton>);
+    const css = texteFeuille('ai5d-bouton').replace(/\s+/g, ' ');
     const survol =
       css.split('}').find((r) => r.includes(":hover[data-variante='danger-contour']")) ?? '';
 
@@ -188,8 +189,8 @@ describe('Bouton', () => {
   });
 
   it('danger-contour porte l anneau de focus rouge, comme danger', () => {
-    const { container } = render(<Bouton variante="danger-contour">Retirer</Bouton>);
-    const css = container.querySelector('#ai5d-bouton')?.innerHTML ?? '';
+    render(<Bouton variante="danger-contour">Retirer</Bouton>);
+    const css = texteFeuille('ai5d-bouton');
     expect(css).toContain("[data-variante='danger-contour']:focus-visible");
   });
 
@@ -245,10 +246,8 @@ describe('Bouton', () => {
   });
 
   it('injecte la feuille qui porte le survol, le focus et l appui', () => {
-    const { container } = render(<Bouton>Envoyer</Bouton>);
-    const feuille = container.querySelector('#ai5d-bouton');
-    expect(feuille).not.toBeNull();
-    const css = feuille?.innerHTML ?? '';
+    render(<Bouton>Envoyer</Bouton>);
+    const css = texteFeuille('ai5d-bouton');
     expect(css).toContain('--action-survol');
     expect(css).toContain(':focus-visible');
     expect(css).toContain('translateY(1px)');
@@ -256,8 +255,8 @@ describe('Bouton', () => {
   });
 
   it('n applique le survol qu aux boutons actifs', () => {
-    const { container } = render(<Bouton>Envoyer</Bouton>);
-    const css = container.querySelector('#ai5d-bouton')?.innerHTML ?? '';
+    render(<Bouton>Envoyer</Bouton>);
+    const css = texteFeuille('ai5d-bouton');
     // Un bouton en chargement reagirait sinon a la souris tout en refusant le clic.
     for (const regle of css.split('}').filter((r) => r.includes(':hover'))) {
       expect(regle, regle).toContain(':not(:disabled)');
@@ -270,8 +269,8 @@ describe('Bouton', () => {
   });
 
   it('donne au bouton destructeur un anneau rouge, pas bleu', () => {
-    const { container } = render(<Bouton variante="danger">Supprimer</Bouton>);
-    const css = container.querySelector('#ai5d-bouton')?.innerHTML ?? '';
+    render(<Bouton variante="danger">Supprimer</Bouton>);
+    const css = texteFeuille('ai5d-bouton');
     expect(css).toContain("[data-variante='danger']:focus-visible");
     expect(css).toContain('outline-color: var(--erreur)');
   });
@@ -314,16 +313,16 @@ describe('Bouton', () => {
   it('donne aux points la couleur du texte, jamais un jeton', () => {
     // Les quatre variantes ont quatre couleurs de texte. Un jeton fige les points sur une
     // seule, donc les rend faux sur les trois autres.
-    const { container } = render(<Bouton chargement>Envoyer</Bouton>);
-    const css = container.querySelector('#ai5d-bouton')?.innerHTML ?? '';
+    render(<Bouton chargement>Envoyer</Bouton>);
+    const css = texteFeuille('ai5d-bouton');
     expect(css).toContain('background: currentColor');
   });
 
   it('fige les points sous prefers-reduced-motion', () => {
     // L'information n'est JAMAIS portee par l'animation : elle est dans le libelle et
     // dans aria-busy. Les points sont un renfort qu'on peut retirer sans rien perdre.
-    const { container } = render(<Bouton chargement>Envoyer</Bouton>);
-    const css = (container.querySelector('#ai5d-bouton')?.innerHTML ?? '').replace(/\s+/g, ' ');
+    render(<Bouton chargement>Envoyer</Bouton>);
+    const css = texteFeuille('ai5d-bouton').replace(/\s+/g, ' ');
     const reduit = css.slice(css.indexOf('prefers-reduced-motion'));
     expect(reduit).toContain('.ai5d-bouton__point { animation: none; opacity: 1; }');
   });
@@ -434,7 +433,7 @@ describe('Champ', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Adresse ou mot de passe incorrect.');
     // La bordure rouge vient desormais de la feuille, accrochee a `aria-invalid` : l'etat
     // visuel ne peut donc plus diverger de l'etat annonce.
-    const css = document.querySelector('#ai5d-champ')?.innerHTML ?? '';
+    const css = texteFeuille('ai5d-champ');
     expect(css).toContain("[aria-invalid='true']");
     expect(css).toContain('border-color: var(--erreur)');
   });
@@ -465,15 +464,15 @@ describe('Champ', () => {
   it('injecte un anneau de focus decale d un pixel, pas de deux', () => {
     // Le champ a deja une bordure visible : deux pixels laisseraient un lisere de fond
     // entre les deux, et donneraient un halo flou.
-    const { container } = render(<Champ libelle="Adresse" />);
-    const css = container.querySelector('#ai5d-champ')?.innerHTML ?? '';
+    render(<Champ libelle="Adresse" />);
+    const css = texteFeuille('ai5d-champ');
     expect(css).toContain('outline-offset: 1px');
     expect(css).toContain(':focus-visible');
   });
 
   it('donne un anneau ROUGE a un champ en erreur', () => {
-    const { container } = render(<Champ libelle="Adresse" erreur="Adresse invalide" />);
-    const css = container.querySelector('#ai5d-champ')?.innerHTML ?? '';
+    render(<Champ libelle="Adresse" erreur="Adresse invalide" />);
+    const css = texteFeuille('ai5d-champ');
     expect(css).toContain("[aria-invalid='true']:focus-visible");
     expect(css).toContain('outline-color: var(--erreur)');
   });
@@ -628,8 +627,8 @@ describe('GabaritAuth', () => {
       contraste, c est-a-dire rien. Le panneau prend `--surface-3` et un filet sur le bord qui
       touche le formulaire, sous les trois selecteurs de theme du systeme. Le clair ne bouge pas.
     */
-    const { container } = render(<GabaritAuth>contenu</GabaritAuth>);
-    const style = container.querySelector('style')?.textContent ?? '';
+    render(<GabaritAuth>contenu</GabaritAuth>);
+    const style = texteFeuille('ai5d-gabarit-auth');
 
     const bureau = style.slice(style.indexOf(`@media (min-width: ${BASCULE_DEUX_COLONNES}px)`));
     expect(bureau).toMatch(
@@ -666,8 +665,8 @@ describe('GabaritAuth', () => {
 
   it('bascule a 1024 px, et non a 768 - la mesure est dans l en-tete du composant', () => {
     expect(BASCULE_DEUX_COLONNES).toBe(1024);
-    const { container } = render(<GabaritAuth>contenu</GabaritAuth>);
-    const style = container.querySelector('style')?.textContent ?? '';
+    render(<GabaritAuth>contenu</GabaritAuth>);
+    const style = texteFeuille('ai5d-gabarit-auth');
     expect(style).toContain(`@media (min-width: ${BASCULE_DEUX_COLONNES}px)`);
     // A 768 px le panneau prenait 345 px et laissait 423 px pour un formulaire
     // annonce a 440 px : l'ecran de reinitialisation debordait de 14 px.
@@ -680,30 +679,30 @@ describe('GabaritAuth', () => {
   });
 
   it('borne le formulaire a 440 px et le panneau a 45 % plafonne a 560 px', () => {
-    const { container } = render(<GabaritAuth>contenu</GabaritAuth>);
-    const style = container.querySelector('style')?.textContent ?? '';
+    render(<GabaritAuth>contenu</GabaritAuth>);
+    const style = texteFeuille('ai5d-gabarit-auth');
     expect(style).toContain(`max-width: ${LARGEUR_FORMULAIRE}px`);
     expect(style).toContain('width: 45%');
     expect(style).toContain(`max-width: ${LARGEUR_MAX_PANNEAU}px`);
   });
 
   it('pose min-width 0 sur la colonne, sans quoi le panneau sort de l ecran', () => {
-    const { container } = render(<GabaritAuth>contenu</GabaritAuth>);
-    const style = container.querySelector('style')?.textContent ?? '';
+    render(<GabaritAuth>contenu</GabaritAuth>);
+    const style = texteFeuille('ai5d-gabarit-auth');
     expect(style).toContain('min-width: 0');
   });
 
   it('pose le fond de page sur la surface 1', () => {
-    const { container } = render(<GabaritAuth>contenu</GabaritAuth>);
-    const style = container.querySelector('style')?.textContent ?? '';
+    render(<GabaritAuth>contenu</GabaritAuth>);
+    const style = texteFeuille('ai5d-gabarit-auth');
     expect(style).toContain('background: var(--surface-1)');
   });
 
   it("n'utilise aucune couleur en dur - la garde du systeme l'a attrape", () => {
     // Ce test existe parce que la premiere version du panneau ecrivait color: #fff.
     // La garde aucune-couleur-en-dur l'a releve avant le premier commit.
-    const { container } = render(<GabaritAuth phrase="Une phrase.">contenu</GabaritAuth>);
-    const style = container.querySelector('style')?.textContent ?? '';
+    render(<GabaritAuth phrase="Une phrase.">contenu</GabaritAuth>);
+    const style = texteFeuille('ai5d-gabarit-auth');
     expect(style).not.toMatch(/#[0-9a-fA-F]{3,8}/);
     expect(style).toContain('var(--blanc)');
     expect(style).toContain('var(--encre)');

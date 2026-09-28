@@ -8,6 +8,7 @@ import type { ComposantLien } from './LiensRail';
 import { Logotype } from './Logotype';
 import { SommaireDocument } from './SommaireDocument';
 import { BUREAU } from '../paliers';
+import { feuille } from './feuille';
 
 /**
  * La page d'un document : un bandeau, un sommaire collé, des sections numérotées.
@@ -168,7 +169,7 @@ export function GabaritDocument({
 
   return (
     <>
-      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_DOCUMENT }} />
+      {feuille(ID_STYLE, STYLE_DOCUMENT)}
       <DeplierDocument />
 
       {/*

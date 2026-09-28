@@ -5,6 +5,7 @@ import { Bandeau } from './Bandeau';
 import { Bouton } from './Bouton';
 import { Champ } from './Champ';
 import { ID_STYLE_BOITE, STYLE_BOITE, useDialogueModal } from './dialogue';
+import { feuille } from './feuille';
 
 /**
  * La saisie d'un motif obligatoire, avant un geste d'exploitation.
@@ -65,7 +66,7 @@ export function BoiteMotif({
 
   return (
     <>
-      <style id={ID_STYLE_BOITE} dangerouslySetInnerHTML={{ __html: STYLE_BOITE }} />
+      {feuille(ID_STYLE_BOITE, STYLE_BOITE)}
 
       <dialog
         ref={reference}

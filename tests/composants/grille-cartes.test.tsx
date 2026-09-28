@@ -6,12 +6,7 @@ import {
   CONTENEUR_TROIS_COLONNES,
   GrilleCartes,
 } from '../../noyau/composants';
-
-function styleInjecte(id: string): string {
-  const balise = document.getElementById(id);
-  expect(balise, `la feuille ${id} n est pas injectee`).not.toBeNull();
-  return balise?.innerHTML ?? '';
-}
+import { texteFeuille } from '../aides/feuille';
 
 describe('GrilleCartes', () => {
   it('rend ses enfants dans une piste unique', () => {
@@ -33,7 +28,7 @@ describe('GrilleCartes', () => {
       sur une colonne partout, en silence, sans erreur ni avertissement.
     */
     render(<GrilleCartes>x</GrilleCartes>);
-    const css = styleInjecte('ai5d-grille-cartes');
+    const css = texteFeuille('ai5d-grille-cartes');
     expect(css).toContain('container-type: inline-size');
     expect(css).toContain(`@container (min-width: ${CONTENEUR_DEUX_COLONNES}px)`);
   });
@@ -41,7 +36,7 @@ describe('GrilleCartes', () => {
   it('interroge son CONTENEUR et jamais la fenetre', () => {
     // Une requete media ne sait pas qu un rail de 280 px mange la largeur.
     render(<GrilleCartes>x</GrilleCartes>);
-    expect(styleInjecte('ai5d-grille-cartes')).not.toContain('@media');
+    expect(texteFeuille('ai5d-grille-cartes')).not.toContain('@media');
   });
 
   it('n ouvre la troisieme colonne que sur demande', () => {
@@ -50,7 +45,7 @@ describe('GrilleCartes', () => {
 
     const { container: trois } = render(<GrilleCartes colonnes={3}>x</GrilleCartes>);
     expect(trois.querySelector('.ai5d-grille-cartes--trois')).not.toBeNull();
-    expect(styleInjecte('ai5d-grille-cartes')).toContain(
+    expect(texteFeuille('ai5d-grille-cartes')).toContain(
       `@container (min-width: ${CONTENEUR_TROIS_COLONNES}px)`,
     );
   });
@@ -85,6 +80,6 @@ describe('GrilleCartes', () => {
 
   it('emploie l echelle d espacement du systeme, jamais une valeur libre', () => {
     render(<GrilleCartes>x</GrilleCartes>);
-    expect(styleInjecte('ai5d-grille-cartes')).toContain('gap: var(--espace-6)');
+    expect(texteFeuille('ai5d-grille-cartes')).toContain('gap: var(--espace-6)');
   });
 });

@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { SigneAnime } from './SigneAnime';
+import { feuille } from './feuille';
 
 /**
  * LE SEUIL : CE QU ON VOIT ENTRE LA PORTE ET L ESPACE.
@@ -90,7 +91,7 @@ export function GabaritSeuil({
 }: ProprietesGabaritSeuil) {
   return (
     <>
-      <style id={ID_STYLE} dangerouslySetInnerHTML={{ __html: STYLE_SEUIL }} />
+      {feuille(ID_STYLE, STYLE_SEUIL)}
       <div
         className={className === undefined ? 'ai5d-seuil' : `ai5d-seuil ${className}`}
         style={style}

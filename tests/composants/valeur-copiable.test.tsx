@@ -5,6 +5,7 @@ import { Check } from 'lucide-react';
 import { Icone } from '../../noyau/composants/Icone';
 import { ValeurCopiable } from '../../noyau/composants/ValeurCopiable';
 import { DUREE_SUCCES_COPIE_MS } from '../../noyau/composants/copie';
+import { texteFeuille } from '../aides/feuille';
 
 /**
  * `ValeurCopiable` (SPEC 1.2.0, §5.12). Le presse-papiers est simulé : jsdom n'en a pas. Ce qui se
@@ -156,10 +157,7 @@ describe('ValeurCopiable (1.2.0)', () => {
 
   it('empile champ et bouton sous 24rem de conteneur, et ne connait aucun palier', () => {
     rendre();
-    const css = (document.getElementById('ai5d-valeur-copiable')?.innerHTML ?? '').replace(
-      /\s+/g,
-      ' ',
-    );
+    const css = texteFeuille('ai5d-valeur-copiable').replace(/\s+/g, ' ');
     expect(css).toContain('.ai5d-copiable { container-type: inline-size;');
     expect(css).toContain('@container (max-width: 24rem)');
     expect(css).toContain('flex: 1 1 16rem;');
@@ -169,10 +167,7 @@ describe('ValeurCopiable (1.2.0)', () => {
   it('occupe la largeur de son parent, meme dans une colonne centree', () => {
     // Relecture de la 1.2.0 : un conteneur interroge tombait a 0 px dans une colonne flex centree.
     rendre();
-    const css = (document.getElementById('ai5d-valeur-copiable')?.innerHTML ?? '').replace(
-      /\s+/g,
-      ' ',
-    );
+    const css = texteFeuille('ai5d-valeur-copiable').replace(/\s+/g, ' ');
     expect(css).toContain('.ai5d-copiable { container-type: inline-size; inline-size: 100%;');
   });
 
@@ -183,10 +178,7 @@ describe('ValeurCopiable (1.2.0)', () => {
       ne calcule aucune mise en page : la regle se garde ici par sa forme, et la capture la montre.
     */
     rendre();
-    const css = (document.getElementById('ai5d-valeur-copiable')?.innerHTML ?? '').replace(
-      /\s+/g,
-      ' ',
-    );
+    const css = texteFeuille('ai5d-valeur-copiable').replace(/\s+/g, ' ');
     const pile = css.slice(css.indexOf('@container (max-width: 24rem)'));
     expect(pile).toContain('.ai5d-copiable__rangee .ai5d-copiable__champ { flex: 0 0 auto; }');
   });
