@@ -814,3 +814,82 @@ describe('le ton neutre (1.2.0)', () => {
     expect(container.querySelector('[data-ton="neutre"]')).toHaveTextContent('Sans accès');
   });
 });
+
+describe('Bandeau qui se ferme et recoit le focus (1.3.0)', () => {
+  it('n a de bouton de fermeture qu avec onFermer, nomme « Fermer ce message » par defaut', () => {
+    const { rerender } = render(<Bandeau ton="reussite">23 invitations envoyées.</Bandeau>);
+    expect(screen.queryByRole('button')).toBeNull();
+
+    const fermer = vi.fn();
+    rerender(
+      <Bandeau ton="reussite" onFermer={fermer}>
+        23 invitations envoyées.
+      </Bandeau>,
+    );
+    const bouton = screen.getByRole('button', { name: 'Fermer ce message' });
+    expect(bouton).toHaveAttribute('data-variante', 'discret');
+    expect(bouton).toHaveAttribute('data-taille', 'sm');
+    expect(bouton.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  it('appelle onFermer, et ne se retire jamais de lui-meme', async () => {
+    const fermer = vi.fn();
+    render(
+      <Bandeau ton="reussite" onFermer={fermer} libelleFermer="Fermer le retour">
+        23 invitations envoyées.
+      </Bandeau>,
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Fermer le retour' }));
+    expect(fermer).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('status')).toBeInTheDocument();
+  });
+
+  it('range la fermeture apres l action', () => {
+    render(
+      <Bandeau
+        ton="attention"
+        onFermer={() => undefined}
+        action={<Bouton variante="secondaire">Voir les 2 envois échoués</Bouton>}
+      >
+        23 invitations envoyées. 2 ne sont pas parties.
+      </Bandeau>,
+    );
+    const [action, fermer] = screen.getAllByRole('button');
+    expect(action).toHaveTextContent('Voir les 2 envois échoués');
+    expect(fermer).toHaveAccessibleName('Fermer ce message');
+  });
+
+  it('transmet ref et tabIndex a la racine, pour qu un produit y rende le focus', () => {
+    const reference = { current: null as HTMLDivElement | null };
+    render(
+      <Bandeau ton="reussite" ref={reference} tabIndex={-1}>
+        23 invitations envoyées.
+      </Bandeau>,
+    );
+    expect(reference.current).toBe(screen.getByRole('status'));
+    expect(reference.current).toHaveAttribute('tabindex', '-1');
+    reference.current?.focus();
+    expect(document.activeElement).toBe(reference.current);
+  });
+
+  it('joint sa classe a celle du produit, et pose l anneau dans sa feuille', () => {
+    render(
+      <Bandeau ton="information" className="region-retour">
+        Enregistré.
+      </Bandeau>,
+    );
+    expect(screen.getByRole('status')).toHaveClass('ai5d-bandeau', 'region-retour');
+    expect(texteFeuille('ai5d-bandeau')).toContain(
+      '.ai5d-bandeau:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }',
+    );
+  });
+
+  it('garde son role selon le ton, fermeture ou non', () => {
+    render(
+      <Bandeau ton="attention" onFermer={() => undefined}>
+        2 envois ont échoué.
+      </Bandeau>,
+    );
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+  });
+});
