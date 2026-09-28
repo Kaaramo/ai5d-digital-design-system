@@ -1,5 +1,5 @@
 /**
- * Les 39 composants de base du noyau.
+ * Les 42 composants de base du noyau.
  *
  * Ils ne dépendent d'aucun framework de style : leurs styles passent par les variables
  * CSS du noyau, de sorte qu'un projet qui n'utiliserait pas Tailwind les rend
@@ -59,6 +59,7 @@ export { ATTRIBUT_EN_ATTENTE, MENTION_NOUVEL_ONGLET } from './lien';
 export { Carte } from './Carte';
 
 export { Chiffre } from './Chiffre';
+export type { ProprietesChiffre } from './Chiffre';
 export type { ProprietesCarte } from './Carte';
 
 export { CarteAction, TAILLE_PASTILLE_ICONE } from './CarteAction';
@@ -122,6 +123,10 @@ export type { ProprietesGrilleCartes } from './GrilleCartes';
 export { Champ, TAILLE_ICONE_CHAMP } from './Champ';
 export type { ProprietesChamp } from './Champ';
 
+/** `Selecteur` est un module client, comme `Champ`, dont il partage la classe et la feuille. */
+export { Selecteur } from './Selecteur';
+export type { OptionSelecteur, ProprietesSelecteur } from './Selecteur';
+
 /**
  * `ValeurCopiable` est un module client ; sa duree vit dans un module pur, pour qu un composant
  * serveur qui la lit la recoive (lecon du depot).
@@ -134,6 +139,10 @@ export { EnteteCarte } from './EnteteCarte';
 export type { TonEnteteCarte } from './EnteteCarte';
 
 export { EnteteRubrique, TAILLE_CADRE_RUBRIQUE } from './EnteteRubrique';
+export type { ProprietesEnteteRubrique } from './EnteteRubrique';
+
+export { EnteteObjet } from './EnteteObjet';
+export type { ElementFil, MetadonneeObjet, ProprietesEnteteObjet } from './EnteteObjet';
 
 export { EtatVide } from './EtatVide';
 
@@ -153,6 +162,14 @@ export {
   OngletsRubrique,
 } from './OngletsRubrique';
 export type { OngletRubrique, ProprietesOngletsRubrique } from './OngletsRubrique';
+
+export { MenuActions } from './MenuActions';
+export type {
+  ActionMenu,
+  ActionMenuGeste,
+  ActionMenuLien,
+  ProprietesMenuActions,
+} from './MenuActions';
 
 export { LigneLien } from './LigneLien';
 export type { ProprietesLigneLien } from './LigneLien';

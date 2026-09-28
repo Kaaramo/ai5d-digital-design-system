@@ -21,6 +21,7 @@ const ATTENDUS = [
   'DeplierDocument',
   'Embleme',
   'EnteteCarte',
+  'EnteteObjet',
   'EnteteRubrique',
   'EtatVide',
   'GabaritApp',
@@ -34,10 +35,12 @@ const ATTENDUS = [
   'ListeDefinitions',
   'ListeLignes',
   'Logotype',
+  'MenuActions',
   'OngletsRubrique',
   'Pastille',
   'PastilleEtat',
   'RechargeAuRetour',
+  'Selecteur',
   'SelecteurTheme',
   'SigneAnime',
   'SommaireDocument',
@@ -48,7 +51,7 @@ const ATTENDUS = [
 ] as const;
 
 describe('index des composants', () => {
-  it('exporte les trente-neuf composants du noyau', () => {
+  it('exporte les quarante-deux composants du noyau', () => {
     for (const nom of ATTENDUS) {
       expect(composants, `${nom} n'est pas exporte`).toHaveProperty(nom);
       expect(typeof composants[nom], `${nom} n'est pas un composant`).toBe('function');
@@ -88,6 +91,12 @@ describe('index des composants', () => {
     expect(composants.DUREE_SUCCES_COPIE_MS).toBe(2000);
     expect(composants.ATTRIBUT_EN_ATTENTE).toBe('data-en-attente');
     expect(composants.MENTION_NOUVEL_ONGLET).toBe('(s’ouvre dans un nouvel onglet)');
+    // Pour qu un produit compte les feuilles du systeme dans sa recette (decision 010).
+    expect(composants.PRECEDENCE_FEUILLES).toBe('ai5d');
+  });
+
+  it('n exporte pas la fonction qui pose les feuilles : un produit pose les siennes sous sa precedence', () => {
+    expect(composants).not.toHaveProperty('feuille');
   });
 
   it("n'exporte aucun composant inter-produits - ils appartiennent a l'ecosysteme", () => {
@@ -208,6 +217,18 @@ describe('la frontiere serveur / client', () => {
     expect(client('ValeurCopiable')).toBe(true);
     for (const nom of ['TitreSection', 'LigneLien', 'ListeLignes', 'ListeDefinitions']) {
       expect(client(nom), `${nom} ne doit pas etre un module client`).toBe(false);
+    }
+  });
+
+  it('des trois composants de la 1.3.0, MenuActions et Selecteur sont des modules clients', () => {
+    // SPEC 1.3.0, §5.0.4 : `EnteteObjet` se rend au serveur, icones et lien du produit compris.
+    const client = (nom: string) =>
+      readFileSync(`${DOSSIER}/${nom}.tsx`, 'utf8').startsWith("'use client';");
+    expect(client('MenuActions')).toBe(true);
+    expect(client('Selecteur')).toBe(true);
+    expect(client('EnteteObjet')).toBe(false);
+    for (const nom of ['Bandeau', 'EnteteRubrique', 'OngletsRubrique', 'Chiffre', 'Squelette']) {
+      expect(client(nom), `${nom} ne doit pas devenir un module client`).toBe(false);
     }
   });
 });
