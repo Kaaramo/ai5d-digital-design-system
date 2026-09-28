@@ -65,3 +65,49 @@ changement »).
 Le rendu : il se prouve dans [`feuilles.md`](feuilles.md), [`reserve-basse.md`](reserve-basse.md),
 [`menu-navigateurs.md`](menu-navigateurs.md) et [`captures.md`](captures.md). La construction d'un
 produit : le système livre du TypeScript non transpilé, et aucune construction n'a été lancée.
+
+## Après la relecture : la vérification relancée d'un bloc
+
+**Date :** 28 septembre 2026, 16:26 · **Commit vérifié :** `6db360a` (les réparations de la
+relecture), avec dans l'arbre de travail les preuves de la tâche 19 et de la tâche 20 qui entrent au
+commit suivant (`CHANGELOG.md`, `docs/preuves/1.3.0/`, `tasks/`).
+
+Même commande ; sortie brute entière dans
+[`verification-relecture-brute.txt`](verification-relecture-brute.txt). Le résumé de chaque commande,
+recopié :
+
+```
+
+> @ai5d/design-system@1.2.0 typecheck /home/user/ai5d-digital-design-system
+> tsc --noEmit
+
+
+> @ai5d/design-system@1.2.0 lint /home/user/ai5d-digital-design-system
+> eslint .
+
+
+> @ai5d/design-system@1.2.0 format:check /home/user/ai5d-digital-design-system
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+[...]
+ ✓ tests/fumee.test.ts (3 tests) 5ms
+
+ Test Files  40 passed (40)
+      Tests  845 passed | 1 skipped (846)
+   Start at  16:26:25
+   Duration  22.86s (transform 1.97s, setup 7.77s, collect 8.79s, tests 9.15s, environment 25.88s, prepare 4.10s)
+
+code de sortie : 0
+```
+
+`tsc` muet, ESLint muet, Prettier conforme, **40 fichiers de tests, 845 tests verts et 1 sauté**, code
+de sortie `0`. Quinze tests de plus qu'à la première passe : ceux des réparations de la relecture.
+
+Une passe intermédiaire, sur `4f5e4c4` (avant la réparation de `6db360a`), était déjà verte : 40
+fichiers, 845 tests verts, 1 sauté. Aucune passe n'a été rouge.
+
+Les mutations relancées toutes sur ce même état : **les 34 ont rougi**, arbre restauré après chacune
+([`mutations.md`](mutations.md)).
+

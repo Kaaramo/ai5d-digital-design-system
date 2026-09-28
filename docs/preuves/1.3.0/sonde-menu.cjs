@@ -9,7 +9,9 @@
  * Un moteur que Playwright n'a pas installé est écrit « non installé » : il va dans « Ce qui n'est pas
  * couvert ». WebKit de Playwright n'est pas Safari. Le repli sans ancre CSS est aussi joué dans
  * Chromium en retirant l'ancre (CSS.supports et position-area neutralisés) : c'est une simulation,
- * écrite comme telle.
+ * écrite comme telle. Une seconde simulation joue Chromium 125 à 128, qui connaissent `anchor-name`
+ * mais pas `position-area` (relecture de la 1.3.0, constat I2) : le repli par la mesure doit y tourner.
+ * Enfin, un menu plus haut que la fenêtre se borne à elle et défile sans se refermer (constat M8).
  */
 const pw = require('playwright');
 const { resolve } = require('node:path');
@@ -52,16 +54,17 @@ async function jouer(nom, options = {}) {
   }
   const contexte = await navigateur.newContext({ viewport: { width: 1024, height: 700 } });
   if (options.sansAncre) {
-    await contexte.addInitScript(() => {
+    await contexte.addInitScript((motif) => {
+      const refuse = new RegExp(motif);
       const vrai = CSS.supports.bind(CSS);
-      CSS.supports = (...args) => (String(args[0]).includes('anchor') ? false : vrai(...args));
+      CSS.supports = (...args) => (refuse.test(String(args[0])) ? false : vrai(...args));
       document.addEventListener('DOMContentLoaded', () => {
         const neutre = document.createElement('style');
         neutre.textContent =
           '.ai5d-menu__liste { position-area: none !important; position-anchor: auto !important; margin-block-start: 0 !important; }';
         document.head.append(neutre);
       });
-    });
+    }, options.sansAncre === 'position-area' ? 'position-area' : 'anchor|position-area');
   }
   const page = await contexte.newPage();
   const erreurs = [];
@@ -72,9 +75,16 @@ async function jouer(nom, options = {}) {
   await page.goto(PAGE, { waitUntil: 'load' });
   await page.waitForTimeout(400);
 
-  const titre = options.sansAncre ? `${nom}, repli sans ancre SIMULÉ` : nom;
+  const titre =
+    options.sansAncre === 'position-area'
+      ? `${nom}, Chromium 125 à 128 SIMULÉ (anchor-name connu, position-area inconnu)`
+      : options.sansAncre
+        ? `${nom}, repli sans ancre SIMULÉ`
+        : nom;
   console.log(`\n== ${titre} ${navigateur.version()}`);
-  console.log(`ancre CSS prise en charge : ${await page.evaluate(() => CSS.supports('anchor-name: --a'))}`);
+  console.log(
+    `anchor-name pris en charge : ${await page.evaluate(() => CSS.supports('anchor-name: --a'))} ; position-area : ${await page.evaluate(() => CSS.supports('position-area: block-end'))}`,
+  );
 
   const constater = async (geste) => console.log(`${geste} : ${JSON.stringify(await page.evaluate(etat))}`);
   const premier = '[data-ligne="Aïssatou Camara"] .ai5d-bouton';
@@ -134,6 +144,29 @@ async function jouer(nom, options = {}) {
   await page.waitForTimeout(250);
   console.log(`menu au bord bas de la fenêtre : ${JSON.stringify(await page.evaluate(position, bas))}`);
 
+  await page.keyboard.press('Escape');
+  await page.setViewportSize({ width: 1024, height: 180 });
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.locator(premier).scrollIntoViewIfNeeded();
+  await page.click(premier);
+  await page.waitForTimeout(250);
+  const long = () => {
+    const menu = document.querySelector('.ai5d-menu__liste:popover-open');
+    if (menu === null) return 'menu ferme';
+    const m = menu.getBoundingClientRect();
+    return {
+      hauteur: Math.round(m.height),
+      fenetre: innerHeight,
+      contenu: menu.scrollHeight,
+      defile: menu.scrollHeight > menu.clientHeight,
+      dansLaFenetre: m.top >= 0 && m.bottom <= innerHeight,
+    };
+  };
+  console.log(`menu plus haut que la fenêtre (180 px) : ${JSON.stringify(await page.evaluate(long))}`);
+  await page.locator('.ai5d-menu__liste:popover-open').evaluate((menu) => menu.scrollBy(0, 40));
+  await page.waitForTimeout(200);
+  await constater('Défilement dans le menu');
+
   console.log(`erreurs de console : ${erreurs.length === 0 ? 'aucune' : erreurs.join(' | ')}`);
   await navigateur.close();
 }
@@ -141,6 +174,7 @@ async function jouer(nom, options = {}) {
 (async () => {
   await jouer('chromium');
   await jouer('chromium', { sansAncre: true });
+  await jouer('chromium', { sansAncre: 'position-area' });
   await jouer('firefox');
   await jouer('webkit');
 })().catch((erreur) => {

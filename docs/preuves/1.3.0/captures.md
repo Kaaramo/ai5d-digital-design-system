@@ -46,3 +46,32 @@ de haut, illisible en une image), pièce par pièce à 390 px dans la deuxième 
   compteurs défile, sans débordement de page ; l'onglet actif garde sa pastille neutre.
 
 Aucun défaut vu qui demande une correction.
+
+## Relancées après la relecture
+
+Commit `6db360a` : la feuille du menu (constats I2 et M8) et les spécimens (M5, M6, M7) ont changé.
+Même commande, sortie entière :
+
+```
+Captures de la 1.3.0 · Chromium 141.0.7390.37
+
+== Spécimens, pleines pages
+  specimens-clair-1280.png · pointer: coarse = false, aucun débordement
+  specimens-sombre-1280.png · pointer: coarse = false, aucun débordement
+  specimens-clair-1024.png · pointer: coarse = false, aucun débordement
+  specimens-doigt-clair-390.png · pointer: coarse = true, aucun débordement
+
+== Survol et sélection, rendus par React
+  survol-clair.png, et sa table seule
+    ligne survolée rgb(244, 239, 231), lignes sélectionnées rgb(234, 239, 255) : écart 1.00
+    menu rgb(255, 255, 255), élément survolé rgb(244, 239, 231) : écart 1.14
+  survol-sombre.png, et sa table seule
+    ligne survolée rgb(11, 22, 32), lignes sélectionnées rgb(23, 44, 59) : écart 1.27
+    menu rgb(23, 44, 59), élément survolé rgb(11, 22, 32) : écart 1.27
+```
+
+Les couleurs mesurées sont les mêmes au rgb près. Les quatre pleines pages des spécimens et
+`survol-sombre.png` sont réécrites ; regardée de nouveau, `survol-sombre.png` montre le menu à la
+même place, 4 px sous son déclencheur, « Voir la fiche » survolé, « Retirer de la session » après le
+filet. Les captures du rail et `survol-clair.png` sortent identiques à l'octet. La sonde du banc
+(`sonde-banc.cjs apres`) rend, au temps près, la sortie de [`sonde-banc-apres.txt`](sonde-banc-apres.txt).

@@ -117,8 +117,10 @@ Constatées à la montée d'essai du 28 septembre 2026, Compte au commit `1ef7ef
 | `tests/unites/coquille-document.test.tsx:192` | La même lecture, puis `::details-content` et `@media print`                                    | Idem                                                                                                  | Idem                                                                                           |
 
 Une quatrième suit la montée d'elle-même : `tests/invariants/socle.test.ts:82` compare l'étiquette
-demandée à la version installée ; elle passe dès que `apps/compte/package.json` porte `#v1.3.0` et que
-`pnpm install` a posé la 1.3.0.
+demandée à la version installée ; elle passe dès que `apps/compte/package.json:11` porte `#v1.3.0` et
+que `pnpm install` a posé la 1.3.0. L'étiquette se change aussi dans `package.json:53` à la racine :
+`socle.test.ts:99` exige la même aux deux endroits. Les trois réécritures et les deux étiquettes,
+jouées dans une copie de Compte, rendent ces tests verts.
 
 #### Le SDK `@ai5d/auth`
 

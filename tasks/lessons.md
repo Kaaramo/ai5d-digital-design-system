@@ -142,3 +142,21 @@ la clôture ; et le plan, qui reçoit ses écarts en cours de lot, décale ses p
 
 **Un fragment se recopie entre ses bornes de texte (la clôture qui l'ouvre, celle qui le ferme), et on
 regarde sa première et sa dernière ligne avant de l'écrire.**
+
+### Une détection teste la propriété qu'elle protège
+
+Le menu testait `anchor-name` pour savoir s'il pouvait se placer par `position-area`. Chromium 125 à
+128 connaissent l'une et pas l'autre : la détection passait, la règle était ignorée, et le repli ne
+tournait pas. La simulation de la recette ne refusait que `anchor` : elle n'aurait pas vu le défaut.
+
+**Une requête `@supports` ou `CSS.supports` nomme la propriété que la règle emploie, écrite une seule
+fois pour la feuille et pour le script ; et une simulation refuse ce que le code teste, pas ce qu'on
+croit qu'il teste.**
+
+### Un test de partage rend la pièce seule
+
+« Partage la feuille de Champ » rendait un `Champ` à côté du `Selecteur`, puis trouvait la feuille :
+celle du `Champ`. Un `Selecteur` qui n'en posait plus aucune restait vert.
+
+**Un test qui prouve qu'un composant pose une ressource le rend sans rien d'autre qui la poserait, et
+une mutation qui retire la ressource le fait rougir.**
