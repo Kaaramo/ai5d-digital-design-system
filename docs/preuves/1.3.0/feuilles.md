@@ -18,3 +18,30 @@ feuilles-client (rendu client seul)
 erreurs de console : aucune
 
 ```
+
+## Après · 1.3.0 · commit `33c2b6e`, 28/09/2026 15:26
+
+```
+Banc 1.3.0 · apres · Chromium 141.0.7390.37
+## Feuilles, 500 boutons et un champ
+
+feuilles (rendu serveur puis hydratation)
+{"total":1,"dansHead":1,"dansBody":0,"identifiants":[],"identifiantsDupliques":0,"dataHref":["ai5d-bouton ai5d-champ"],"boutons":500}
+erreurs de console : aucune
+
+feuilles-client (rendu client seul)
+{"total":2,"dansHead":2,"dansBody":0,"identifiants":[],"identifiantsDupliques":0,"dataHref":["ai5d-bouton","ai5d-champ"],"boutons":500}
+erreurs de console : aucune
+
+```
+
+## Lecture
+
+Avant : cinq cents boutons et un champ posaient 501 balises `<style>` dans `<body>`, avec 499
+identifiants dupliqués, au serveur comme au client. Après : une seule balise dans `<head>` quand la
+page est rendue au serveur puis hydratée (`data-href` « ai5d-bouton ai5d-champ »), deux quand le
+client rend seul (une par clé), aucun identifiant, aucune dans `<body>`. L'hydratation du document
+entier n'écrit aucune erreur de console.
+
+Au serveur, une balise pour tout le système : une recette de produit compte les clés de `data-href`,
+pas les balises (SPEC P10 §15.5, écart 9 du §17).

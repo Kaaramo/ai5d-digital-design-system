@@ -147,8 +147,8 @@ se coche « écrite, non testée » ; la tâche 17 vérifie tout d'un bloc et vo
 - [x] T14 · L'index · vérifiée
 - [x] T15 · Journal, guide de montée, README, NOYAU, formulations, décision 012, sans la version · vérifiée
 - [x] T16 · Les spécimens · vérifiée
-- [ ] T17 · Vérification d'un bloc, chaque test vu échouer
-- [ ] T18 · Recette au navigateur, mesures « après », captures, preuves, leçons
+- [x] T17 · Vérification d'un bloc, chaque test vu échouer · vérifiée, preuves dans docs/preuves/1.3.0/
+- [x] T18 · Recette au navigateur, mesures « après », captures, preuves, leçons · faite, preuves dans docs/preuves/1.3.0/
 - [ ] T19 · Relecture du lot contre la SPEC
 - [ ] T20 · Montée d'essai dans le Portail, puis Compte et le SDK
 - [ ] T21 · Points du §0.9 revus par Karamo, accord explicite, version 1.3.0, étiquette `v1.3.0` et poussée

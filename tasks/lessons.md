@@ -101,3 +101,44 @@ restaient justes.
 
 **Une capture qui prouve un rendu au téléphone se fait sur une page qui ne déborde pas elle-même**, et
 on vérifie `scrollWidth` et `visualViewport.offsetTop` avant de croire ce que montre l'image.
+
+---
+
+## Version 1.3.0
+
+### Un compte fait par recherche ne voit que ce qu'on cherche
+
+La SPEC comptait trente-neuf lectures de feuille dans les tests, par `querySelector('style')` et
+`getElementById`. Il y en avait cinquante-deux : treize passaient par `querySelector('#ai5d-…')`. L'une
+d'elles, après le hissage, lisait `null`, et le test qui bouclait sur ses règles passait à vide.
+
+**Un compte qui fonde une migration se refait avec toutes les formes de l'accès, et l'aide qui
+remplace l'accès lève quand elle ne trouve rien.**
+
+### Un élément sorti du flux ajoute une espace au nom d'un lien
+
+Un texte hors écran (`position: absolute`) posé après un libellé donne « Participants , 25 à traiter » :
+jsdom et Chromium traitent l'élément en bloc et insèrent une espace. Le test l'a montré ; l'arbre
+d'accessibilité de Chromium l'a confirmé.
+
+**Un nom accessible qui doit se lire d'une traite se pose en `aria-label`**, et commence par le libellé
+visible.
+
+### Une remise à zéro se déclare avec le sélecteur de ce qu'elle annule
+
+La réserve basse était posée en style en ligne et remise à zéro par une feuille : la remise à zéro n'a
+jamais agi. Le brouillon du correctif la remettait à zéro par un sélecteur plus faible que celui qui la
+posait : elle n'aurait pas agi davantage.
+
+**Une règle qui annule une déclaration porte au moins sa spécificité, et un test le vérifie par le
+sélecteur, pas par la seule présence de la valeur.**
+
+### Un fragment recopié d'un plan se découpe par ses bornes, pas par ses numéros de ligne
+
+Le plan de la 1.3.0 porte le code complet de chaque tâche. Recopié par plages de lignes, il a laissé
+deux fois une clôture de bloc Markdown dans un fichier du dépôt : dans la décision 011, et au milieu de
+`OngletsRubrique.tsx`, où Prettier l'a refusée. Chaque fois, la plage lue débordait d'une ligne sur
+la clôture ; et le plan, qui reçoit ses écarts en cours de lot, décale ses propres numéros.
+
+**Un fragment se recopie entre ses bornes de texte (la clôture qui l'ouvre, celle qui le ferme), et on
+regarde sa première et sa dernière ligne avant de l'écrire.**

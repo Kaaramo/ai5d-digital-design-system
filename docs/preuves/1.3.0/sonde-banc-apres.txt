@@ -1,0 +1,43 @@
+Banc 1.3.0 · apres · Chromium 141.0.7390.37
+
+## Feuilles, 500 boutons et un champ
+
+feuilles (rendu serveur puis hydratation)
+{"total":1,"dansHead":1,"dansBody":0,"identifiants":[],"identifiantsDupliques":0,"dataHref":["ai5d-bouton ai5d-champ"],"boutons":500}
+erreurs de console : aucune
+
+feuilles-client (rendu client seul)
+{"total":2,"dansHead":2,"dansBody":0,"identifiants":[],"identifiantsDupliques":0,"dataHref":["ai5d-bouton","ai5d-champ"],"boutons":500}
+erreurs de console : aucune
+
+## Réserve basse
+
+reserve-coquille · 390 px
+{"reserveBarre":"calc(56px + 0px)","styleEnLigne":null,"paddingBottomContenu":"88px"}
+erreurs de console : aucune
+
+reserve-coquille · 1280 px
+{"reserveBarre":"0px","styleEnLigne":null,"paddingBottomContenu":"48px"}
+erreurs de console : aucune
+
+reserve-app · 390 px
+{"reserveBarre":"calc(56px + 0px)","styleEnLigne":null,"paddingBottomContenu":"104px"}
+erreurs de console : aucune
+
+reserve-app · 1280 px
+{"reserveBarre":"0px","styleEnLigne":null,"paddingBottomContenu":"48px"}
+erreurs de console : aucune
+
+## Le rail survolé
+
+survol-rail-apres-clair.png · « Sécurité » survolé, « Formations » actif
+Accueil : rgba(0, 0, 0, 0)
+Formations : rgb(234, 239, 255)
+Sécurité : rgb(244, 239, 231)
+erreurs de console : aucune
+
+survol-rail-apres-sombre.png · « Sécurité » survolé, « Formations » actif
+Accueil : rgba(0, 0, 0, 0)
+Formations : rgb(23, 44, 59)
+Sécurité : rgb(11, 22, 32)
+erreurs de console : aucune
