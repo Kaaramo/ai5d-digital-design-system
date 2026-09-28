@@ -1,4 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { Icone } from './Icone';
 
 /**
@@ -38,19 +39,29 @@ import { Icone } from './Icone';
  * jour ou le cadre change, l intention se decale sans que rien ne le signale. Il se calcule
  * desormais a partir de la meme constante que le cadre, et la garde d espacement du systeme n y
  * voit plus de litteral.
+ *
+ * ── L ACTION DE LA RUBRIQUE, EN v1.3.0 ──────────────────────────────────────
+ * Une seule, a droite du titre, sur sa rangee : « Nouvelle formation ». Posee a cote de l en-tete,
+ * elle coupait son filet. La rangee passe en `flex-wrap` et l action se range a sa fin, et dessous
+ * quand la place manque : toujours dans l en-tete, donc au-dessus du filet, et apres le `h1` dans
+ * l ordre de tabulation. Sans action, le HTML est celui de la 1.2.0 au caractere pres : un test le
+ * compare. Compte pose aussi une action unique a droite de son titre (`EnteteConsole.tsx:33`).
  */
 
-/** Le cote du cadre de l icone. Le retrait de l intention en depend. */
-export const TAILLE_CADRE_RUBRIQUE = 40;
-export function EnteteRubrique({
-  icone,
-  titre,
-  intention,
-}: {
+export interface ProprietesEnteteRubrique {
   icone: LucideIcon;
   titre: string;
   intention: string;
-}) {
+  /**
+   * L action de la rubrique, a droite du titre, sur sa rangee : « Nouvelle formation ». Une seule.
+   * Elle passe sous le titre quand la rangee ne la tient plus, sans jamais couper le filet.
+   */
+  action?: ReactNode | undefined;
+}
+
+/** Le cote du cadre de l icone. Le retrait de l intention en depend. */
+export const TAILLE_CADRE_RUBRIQUE = 40;
+export function EnteteRubrique({ icone, titre, intention, action }: ProprietesEnteteRubrique) {
   return (
     <header
       style={{
@@ -61,7 +72,14 @@ export function EnteteRubrique({
         borderBottom: '1px solid var(--bordure)',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--espace-4)' }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 'var(--espace-4)',
+          ...(action === undefined ? {} : { flexWrap: 'wrap' }),
+        }}
+      >
         <span
           aria-hidden="true"
           style={{
@@ -92,6 +110,8 @@ export function EnteteRubrique({
         >
           {titre}
         </h1>
+
+        {action === undefined ? null : <div style={{ marginInlineStart: 'auto' }}>{action}</div>}
       </div>
 
       {/*
