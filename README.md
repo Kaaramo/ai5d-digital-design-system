@@ -12,7 +12,7 @@
 ![Vitest](https://img.shields.io/badge/Vitest-051C2C?style=for-the-badge&logo=vitest&logoColor=white)
 ![pnpm](https://img.shields.io/badge/pnpm-051C2C?style=for-the-badge&logo=pnpm&logoColor=white)
 
-![Version](https://img.shields.io/badge/version-1.2.0-2251FF?style=flat-square&labelColor=051C2C)
+![Version](https://img.shields.io/badge/version-1.3.0-2251FF?style=flat-square&labelColor=051C2C)
 ![Composants](https://img.shields.io/badge/composants-42-2251FF?style=flat-square&labelColor=051C2C)
 
 </div>
@@ -61,14 +61,14 @@ Le dépôt est **public**, et n'est pas publié sur un registre. On l'installe d
 une étiquette**, jamais à une branche :
 
 ```json
-"@ai5d/design-system": "github:Kaaramo/ai5d-digital-design-system#v1.2.0",
+"@ai5d/design-system": "github:Kaaramo/ai5d-digital-design-system#v1.3.0",
 "lucide-react": "^1.0.0"
 ```
 
 puis `pnpm install`, ou directement :
 
 ```bash
-pnpm add github:Kaaramo/ai5d-digital-design-system#v1.2.0 lucide-react@^1.0.0
+pnpm add github:Kaaramo/ai5d-digital-design-system#v1.3.0 lucide-react@^1.0.0
 ```
 
 Vérifié avec pnpm 10.24 : `pnpm add` garde l'étiquette dans le manifeste. Elle doit y rester
